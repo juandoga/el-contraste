@@ -137,6 +137,11 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
 .metodo-cab{margin:40px 0 28px}
 .metodo-cab h1{margin:10px 0 14px;font-family:var(--titular);font-weight:600;font-size:var(--t-xxl);line-height:1.06;letter-spacing:-.02em;color:var(--tinta);text-wrap:balance}
 .metodo .resumen{margin:0;font-size:var(--t-l);line-height:1.45;max-width:46ch}
+.frase{font-family:var(--titular);font-size:clamp(1.5rem,3.4vw,2.1rem);line-height:1.25;color:var(--tinta);font-weight:500;margin:10px 0 18px!important;max-width:34ch!important;text-wrap:balance}
+.premisa{border-top:3px solid var(--tinta);margin-top:8px}
+.pasos-m{margin:0 0 10px;padding:0;list-style:none;counter-reset:p;display:grid;gap:14px;max-width:66ch}
+.pasos-m li{counter-increment:p;position:relative;padding-left:44px}
+.pasos-m li::before{content:counter(p);position:absolute;left:0;top:-2px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--tinta);color:var(--fondo);font-weight:700;font-size:var(--t-s)}
 .indice{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .indice a{font-size:var(--t-s);text-decoration:none;background:var(--panel);padding:6px 12px;border-radius:999px;color:var(--tinta)}
 .indice a:hover{background:var(--linea)}
@@ -157,12 +162,13 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
 .ejemplos div{background:var(--panel);border-radius:12px;padding:16px 18px;display:grid;gap:6px;font-size:.95rem}
 .ejemplos strong{color:var(--tinta)}
 .tabla-wrap{overflow-x:auto;margin-top:8px}
-.tabla{width:100%;border-collapse:collapse;font-size:.95rem;min-width:520px}
+.tabla{width:100%;border-collapse:collapse;font-size:.92rem;min-width:680px}
 .tabla th{text-align:left;font-size:var(--t-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);padding:10px 12px 10px 0;border-bottom:1px solid var(--tinta)}
 .tabla td{padding:11px 12px 11px 0;border-bottom:1px solid var(--linea);vertical-align:top}
 .tabla td a{color:var(--tinta);text-decoration:none;font-weight:500}
 .tabla td a:hover{text-decoration:underline}
 .tabla .num{font-variant-numeric:tabular-nums;color:var(--gris);white-space:nowrap}
+.sin{color:var(--aviso);font-weight:600}
 .pill{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .pill i{width:10px;height:10px;border-radius:50%;display:inline-block}
 .gris{color:var(--gris)}
@@ -188,12 +194,35 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
   <header class="metodo-cab">
     <span class="eti">Transparencia</span>
     <h1>Cómo hacemos El Contraste</h1>
-    <p class="resumen">Qué medimos, cómo etiquetamos a cada medio y qué límites tiene. Si crees que una etiqueta está mal, al final de la página puedes proponer un cambio.</p>
+    <p class="resumen">Qué medimos, cómo etiquetamos a cada medio y qué límites tiene. Todos los datos son públicos y se pueden descargar.</p>
   </header>
 
   <nav class="indice" aria-label="En esta página">
-    <a href="#que">Qué medimos</a><a href="#etiquetas">Las etiquetas</a><a href="#voces">Medios y voces</a><a href="#agrupar">Cómo agrupamos</a><a href="#ciegos">Puntos ciegos</a><a href="#limites">Límites</a><a href="#medios">Los medios</a><a href="#cambios">Proponer un cambio</a>
+    <a href="#como">Cuatro pasos</a><a href="#que">Qué medimos</a><a href="#etiquetas">Las etiquetas</a><a href="#voces">Medios y voces</a><a href="#agrupar">Cómo agrupamos</a><a href="#ciegos">Puntos ciegos</a><a href="#limites">Límites</a><a href="#medios">Los medios</a><a href="#datos">Datos abiertos</a><a href="#cambios">Proponer un cambio</a>
   </nav>
+
+  <section class="premisa" id="premisa" style="padding-top:8px">
+    <span class="eti">Nuestra premisa</span>
+    <p class="frase">Cada medio te cuenta una parte. Aquí ves la noticia contada por todos y lo que tu periódico no te está contando.</p>
+    <p>Las redes y los buscadores te enseñan sobre todo lo que ya te gusta, y cada periódico elige qué noticias destaca. Si lees siempre las mismas fuentes, hay historias que nunca te llegan. El Contraste no te dice qué pensar: te enseña quién cuenta cada noticia y quién la calla.</p>
+  </section>
+
+  <section id="como">
+    <h2>Cómo trabajamos, en cuatro pasos</h2>
+    <ol class="pasos-m">
+      <li><strong>Leemos.</strong> Cada hora recogemos los titulares públicos de 35 medios españoles: su canal RSS, su mapa de noticias para buscadores o, si no tienen ninguno, su portada.</li>
+      <li><strong>Agrupamos.</strong> Juntamos los titulares que cuentan el mismo hecho.</li>
+      <li><strong>Contamos.</strong> Miramos qué medios lo han publicado y cuántos son de izquierda, de centro y de derecha, según una etiqueta pública para cada medio.</li>
+      <li><strong>Señalamos.</strong> Lo mostramos con una barra, comparamos cómo lo titula cada lado y avisamos cuando un lado casi no lo cuenta.</li>
+    </ol>
+    <h3>Tres compromisos</h3>
+    <ul class="lista">
+      <li><strong>La misma portada para todos.</strong> No hay algoritmo que personalice lo que ves. Las noticias se ordenan solo por cuántos medios las cuentan.</li>
+      <li><strong>No opinamos.</strong> No escribimos noticias ni valoramos ninguna. Solo enlazamos a cada medio.</li>
+      <li><strong>Todo es comprobable.</strong> Las etiquetas, las reglas y los datos brutos están en esta página.</li>
+    </ul>
+  </section>
+
 
   <section id="que">
     <h2>Qué medimos</h2>
@@ -250,21 +279,32 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
   <section id="limites">
     <h2>Límites que conviene conocer</h2>
     <ul class="lista">
-      <li><strong>Faltan algunos medios importantes.</strong> Público, La Razón, RTVE, Telecinco, Vozpópuli y Onda Cero no ofrecen un canal RSS que podamos leer. Trabajamos en incluirlos.</li>
-      <li><strong>No todos los medios publican lo mismo en su RSS.</strong> Algunos dan 10 titulares y otros más de 100, así que la presencia de cada medio no es idéntica.</li>
+      <li><strong>Faltan Telecinco y, por ahora, RTVE.</strong> Telecinco bloquea cualquier lectura automática y el mapa de noticias de RTVE no trae noticias recientes.</li>
+      <li><strong>No todos los medios publican lo mismo.</strong> Tomamos como mucho 50 titulares por medio en cada lectura para que nadie pese más por publicar más, pero algunos medios solo ofrecen 10 o 20.</li>
+      <li><strong>Hay más medios de derecha que de izquierda en la lista.</strong> Ahora son 13 de derecha, 10 de centro y 11 de izquierda. Contar por voces lo compensa en parte; seguimos buscando medios de izquierda con datos accesibles.</li>
       <li><strong>Solo vemos titulares.</strong> No leemos el artículo completo ni sabemos si la noticia iba en portada o escondida en una sección.</li>
     </ul>
   </section>
 
   <section id="medios">
     <h2>Los medios, uno a uno</h2>
-    <p>Datos en directo de nuestra base de datos.</p>
+    <p>Datos en directo de nuestra base de datos: etiqueta, grupo, cómo leemos cada medio, cuándo lo leímos por última vez y cuántos titulares suyos tenemos de las últimas 48 horas.</p>
     <div class="tabla-wrap">
       <table class="tabla">
-        <thead><tr><th>Medio</th><th>Etiqueta</th><th>Grupo editorial</th><th>Revisado</th></tr></thead>
-        <tbody id="filas"><tr><td colspan="4" class="vacio">Cargando la lista de medios…</td></tr></tbody>
+        <thead><tr><th>Medio</th><th>Etiqueta</th><th>Grupo editorial</th><th>Cómo lo leemos</th><th>Titulares 48 h</th><th>Última lectura</th></tr></thead>
+        <tbody id="filas"><tr><td colspan="6" class="vacio">Cargando la lista de medios…</td></tr></tbody>
       </table>
     </div>
+  </section>
+
+  <section id="datos">
+    <h2>Datos abiertos</h2>
+    <p>Cualquiera puede descargar los mismos datos que usamos para la portada, en formato JSON, y comprobar los cálculos.</p>
+    <ul class="lista">
+      <li><a id="d-medios" href="#" target="_blank" rel="noopener">Medios: etiqueta, grupo, método de lectura y estado</a></li>
+      <li><a id="d-historias" href="#" target="_blank" rel="noopener">Historias de las últimas 48 horas, con todos sus titulares y porcentajes</a></li>
+    </ul>
+    <p class="aparte">Los datos se actualizan cada hora. Los titulares pertenecen a cada medio; nosotros solo guardamos el titular, el enlace y la fecha.</p>
   </section>
 
   <section id="cambios">
@@ -283,10 +323,13 @@ const ETI = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "C
 const COL = { "-2": "var(--izq)", "-1": "var(--izq)", "0": "var(--cen)", "1": "var(--der)", "2": "var(--der)" };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fecha = d => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : "";
+document.getElementById("d-medios").href = `${SUPA.url}/rest/v1/estado_medios?select=*&apikey=${SUPA.key}`;
+document.getElementById("d-historias").href = `${SUPA.url}/rest/v1/portada_v2?select=*&order=voces.desc&apikey=${SUPA.key}`;
+const hace = iso => { if (!iso) return "—"; const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? `hace ${Math.max(m,1)} min` : `hace ${Math.round(m/60)} h`; };
 (async () => {
   const tb = document.getElementById("filas");
   try {
-    const r = await fetch(`${SUPA.url}/rest/v1/medios?select=nombre,web,orientacion,grupo,revisado&activo=eq.true&order=orientacion,nombre`,
+    const r = await fetch(`${SUPA.url}/rest/v1/estado_medios?select=*&order=orientacion,nombre`,
       { headers: { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key } });
     if (!r.ok) throw new Error(r.status);
     const M = await r.json();
@@ -294,9 +337,11 @@ const fecha = d => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { d
       <td><a href="${esc(m.web)}" target="_blank" rel="noopener">${esc(m.nombre)}</a></td>
       <td><span class="pill"><i style="background:${COL[m.orientacion]};${Math.abs(m.orientacion) === 1 ? "opacity:.6" : ""}"></i>${ETI[m.orientacion]}</span></td>
       <td>${m.grupo && m.grupo !== m.nombre ? esc(m.grupo) : '<span class="gris">Grupo propio</span>'}</td>
-      <td class="num">${fecha(m.revisado)}</td></tr>`).join("");
+      <td>${esc(m.metodo)}</td>
+      <td class="num">${m.titulares_48h ? m.titulares_48h : '<span class="sin">Sin datos</span>'}</td>
+      <td class="num">${m.con_error ? '<span class="sin">Error</span>' : hace(m.ultima_lectura)}</td></tr>`).join("");
   } catch (e) {
-    tb.innerHTML = `<tr><td colspan="4" class="vacio">No se ha podido cargar la lista ahora mismo. Vuelve a intentarlo en unos minutos.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="6" class="vacio">No se ha podido cargar la lista ahora mismo. Vuelve a intentarlo en unos minutos.</td></tr>`;
   }
 })();
 </script>
