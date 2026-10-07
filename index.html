@@ -6,168 +6,170 @@
 <meta name="description" content="Cada noticia, con quién la cuenta y quién la calla.">
 <title>El Contraste</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,700;0,6..72,800;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Roboto+Mono:wght@500&display=swap">
 <style>
-/* Layout: cabecera de diario en negro; fecha y edición; principal a dos tercios con columna lateral de puntos ciegos; resto en columnas separadas por filetes */
+/* Layout: barra superior fija con logo y secciones; guía en panel gris; noticia principal a dos columnas (titular grande | titulares por lado); franja de puntos ciegos; rejilla de 3 columnas */
 :root{
-  --papel:#f1f0eb; --hoja:#f8f7f3; --tinta:#161514; --gris:#5f5c56; --filete:#cfccc4; --suave:#e6e4dd;
-  --izq:#a6342c; --cen:#aca79b; --der:#27466b; --aviso:#8a5a12;
-  --f-cab:"UnifrakturMaguntia","Old English Text MT",serif;
-  --f-txt:"Newsreader",Georgia,serif;
-  --f-eti:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;
-  --f-num:"IBM Plex Mono",ui-monospace,monospace;
+  --fondo:#ffffff; --panel:#f4f4f2; --tinta:#111213; --texto:#3d4047; --gris:#7a7e86; --linea:#e6e6e3;
+  --izq:#c0392b; --cen:#b3b5b9; --der:#2c5aa0; --aviso:#b26b00;
+  --logo:"Roboto",system-ui,sans-serif;
+  --titular:"Newsreader",Georgia,serif;
+  --ui:"Roboto",system-ui,sans-serif;
+  --num:"Roboto Mono",ui-monospace,monospace;
+  /* Escala tipográfica */
+  --t-xs:.75rem; --t-s:.875rem; --t-m:1.0625rem; --t-l:1.375rem; --t-xl:1.875rem; --t-xxl:clamp(2.1rem,5vw,3.4rem);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --papel:#141413; --hoja:#1b1a19; --tinta:#ebe8e1; --gris:#a19d95; --filete:#3a3834; --suave:#262522;
-  --izq:#d0645b; --cen:#7c786f; --der:#6f93c4; --aviso:#d9a54a; color-scheme:dark}}
+  --fondo:#121315; --panel:#1b1c1f; --tinta:#f2f2f0; --texto:#c4c6cb; --gris:#8c9099; --linea:#2a2c30;
+  --izq:#e0645a; --cen:#6b6e74; --der:#6c95d8; --aviso:#e6a23c; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --papel:#141413; --hoja:#1b1a19; --tinta:#ebe8e1; --gris:#a19d95; --filete:#3a3834; --suave:#262522;
-  --izq:#d0645b; --cen:#7c786f; --der:#6f93c4; --aviso:#d9a54a; color-scheme:dark}
+  --fondo:#121315; --panel:#1b1c1f; --tinta:#f2f2f0; --texto:#c4c6cb; --gris:#8c9099; --linea:#2a2c30;
+  --izq:#e0645a; --cen:#6b6e74; --der:#6c95d8; --aviso:#e6a23c; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--papel);color:var(--tinta);font-family:var(--f-txt);font-size:17px;line-height:1.5}
+body{background:var(--fondo);color:var(--texto);font-family:var(--ui);font-size:var(--t-m);line-height:1.55;-webkit-font-smoothing:antialiased}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--tinta);outline-offset:2px}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:14px 56px}
-.eti{font-family:var(--f-eti);font-weight:600;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--der);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:20px}
+.eti{font-family:var(--ui);font-size:var(--t-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
 
-/* Cabecera */
-.fecha{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;color:var(--gris);border-bottom:1px solid var(--tinta);padding-bottom:6px}
-.cabecera{text-align:center;padding-block:14px 10px}
-.cabecera h1{margin:0;font-family:var(--f-cab);font-weight:400;font-size:clamp(3rem,11vw,6.4rem);line-height:1;letter-spacing:.01em}
-.cabecera p{margin:6px 0 0;font-style:italic;color:var(--gris);font-size:1rem}
-.secciones{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 22px;border-top:3px double var(--tinta);border-bottom:1px solid var(--tinta);padding:8px 0}
-.secciones button{background:none;border:0;padding:2px 0;border-bottom:2px solid transparent}
-.secciones button[aria-selected="true"]{border-bottom-color:var(--tinta)}
-.secciones .n{font-family:var(--f-num);font-weight:400;color:var(--gris);margin-left:4px;letter-spacing:0}
+/* Barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--fondo) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--linea)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px 28px;flex-wrap:wrap;padding-block:14px}
+.logo{margin:0;font-family:var(--logo);font-weight:900;font-size:1.9rem;letter-spacing:-.045em;line-height:1;color:var(--tinta)}
+.logo span{display:inline-block;width:.32em;height:.32em;margin-left:.06em;border-radius:50%;background:var(--tinta);vertical-align:baseline}
+.nav{display:flex;gap:4px 22px;flex-wrap:wrap}
+.nav button{background:none;border:0;padding:6px 0;font-size:var(--t-s);font-weight:500;color:var(--gris);border-bottom:2px solid transparent}
+.nav button:hover{color:var(--tinta)}
+.nav button[aria-selected="true"]{color:var(--tinta);border-bottom-color:var(--tinta)}
+.nav .n{font-family:var(--num);font-size:var(--t-xs);margin-left:5px;color:var(--gris)}
+.subtop{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;padding-block:14px 0;font-size:var(--t-s);color:var(--gris)}
 
 /* Guía */
-.guia{margin-top:22px;background:var(--hoja);border:1px solid var(--tinta);padding:22px clamp(16px,3vw,32px) 24px;position:relative}
-.guia-cab{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--filete);padding-bottom:12px;margin-bottom:18px}
-.guia h2{margin:0;font-weight:800;font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
-.guia .entradilla{margin:6px 0 0;color:var(--gris);font-style:italic;max-width:62ch}
-.cerrar{background:var(--tinta);color:var(--papel);border:0;padding:8px 16px}
-.guia-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.guia-cols > div{padding-inline:18px;border-left:1px solid var(--filete);min-width:0}
-.guia-cols > div:first-child{padding-left:0;border-left:0}
-.guia h3{margin:0 0 8px}
+.guia{margin-top:24px;background:var(--panel);border-radius:14px;padding:clamp(22px,4vw,40px)}
+.guia-cab{display:flex;justify-content:space-between;align-items:start;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.guia h2{margin:6px 0 8px;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.1;color:var(--tinta)}
+.guia .entradilla{margin:0;font-size:var(--t-l);line-height:1.4;max-width:46ch;color:var(--texto)}
+.cerrar{background:var(--tinta);color:var(--fondo);border:0;border-radius:999px;padding:11px 22px;font-weight:700;font-size:var(--t-s)}
+.guia-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px}
+.guia-cols > div{min-width:0}
+.guia h3{margin:0 0 12px;font-size:var(--t-m);font-weight:700;color:var(--tinta)}
 .guia p{margin:0 0 10px;font-size:.95rem}
-.guia .aparte{font-size:.88rem;color:var(--gris);font-style:italic}
-.leyenda{display:grid;grid-template-columns:repeat(3,1fr);margin-top:5px;color:var(--gris)}
+.guia .aparte{color:var(--gris);font-size:var(--t-s)}
+.leyenda{display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px;font-size:var(--t-xs);color:var(--gris)}
 .leyenda span:nth-child(2){text-align:center}.leyenda span:nth-child(3){text-align:right}
-.lectura{display:grid;gap:10px;font-size:.93rem}
-.lectura div{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start}
-.mini{display:flex;height:9px;margin-top:7px}
+.lectura{display:grid;gap:12px;font-size:.95rem}
+.lectura div{display:grid;grid-template-columns:48px 1fr;gap:12px;align-items:start}
+.mini{display:flex;height:8px;margin-top:8px;border-radius:4px;overflow:hidden}
 .mini i{display:block}
-.proceso{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:20px;padding-top:12px;border-top:1px solid var(--filete);color:var(--gris)}
-.proceso b{font-family:var(--f-num);font-weight:500;color:var(--tinta);margin-right:4px}
-@media (max-width:900px){.guia-cols{grid-template-columns:1fr 1fr;row-gap:22px}.guia-cols > div:nth-child(3){padding-left:0;border-left:0}}
-@media (max-width:560px){.guia-cols{grid-template-columns:1fr}.guia-cols > div{padding-left:0;border-left:0}}
+.proceso{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:30px;padding-top:20px;border-top:1px solid var(--linea);font-size:var(--t-s);color:var(--texto)}
+.proceso b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--tinta);color:var(--fondo);font-size:var(--t-xs);margin-right:8px}
 
 /* Barra de cobertura */
-.barra{display:flex;height:16px;background:var(--suave);font-family:var(--f-num);font-size:.68rem;color:#fff}
+.barra{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--linea);gap:2px}
+.barra.grande{height:30px;border-radius:6px;font-family:var(--num);font-size:var(--t-xs);color:#fff}
 .barra > div{display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;min-width:0}
-.b-izq{background:var(--izq)}.b-cen{background:var(--cen);color:var(--tinta)}.b-der{background:var(--der)}
-:root .b-cen{color:#1d1c1a}
-.pct{display:flex;justify-content:space-between;font-family:var(--f-num);font-size:.7rem;color:var(--gris);font-variant-numeric:tabular-nums;margin-top:4px}
+.b-izq{background:var(--izq)}.b-cen{background:var(--cen)}.b-der{background:var(--der)}
+.barra.grande .b-cen{color:#1b1c1f}
+.pct{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--t-s);color:var(--gris);font-variant-numeric:tabular-nums}
+.pct b{font-weight:500;color:var(--tinta)}
+.pct .i b{color:var(--izq)}.pct .d b{color:var(--der)}
 
-/* Portada */
-.intro-seccion{margin:18px 0 0;color:var(--gris);font-style:italic}
-.portada{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:0;margin-top:20px;border-bottom:1px solid var(--tinta)}
-.principal{padding-right:28px;padding-bottom:24px;min-width:0}
-.lateral{border-left:1px solid var(--tinta);padding-left:24px;padding-bottom:24px;min-width:0}
-@media (max-width:860px){.portada{grid-template-columns:1fr}.principal{padding-right:0}.lateral{border-left:0;border-top:1px solid var(--tinta);padding:18px 0 24px}}
-.antetitulo{display:flex;flex-wrap:wrap;gap:4px 12px;color:var(--gris);margin-bottom:8px}
-.antetitulo .ciego{color:var(--aviso)}
-.principal h2{margin:0 0 14px;font-weight:800;font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.04;letter-spacing:-.02em;text-wrap:balance}
-.lectura-nota{margin:10px 0 0;font-size:1rem;font-style:italic;color:var(--gris)}
-.lectura-nota strong{font-style:normal;color:var(--tinta);font-weight:600}
-.asi{margin-top:20px}
-.asi > .eti{display:block;border-bottom:1px solid var(--tinta);padding-bottom:5px;margin-bottom:12px}
-.columnas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
-.columnas > div{padding-inline:14px;border-left:1px solid var(--filete);min-width:0}
-.columnas > div:first-child{padding-left:0;border-left:0}
-@media (max-width:620px){.columnas{grid-template-columns:1fr;gap:16px}.columnas > div{padding:0;border:0}}
-.columnas h4{margin:0 0 8px;display:flex;align-items:center;gap:6px}
-.columnas h4 i{width:10px;height:10px;display:inline-block}
-.columnas ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.columnas li{font-size:.95rem;line-height:1.3}
-.columnas li a{text-decoration:none}
-.columnas li a:hover{text-decoration:underline}
-.columnas .medio{display:block;font-family:var(--f-eti);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);margin-bottom:1px}
-.vacio{font-style:italic;color:var(--gris);font-size:.9rem;margin:0}
+/* Sección */
+.cab-seccion{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:56px 0 20px;flex-wrap:wrap}
+.cab-seccion h2{margin:0;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;color:var(--tinta)}
+.cab-seccion p{margin:0;color:var(--gris);font-size:var(--t-s);max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:var(--t-s);color:var(--gris)}
+.chip{font-size:var(--t-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aviso);background:color-mix(in srgb,var(--aviso) 12%,transparent);padding:3px 8px;border-radius:4px}
 
-.lateral > .eti{display:block;border-bottom:3px double var(--tinta);padding-bottom:6px;margin-bottom:4px}
-.lateral .expl{margin:8px 0 14px;font-size:.9rem;font-style:italic;color:var(--gris)}
-.ciegos{display:grid;gap:0}
-.ciego-item{border-top:1px solid var(--filete);padding:12px 0;display:grid;gap:6px}
-.ciego-item .quien{color:var(--aviso)}
-.ciego-item h3{margin:0;font-size:1.06rem;font-weight:700;line-height:1.2}
-.ciego-item .barra{height:8px}
+/* Principal */
+.principal{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px;margin-top:40px;padding-bottom:48px;border-bottom:1px solid var(--linea)}
+@media (max-width:880px){.principal{grid-template-columns:1fr;gap:28px}}
+.principal h1{margin:12px 0 24px;font-family:var(--titular);font-weight:600;font-size:var(--t-xxl);line-height:1.06;letter-spacing:-.02em;color:var(--tinta);text-wrap:balance}
+.principal .resumen{margin:20px 0 0;font-size:var(--t-l);line-height:1.45;color:var(--texto);max-width:40ch}
+.principal .resumen strong{color:var(--tinta);font-weight:700}
+.asi h3{margin:0 0 16px;font-size:var(--t-m);font-weight:700;color:var(--tinta)}
+.bloque{padding:14px 0;border-top:1px solid var(--linea)}
+.bloque:first-of-type{border-top:0;padding-top:0}
+.bloque .lado{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bloque .lado i{width:10px;height:10px;border-radius:50%}
+.bloque ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.bloque li a{display:block;text-decoration:none;font-family:var(--titular);font-size:1.12rem;font-weight:500;line-height:1.3;color:var(--tinta)}
+.bloque li a:hover{text-decoration:underline;text-underline-offset:3px}
+.bloque .medio{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:2px;font-weight:500}
+.mas{margin-top:10px;background:none;border:0;padding:0;font-size:var(--t-s);font-weight:700;color:var(--gris);text-decoration:underline;text-underline-offset:3px}
+.principal > div:first-child{position:sticky;top:96px;align-self:start}
+@media (max-width:880px){.principal > div:first-child{position:static}}
+.vacio{margin:0;color:var(--gris);font-size:var(--t-s);font-style:italic}
 
-/* Rejilla en columnas */
-.rejilla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:4px}
-.rejilla > article{padding:20px 22px 22px;border-left:1px solid var(--filete);border-bottom:1px solid var(--filete);min-width:0;display:flex;flex-direction:column;gap:8px}
-.rejilla > article:nth-child(3n+1){border-left:0;padding-left:0}
-.rejilla > article:nth-child(3n){padding-right:0}
-@media (max-width:900px){.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}.rejilla > article{padding-inline:18px}.rejilla > article:nth-child(3n+1){border-left:1px solid var(--filete);padding-left:18px}.rejilla > article:nth-child(2n+1){border-left:0;padding-left:0}.rejilla > article:nth-child(2n){padding-right:0}}
-@media (max-width:600px){.rejilla{grid-template-columns:1fr}.rejilla > article,.rejilla > article:nth-child(n){border-left:0;padding-inline:0}}
-.rejilla h3{margin:0;font-weight:700;font-size:1.2rem;line-height:1.18;letter-spacing:-.005em;text-wrap:balance}
-.rejilla .lectura-nota{font-size:.9rem;margin:0}
-.ver{align-self:flex-start;background:none;border:0;padding:0;font-family:var(--f-eti);font-weight:600;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;text-decoration:underline;text-underline-offset:3px}
-.rejilla .columnas{grid-template-columns:1fr;gap:12px;border-top:1px solid var(--filete);padding-top:10px}
-.rejilla .columnas > div{padding:0;border:0}
-.vacia{grid-column:1/-1;padding:40px 0;text-align:center;font-style:italic;color:var(--gris)}
+/* Puntos ciegos */
+.ciegos{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.ciego{background:var(--panel);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.ciego h3{margin:0;font-family:var(--titular);font-weight:600;font-size:var(--t-l);line-height:1.2;color:var(--tinta);text-wrap:balance}
+.ciego p{margin:0;font-size:var(--t-s);color:var(--gris)}
+
+/* Rejilla */
+.rejilla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 36px}
+@media (max-width:960px){.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.rejilla{grid-template-columns:1fr;gap:32px}}
+.pieza{display:flex;flex-direction:column;gap:12px;min-width:0;padding-top:20px;border-top:1px solid var(--linea)}
+.pieza h3{margin:0;font-family:var(--titular);font-weight:600;font-size:var(--t-l);line-height:1.2;letter-spacing:-.01em;color:var(--tinta);text-wrap:balance}
+.pieza .nota{margin:0;font-size:var(--t-s);color:var(--texto)}
+.pieza .nota strong{color:var(--tinta);font-weight:700}
+.ver{align-self:flex-start;background:none;border:0;padding:0;font-size:var(--t-s);font-weight:700;color:var(--tinta);display:flex;align-items:center;gap:6px}
+.ver::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.ver[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(-1px)}
+.pieza .bloque li a{font-size:1rem}
+.vacia{grid-column:1/-1;padding:56px 0;text-align:center;color:var(--gris);font-size:var(--t-l)}
 
 /* Medios */
-.medios{margin-top:40px;border-top:3px double var(--tinta);padding-top:16px}
-.medios h2{margin:0 0 4px;font-size:1.6rem;font-weight:800}
-.medios > p{margin:0 0 18px;color:var(--gris);max-width:72ch;font-size:.95rem}
-.escala{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
-.escala > div{padding-inline:12px;border-left:1px solid var(--filete);min-width:0}
-.escala > div:first-child{border-left:0;padding-left:0}
-.escala h4{margin:0 0 8px;padding-top:8px;border-top:4px solid}
-.escala ul{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:.95rem}
-@media (max-width:700px){.escala{grid-template-columns:1fr 1fr;row-gap:16px}.escala > div{border:0;padding:0 8px 0 0}}
-footer{margin-top:30px;padding-top:10px;border-top:1px solid var(--filete);color:var(--gris);font-size:.85rem}
+.medios{margin-top:72px;padding-block:40px;border-top:1px solid var(--linea)}
+.escala{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px}
+@media (max-width:760px){.escala{grid-template-columns:1fr 1fr}}
+.escala > div{min-width:0}
+.escala h4{margin:0 0 10px;padding-top:12px;border-top:4px solid;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.escala ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.95rem}
+footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(--t-s);color:var(--gris)}
 @media (prefers-reduced-motion:no-preference){.barra > div{transition:flex-grow .5s ease}}
 </style>
 </head>
 <body>
 
 
+<header class="top">
+  <div class="wrap">
+    <div class="logo" aria-label="El Contraste">El Contraste<span aria-hidden="true"></span></div>
+    <nav class="nav" role="tablist" aria-label="Secciones">
+      <button role="tab" data-v="portada" aria-selected="true">Portada<span class="n" id="n-portada"></span></button>
+      <button role="tab" data-v="izquierda" aria-selected="false">Puntos ciegos de la izquierda<span class="n" id="n-izquierda"></span></button>
+      <button role="tab" data-v="derecha" aria-selected="false">Puntos ciegos de la derecha<span class="n" id="n-derecha"></span></button>
+      <button id="abrirGuia">Cómo leer</button>
+    </nav>
+  </div>
+</header>
+
 <div class="wrap">
-  <div class="fecha eti"><span id="fechaHoy">Madrid</span><span id="estado">Cargando…</span></div>
-  <header class="cabecera">
-    <h1>El Contraste</h1>
-    <p>Cada noticia, con quién la cuenta y quién la calla</p>
-  </header>
-  <nav class="secciones eti" role="tablist" aria-label="Secciones">
-    <button role="tab" data-v="portada" aria-selected="true">Portada<span class="n" id="n-portada"></span></button>
-    <button role="tab" data-v="izquierda" aria-selected="false">Puntos ciegos de la izquierda<span class="n" id="n-izquierda"></span></button>
-    <button role="tab" data-v="derecha" aria-selected="false">Puntos ciegos de la derecha<span class="n" id="n-derecha"></span></button>
-    <button id="abrirGuia" aria-selected="false">Cómo leer este diario</button>
-  </nav>
+  <div class="subtop"><span id="fechaHoy"></span><span id="estado">Cargando…</span></div>
 
   <section class="guia" id="guia" aria-labelledby="guia-t">
     <div class="guia-cab">
       <div>
-        <span class="eti" style="color:var(--gris)">Antes de empezar</span>
+        <span class="eti">Antes de empezar</span>
         <h2 id="guia-t">Cómo leer El Contraste</h2>
-        <p class="entradilla">No te decimos qué pensar. Te enseñamos qué medios cuentan cada noticia, para que veas lo que tu periódico de siempre destaca y lo que deja fuera.</p>
+        <p class="entradilla">No te decimos qué pensar. Te enseñamos qué medios cuentan cada noticia, para que veas lo que tu periódico destaca y lo que deja fuera.</p>
       </div>
-      <button class="cerrar eti" id="cerrarGuia">Entendido</button>
+      <button class="cerrar" id="cerrarGuia">Entendido</button>
     </div>
     <div class="guia-cols">
       <div>
-        <h3 class="eti">La barra</h3>
-        <div class="barra" aria-hidden="true" style="height:22px"><div class="b-izq" style="flex-grow:40">40 %</div><div class="b-cen" style="flex-grow:30">30 %</div><div class="b-der" style="flex-grow:30">30 %</div></div>
-        <div class="leyenda eti"><span>Izquierda</span><span>Centro</span><span>Derecha</span></div>
-        <p style="margin-top:12px">Si 10 medios publican una noticia y 4 son de izquierdas, el tramo rojo ocupa el 40 %.</p>
-        <p class="aparte">La barra no dice si la noticia es verdad ni a quién beneficia. Solo dice quién la está contando.</p>
+        <h3>La barra</h3>
+        <div class="barra grande" aria-hidden="true"><div class="b-izq" style="flex-grow:40">40 %</div><div class="b-cen" style="flex-grow:30">30 %</div><div class="b-der" style="flex-grow:30">30 %</div></div>
+        <div class="leyenda"><span>Izquierda</span><span>Centro</span><span>Derecha</span></div>
+        <p style="margin-top:14px">Si 10 medios publican una noticia y 4 son de izquierdas, el tramo rojo ocupa el 40 %.</p>
+        <p class="aparte">No dice si la noticia es verdad ni a quién beneficia. Solo quién la está contando.</p>
       </div>
       <div>
-        <h3 class="eti">El color que domina</h3>
+        <h3>El color que domina</h3>
         <div class="lectura">
           <div><span class="mini" aria-hidden="true"><i style="flex:7;background:var(--izq)"></i><i style="flex:2;background:var(--cen)"></i><i style="flex:1;background:var(--der)"></i></span><span><strong>Sobre todo rojo:</strong> le dan importancia los medios de izquierdas. Si solo lees prensa de derechas, quizá no te ha llegado.</span></div>
           <div><span class="mini" aria-hidden="true"><i style="flex:3;background:var(--izq)"></i><i style="flex:4;background:var(--cen)"></i><i style="flex:3;background:var(--der)"></i></span><span><strong>Repartida:</strong> la cuenta todo el mundo. Suele ser un suceso, un dato oficial o deporte.</span></div>
@@ -175,30 +177,31 @@ footer{margin-top:30px;padding-top:10px;border-top:1px solid var(--filete);color
         </div>
       </div>
       <div>
-        <h3 class="eti">Punto ciego</h3>
-        <div class="barra" aria-hidden="true" style="height:22px"><div class="b-cen" style="flex-grow:25">25 %</div><div class="b-der" style="flex-grow:75">75 %</div></div>
-        <p style="margin-top:12px">Una noticia que <strong>un lado casi no cuenta</strong>: la publican al menos 4 medios, la mitad o más del mismo lado, y casi ninguno del otro.</p>
-        <p>Aquí la izquierda no la cuenta: es un <strong>punto ciego de la izquierda</strong>. Quien solo lee esos medios no se entera.</p>
+        <h3>Punto ciego</h3>
+        <div class="barra grande" aria-hidden="true"><div class="b-cen" style="flex-grow:25">25 %</div><div class="b-der" style="flex-grow:75">75 %</div></div>
+        <div class="leyenda"><span></span><span></span><span>sin medios de izquierda</span></div>
+        <p style="margin-top:14px">Una noticia que <strong>un lado casi no cuenta</strong>: la publican al menos 4 medios, la mitad o más del mismo lado, y casi ninguno del otro.</p>
+        <p class="aparte">Quien solo lee prensa de ese lado no se entera.</p>
       </div>
       <div>
-        <h3 class="eti">La etiqueta de cada medio</h3>
-        <p>Etiquetamos a cada <strong>periódico</strong>, no a cada noticia, en cinco niveles. Nos basamos en la ideología media de sus lectores en encuestas y en su línea editorial.</p>
+        <h3>La etiqueta de cada medio</h3>
+        <p>Etiquetamos a cada <strong>periódico</strong>, no a cada noticia, en cinco niveles, según la ideología media de sus lectores en encuestas y su línea editorial.</p>
         <p class="aparte">Que una noticia la cuente más un lado no la hace falsa. Para ver el enfoque, compara cómo la titula cada uno.</p>
       </div>
     </div>
-    <div class="proceso eti"><span><b>1</b>Cada hora leemos <span id="nMedios">21</span> medios</span><span><b>2</b>Juntamos los titulares del mismo hecho</span><span><b>3</b>Contamos cuántos medios de cada lado lo publican</span></div>
+    <div class="proceso"><span><b>1</b>Cada hora leemos <span id="nMedios">21</span> medios</span><span><b>2</b>Juntamos los titulares del mismo hecho</span><span><b>3</b>Contamos cuántos medios de cada lado lo publican</span></div>
   </section>
 
-  <p class="intro-seccion" id="introSeccion" hidden></p>
-  <div id="contenido"></div>
+  <main id="contenido"></main>
 
-  <section class="medios" id="medios" aria-labelledby="medios-t">
-    <span class="eti" style="color:var(--gris)">Transparencia</span>
-    <h2 id="medios-t">Los medios y su etiqueta</h2>
-    <p>Primera versión, revisable. Se basa en dónde se sitúan ideológicamente los lectores de cada medio en encuestas como el Digital News Report de la Universidad de Navarra y en su línea editorial.</p>
+  <section class="medios" aria-labelledby="medios-t">
+    <div class="cab-seccion" style="margin-top:0">
+      <h2 id="medios-t">Los medios y su etiqueta</h2>
+      <p>Primera versión, revisable. Basada en la ideología de los lectores de cada medio en encuestas como el Digital News Report (Universidad de Navarra) y en su línea editorial.</p>
+    </div>
     <div class="escala" id="escala"></div>
   </section>
-  <footer>Los titulares enlazan a la noticia original en cada medio. Fuente: los canales RSS públicos de cada periódico.</footer>
+  <footer>Los titulares enlazan a la noticia original. Fuente: canales RSS públicos de cada periódico.</footer>
 </div>
 
 <script>
@@ -209,8 +212,8 @@ const lado = o => o < 0 ? "izq" : o > 0 ? "der" : "cen";
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let DATA = SNAPSHOT || { medios: [], historias: [], generado: null };
 let vista = "portada";
-
-document.getElementById("fechaHoy").textContent = "Madrid, " + new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const fh = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+document.getElementById("fechaHoy").textContent = fh.charAt(0).toUpperCase() + fh.slice(1);
 
 function haceCuanto(iso){
   if (!iso) return "";
@@ -223,91 +226,88 @@ function lectura(h){
   if (h.ciego === "izquierda") return `<strong>Punto ciego de la izquierda.</strong> Casi ningún medio de izquierdas la cuenta.`;
   if (h.ciego === "derecha") return `<strong>Punto ciego de la derecha.</strong> Casi ningún medio de derechas la cuenta.`;
   const d = h.pi - h.pd;
-  if (d >= 25) return `La cuentan <strong>más los medios de izquierdas</strong>.`;
-  if (d <= -25) return `La cuentan <strong>más los medios de derechas</strong>.`;
-  return `<strong>Cobertura repartida</strong> entre los tres bloques.`;
+  if (d >= 20) return `La cuentan <strong>más los medios de izquierdas</strong>.`;
+  if (d <= -20) return `La cuentan <strong>más los medios de derechas</strong>.`;
+  return `<strong>Cobertura repartida</strong> entre izquierda, centro y derecha.`;
 }
-function barra(h, etiquetas = true){
-  const seg = (cls, v, et) => v ? `<div class="${cls}" style="flex-grow:${v}" title="${et}: ${v} %">${etiquetas && v >= 14 ? v + " %" : ""}</div>` : "";
-  return `<div class="barra" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("b-izq",h.pi,"Izquierda")}${seg("b-cen",h.pc,"Centro")}${seg("b-der",h.pd,"Derecha")}</div>`;
+function barra(h, grande){
+  const seg = (cls, v, et) => v ? `<div class="${cls}" style="flex-grow:${v}" title="${et}: ${v} %">${grande && v >= 12 ? v + " %" : ""}</div>` : "";
+  return `<div class="barra${grande ? " grande" : ""}" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("b-izq",h.pi,"Izquierda")}${seg("b-cen",h.pc,"Centro")}${seg("b-der",h.pd,"Derecha")}</div>`;
 }
-function columnas(h){
+const pct = h => `<div class="pct"><span class="i">Izquierda <b>${h.pi} %</b></span><span>Centro <b>${h.pc} %</b></span><span class="d">Derecha <b>${h.pd} %</b></span></div>`;
+const meta = h => `<div class="meta"><span>${h.tot} medios</span><span>${haceCuanto(h.act)}</span>${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
+function bloques(h, max = 99){
   const g = { izq: [], cen: [], der: [] }, vistos = new Set();
   for (const a of h.a) { if (vistos.has(a.m)) continue; vistos.add(a.m); g[lado(a.o)].push(a); }
-  const col = (k, n, c) => `<div><h4 class="eti"><i style="background:${c}"></i>${n}</h4>${g[k].length ? `<ul>${g[k].map(a => `<li><span class="medio">${esc(a.m)}</span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`).join("")}</ul>` : `<p class="vacio">Ningún medio de este lado la ha publicado.</p>`}</div>`;
-  return `<div class="columnas">${col("izq","Izquierda","var(--izq)")}${col("cen","Centro","var(--cen)")}${col("der","Derecha","var(--der)")}</div>`;
-}
-function antetitulo(h){
-  return `<div class="antetitulo eti"><span>${h.tot} medios</span><span>${haceCuanto(h.act)}</span>${h.ciego ? `<span class="ciego">Punto ciego de la ${h.ciego}</span>` : ""}</div>`;
+  const b = (k, n, c) => `<div class="bloque"><div class="lado eti"><i style="background:${c}"></i>${n}</div>${g[k].length ? `<ul>${g[k].map((a, i) => `<li${i >= max ? " hidden" : ""}><span class="medio">${esc(a.m)}</span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`).join("")}</ul>${g[k].length > max ? `<button class="mas" data-n="${g[k].length - max}">Ver ${g[k].length - max} más</button>` : ""}` : `<p class="vacio">Ningún medio de este lado la ha publicado.</p>`}</div>`;
+  return b("izq","Izquierda","var(--izq)") + b("cen","Centro","var(--cen)") + b("der","Derecha","var(--der)");
 }
 function pieza(h){
   const el = document.createElement("article");
-  el.innerHTML = `${antetitulo(h)}<h3>${esc(h.t)}</h3>${barra(h)}<div class="pct"><span>Izq. ${h.pi} %</span><span>Centro ${h.pc} %</span><span>Der. ${h.pd} %</span></div>
-    <p class="lectura-nota">${lectura(h)}</p>
-    <button class="ver" aria-expanded="false">Cómo la titula cada lado</button><div hidden>${columnas(h)}</div>`;
+  el.className = "pieza";
+  el.innerHTML = `${meta(h)}<h3>${esc(h.t)}</h3>${barra(h)}${pct(h)}<p class="nota">${lectura(h)}</p>
+    <button class="ver" aria-expanded="false">Cómo la titula cada lado</button><div hidden>${bloques(h)}</div>`;
   const b = el.querySelector(".ver"), d = b.nextElementSibling;
-  b.addEventListener("click", () => { d.hidden = !d.hidden; b.setAttribute("aria-expanded", !d.hidden); b.textContent = d.hidden ? "Cómo la titula cada lado" : "Ocultar titulares"; });
+  b.addEventListener("click", () => { d.hidden = !d.hidden; b.setAttribute("aria-expanded", !d.hidden); });
   return el;
 }
-const INTRO = {
-  izquierda: "Noticias que publican sobre todo medios de derechas y que la prensa de izquierdas casi no está contando.",
-  derecha: "Noticias que publican sobre todo medios de izquierdas y que la prensa de derechas casi no está contando."
-};
+const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 function render(){
   const H = DATA.historias || [];
   const ci = H.filter(h => h.ciego === "izquierda"), cd = H.filter(h => h.ciego === "derecha");
   document.getElementById("n-portada").textContent = H.length;
   document.getElementById("n-izquierda").textContent = ci.length;
   document.getElementById("n-derecha").textContent = cd.length;
-  const intro = document.getElementById("introSeccion");
-  intro.hidden = vista === "portada"; intro.textContent = INTRO[vista] || "";
   const c = document.getElementById("contenido");
   c.innerHTML = "";
   if (vista === "portada") {
     if (!H.length) { c.innerHTML = `<p class="vacia">Todavía no hay noticias agrupadas. La recogida se hace cada hora.</p>`; }
     else {
       const [lead, ...resto] = H;
-      const ciegos = [...ci, ...cd].filter(h => h !== lead).slice(0, 5);
-      const port = document.createElement("div");
-      port.className = "portada";
-      port.innerHTML = `
-        <div class="principal">${antetitulo(lead)}<h2>${esc(lead.t)}</h2>${barra(lead)}
-          <div class="pct"><span>Izquierda ${lead.pi} %</span><span>Centro ${lead.pc} %</span><span>Derecha ${lead.pd} %</span></div>
-          <p class="lectura-nota">${lectura(lead)}</p>
-          <div class="asi"><span class="eti">Así la titula cada lado</span>${columnas(lead)}</div></div>
-        <aside class="lateral"><span class="eti">Lo que un lado no cuenta</span>
-          <p class="expl">Puntos ciegos de hoy: noticias que casi solo publica un bloque.</p>
-          <div class="ciegos">${ciegos.length ? ciegos.map(h => `<div class="ciego-item"><span class="eti quien">La ${h.ciego} no la cuenta</span><h3>${esc(h.t)}</h3>${barra(h, false)}</div>`).join("") : `<p class="vacio">Ahora mismo no hay puntos ciegos.</p>`}</div></aside>`;
-      c.appendChild(port);
+      const ciegos = [...ci, ...cd].filter(h => h !== lead);
+      c.insertAdjacentHTML("beforeend", `
+        <section class="principal">
+          <div>${meta(lead)}<h1>${esc(lead.t)}</h1>${barra(lead, true)}${pct(lead)}<p class="resumen">${lectura(lead)}</p></div>
+          <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}</div>
+        </section>`);
+      c.querySelectorAll(".mas").forEach(b => b.addEventListener("click", () => { b.previousElementSibling.querySelectorAll("li[hidden]").forEach(li => li.hidden = false); b.remove(); }));
+      if (ciegos.length) {
+        c.insertAdjacentHTML("beforeend", cab("Lo que un lado no cuenta", "Puntos ciegos de hoy: noticias que casi solo publica un bloque."));
+        const grid = document.createElement("div"); grid.className = "ciegos";
+        grid.innerHTML = ciegos.slice(0, 4).map(h => `<article class="ciego"><span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3>${esc(h.t)}</h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
+        c.appendChild(grid);
+      }
+      c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas de más a menos medios que las cuentan."));
       const rej = document.createElement("div"); rej.className = "rejilla";
       resto.forEach(h => rej.appendChild(pieza(h)));
       c.appendChild(rej);
     }
   } else {
     const lista = vista === "izquierda" ? ci : cd;
-    const rej = document.createElement("div"); rej.className = "rejilla"; rej.style.marginTop = "12px";
-    if (!lista.length) rej.innerHTML = `<p class="vacia">Ahora mismo no hay ningún punto ciego de este lado. Se recalcula cada hora.</p>`;
+    c.insertAdjacentHTML("beforeend", cab(vista === "izquierda" ? "Puntos ciegos de la izquierda" : "Puntos ciegos de la derecha",
+      vista === "izquierda" ? "Noticias que publican sobre todo medios de derechas y que la prensa de izquierdas casi no está contando."
+                            : "Noticias que publican sobre todo medios de izquierdas y que la prensa de derechas casi no está contando."));
+    const rej = document.createElement("div"); rej.className = "rejilla";
+    if (!lista.length) rej.innerHTML = `<p class="vacia">Ahora mismo no hay puntos ciegos de este lado. Se recalcula cada hora.</p>`;
     lista.forEach(h => rej.appendChild(pieza(h)));
     c.appendChild(rej);
   }
   const M = DATA.medios || [];
   document.getElementById("nMedios").textContent = M.length || 21;
   document.getElementById("escala").innerHTML = NIVELES.map(([v, n, col]) =>
-    `<div><h4 class="eti" style="border-color:${col};${Math.abs(v)===1?"border-top-style:dashed":""}">${n}</h4><ul>${M.filter(m => m.o === v).map(m => `<li>${esc(m.n)}</li>`).join("")}</ul></div>`).join("");
-  document.getElementById("estado").textContent = DATA.generado ? `Edición actualizada ${haceCuanto(DATA.generado)} · ${M.length} medios` : "Sin datos";
+    `<div><h4 style="border-color:${col};${Math.abs(v)===1?"border-top-style:dashed":""}">${n}</h4><ul>${M.filter(m => m.o === v).map(m => `<li>${esc(m.n)}</li>`).join("")}</ul></div>`).join("");
+  document.getElementById("estado").textContent = DATA.generado ? `Actualizado ${haceCuanto(DATA.generado)} · ${M.length} medios` : "Sin datos";
 }
-document.querySelectorAll(".secciones [data-v]").forEach(t => t.addEventListener("click", () => {
+document.querySelectorAll(".nav [data-v]").forEach(t => t.addEventListener("click", () => {
   vista = t.dataset.v;
-  document.querySelectorAll(".secciones [data-v]").forEach(x => x.setAttribute("aria-selected", x === t));
-  render();
+  document.querySelectorAll(".nav [data-v]").forEach(x => x.setAttribute("aria-selected", x === t));
+  render(); window.scrollTo({ top: 0 });
 }));
-
 const guia = document.getElementById("guia");
 function guiaVisible(v){ guia.hidden = !v; try { localStorage.setItem("contraste-guia", v ? "1" : "0"); } catch(e){} }
 document.getElementById("cerrarGuia").addEventListener("click", () => guiaVisible(false));
 document.getElementById("abrirGuia").addEventListener("click", () => { guiaVisible(true); guia.scrollIntoView({ behavior: "smooth" }); });
 try { if (localStorage.getItem("contraste-guia") === "0") guiaVisible(false); } catch(e){}
-
 render();
 
 // Datos en directo desde Supabase (funciona cuando la página está en una web propia, como GitHub Pages)
@@ -315,7 +315,7 @@ render();
   try {
     const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
     const [rh, rm] = await Promise.all([
-      fetch(`${SUPA.url}/rest/v1/portada?select=id,titulo,total,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos&order=total.desc,actualizada.desc&limit=40`, { headers: h }),
+      fetch(`${SUPA.url}/rest/v1/portada?select=titulo,total,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos&order=total.desc,actualizada.desc&limit=40`, { headers: h }),
       fetch(`${SUPA.url}/rest/v1/medios?select=nombre,orientacion&activo=eq.true&order=orientacion,nombre`, { headers: h })
     ]);
     if (!rh.ok || !rm.ok) return;
