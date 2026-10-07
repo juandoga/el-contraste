@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Elecciones 29N · Vista Plena</title>
-<meta name="description" content="Qué propone cada partido para las elecciones del 29 de noviembre, con cita literal del programa.">
+<title>Privacidad · Vista Plena</title>
+<meta name="description" content="Qué datos tratamos en Vista Plena y cómo ejercer tus derechos.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fuentes/roboto-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#111213">
 <meta property="og:site_name" content="Vista Plena">
 <meta property="og:locale" content="es_ES">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Elecciones 29N · Vista Plena">
-<meta property="og:description" content="Qué propone cada partido para las elecciones del 29 de noviembre, con cita literal del programa.">
-<meta property="og:url" content="https://juandoga.github.io/el-contraste/elecciones.html">
+<meta property="og:title" content="Privacidad · Vista Plena">
+<meta property="og:description" content="Qué datos tratamos en Vista Plena y cómo ejercer tus derechos.">
+<meta property="og:url" content="https://juandoga.github.io/el-contraste/privacidad.html">
 <meta property="og:image" content="https://juandoga.github.io/el-contraste/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -319,32 +319,6 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .gris{color:var(--gris)}
 .boton{display:inline-block;background:var(--tinta);color:var(--fondo)!important;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:700;font-size:var(--t-s)}
 .aparte{color:var(--gris);font-size:var(--t-s)}
-
-.elecc .cuenta{display:inline-flex;align-items:baseline;gap:10px;margin-top:22px;background:var(--tinta);color:var(--fondo);border-radius:999px;padding:10px 20px}
-.elecc .cuenta b{font-size:1.6rem;font-weight:900;font-variant-numeric:tabular-nums}
-.elecc .cuenta span{font-size:var(--t-s)}
-.tema-elec{padding-top:48px;scroll-margin-top:80px}
-.tema-cab{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start;margin-bottom:18px}
-.tema-cab .num{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--tinta);color:var(--fondo);font-weight:800}
-.tema-cab h2{margin:0 0 6px!important}
-.cis{margin:0!important;font-size:var(--t-s);color:var(--texto)}
-.cis-barra{display:block;height:8px;background:var(--linea);border-radius:4px;margin-bottom:8px;max-width:420px;overflow:hidden}
-.cis-barra i{display:block;height:100%;background:var(--tinta);border-radius:4px}
-.partidos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.p-card{background:var(--panel);border-radius:10px;padding:14px 16px;min-width:0}
-.p-card h3{margin:0 0 6px!important;font-size:var(--t-m)}
-.p-card ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.9rem}
-.p-card a{color:var(--gris);font-size:var(--t-xs)}
-.pend{color:var(--gris);font-size:var(--t-s);margin:0!important}
-.pendientes{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 0!important}
-.pendientes .eti{margin-right:4px}
-.chip-p{font-size:var(--t-s);border:1px dashed var(--linea);border-radius:999px;padding:4px 11px;color:var(--gris)}
-.hoy{margin-top:16px;display:grid;gap:10px;border-left:3px solid var(--tinta);padding-left:16px}
-.hoy-item{display:grid;gap:6px;text-decoration:none;color:var(--tinta);font-family:var(--titular);font-weight:600;font-size:1.02rem;line-height:1.25}
-.hoy-item:hover{text-decoration:underline}
-.hoy .barra{height:6px;max-width:320px}
-.hoy .m{font-family:var(--ui);font-weight:400;font-size:var(--t-xs);color:var(--gris)}
-.mas-sec{font-size:var(--t-s);font-weight:700;color:var(--tinta)}
 </style>
 </head>
 <body>
@@ -355,7 +329,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
     <nav class="nav" aria-label="Principal">
       <a class="navlink" href="./">Portada</a>
       <a class="navlink" href="./?vista=ciegos">Puntos ciegos</a>
-      <a class="navlink navlink-29n" href="elecciones.html" aria-current="page">Elecciones 29N</a>
+      <a class="navlink navlink-29n" href="elecciones.html">Elecciones 29N</a>
       <a class="navlink" href="metodologia.html">Cómo lo hacemos</a>
       <a class="navlink" href="quienes-somos.html">Quiénes somos</a>
     </nav>
@@ -387,47 +361,67 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
 </header>
 
-<div class="wrap metodo elecc">
-  <div class="subtop"><span>Guía de voto</span><span id="actualizado"></span></div>
-
+<div class="wrap metodo legal-pag">
+  <div class="subtop"><span>Información legal</span><span>Última actualización: 7 de octubre de 2026</span></div>
   <header class="metodo-cab">
-    <span class="eti">Elecciones generales · 29 de noviembre de 2026</span>
-    <h1>Qué propone cada partido</h1>
-    <p class="resumen">Las propuestas de cada partido sobre lo que más preocupa a los españoles, con la frase exacta de su programa y el enlace a la página. Sin opiniones.</p>
-    <div class="cuenta"><b id="dias">—</b><span>días para votar</span></div>
+    <span class="eti">Privacidad</span>
+    <h1>Política de privacidad</h1>
+    <p class="resumen">Para leer Vista Plena no tienes que darnos ningún dato. Solo guardamos tu correo si te suscribes al boletín.</p>
   </header>
 
-  <div class="aviso" id="estadoProgramas">Los partidos todavía no han presentado sus programas para el 29N. En cuanto cada uno publique el suyo, añadiremos sus propuestas tema a tema, con cita literal y enlace al documento original.</div>
-
-  <nav class="indice" aria-label="Temas" id="indiceTemas"></nav>
-
-  <div id="temasElec"></div>
-
-  <section id="partidos">
-    <h2>Los partidos</h2>
-    <p id="criterio"></p>
-    <div class="tabla-wrap">
-      <table class="tabla">
-        <thead><tr><th>Partido</th><th>Programa para el 29N</th><th>Web oficial</th></tr></thead>
-        <tbody id="filasPartidos"><tr><td colspan="3" class="vacio">Cargando…</td></tr></tbody>
-      </table>
-    </div>
+  <section>
+    <h2>En resumen</h2>
+    <ul class="lista">
+      <li>No usamos cookies, ni publicidad, ni herramientas que sigan lo que haces.</li>
+      <li>Solo tratamos tu correo, y solo si te suscribes al boletín.</li>
+      <li>No vendemos ni cedemos tu correo a nadie.</li>
+      <li>Puedes darte de baja con un clic en cualquier envío.</li>
+    </ul>
   </section>
 
-  <section id="como">
-    <h2>Cómo construimos esta guía</h2>
-    <ol class="pasos-m">
-      <li><strong>Solo el programa oficial.</strong> Usamos el documento que publica cada partido, nunca resúmenes de otros medios.</li>
-      <li><strong>Cita literal y página.</strong> Para cada tema extraemos sus propuestas con la frase exacta y la página donde aparece.</li>
-      <li><strong>Revisión humana.</strong> Una persona comprueba cada cita contra el original antes de publicarla.</li>
-      <li><strong>La misma plantilla para todos.</strong> Mismos temas y mismo espacio para cada partido, en el orden de lo que más preocupa según el CIS. No valoramos ninguna propuesta.</li>
-      <li><strong>Con fecha y corrección visible.</strong> Cada propuesta indica cuándo se añadió. Si encontramos un error, lo corregimos y lo señalamos.</li>
-    </ol>
-    <h3>Próximamente: lo que votaron</h3>
-    <p>Junto a cada propuesta mostraremos cómo votó ese partido en el Congreso sobre ese mismo tema durante la legislatura, con los datos abiertos de votaciones del Congreso. Así se podrá comparar lo que se promete con lo que se ha hecho.</p>
-    <p class="aparte">Los datos de esta guía están en un archivo público, <a href="programas.json">programas.json</a>, con su historial de cambios en GitHub. Si ves un error, <a href="https://github.com/juandoga/el-contraste/issues/new?title=Gu%C3%ADa%2029N%3A%20">avísanos</a>.</p>
+  <section>
+    <h2>Responsable</h2>
+    <p><mark class="pendiente">[nombre del titular]</mark>. Correo de contacto: <mark class="pendiente">[correo de contacto]</mark>.</p>
   </section>
 
+  <section>
+    <h2>Boletín por correo</h2>
+    <h3>Qué datos guardamos</h3>
+    <p>Tu dirección de correo, la fecha en que te suscribiste y confirmaste, la fecha de baja si te das de baja, y un código aleatorio que sirve para confirmar la suscripción y darte de baja sin contraseña.</p>
+    <h3>Para qué</h3>
+    <p>Solo para enviarte el resumen diario. No lo usamos para nada más.</p>
+    <h3>Por qué podemos hacerlo</h3>
+    <p>Porque nos das tu consentimiento al suscribirte y confirmarlo desde tu correo (artículo 6.1.a del Reglamento General de Protección de Datos). Puedes retirarlo cuando quieras dándote de baja.</p>
+    <h3>Cuánto tiempo</h3>
+    <p>Mientras sigas suscrito. Al darte de baja dejamos de escribirte. Si además quieres que borremos tu dirección de nuestra base de datos, escríbenos y la eliminamos.</p>
+    <h3>Quién nos ayuda a tratarlos</h3>
+    <ul class="lista">
+      <li><strong>Supabase</strong>, que aloja nuestra base de datos en servidores de la Unión Europea (París).</li>
+      <li><strong>Resend</strong>, que envía los correos. Es una empresa de Estados Unidos, por lo que tu dirección puede tratarse fuera de la Unión Europea, con las garantías que exige el RGPD para estas transferencias.</li>
+    </ul>
+    <p>Ambos actúan como encargados del tratamiento: solo pueden usar los datos para prestarnos su servicio.</p>
+  </section>
+
+  <section>
+    <h2>Cuando visitas la web</h2>
+    <ul class="lista">
+      <li><strong>Alojamiento.</strong> La web está alojada en GitHub Pages (GitHub, Inc.), que registra datos técnicos de las visitas, como la dirección IP, por motivos de seguridad.</li>
+      <li><strong>Fotografías.</strong> Las fotos de las noticias se cargan directamente desde la web de cada medio, que recibe tu dirección IP como al visitar cualquier página. No les enviamos desde qué página vienes.</li>
+      <li><strong>Tipografías.</strong> Están alojadas en nuestra propia web; no se descargan de servicios de terceros.</li>
+      <li><strong>Tu navegador.</strong> Si cierras la guía «Cómo leer Vista Plena», guardamos esa preferencia en tu navegador para no volver a mostrártela. No sale de tu dispositivo y no es una cookie.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Tus derechos</h2>
+    <p>Puedes pedirnos acceder a tus datos, corregirlos, borrarlos, limitar su uso, oponerte a él o recibirlos en un formato reutilizable. Escríbenos a <mark class="pendiente">[correo de contacto]</mark> indicando qué necesitas.</p>
+    <p>Si crees que no hemos tratado bien tus datos, puedes reclamar ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos</a>.</p>
+  </section>
+
+  <section>
+    <h2>Cambios</h2>
+    <p>Si cambiamos esta política, actualizaremos la fecha de arriba. Si el cambio afecta al boletín, te avisaremos por correo antes de aplicarlo.</p>
+  </section>
 </div>
 
 <footer class="pie">
@@ -440,55 +434,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="temas.js"></script>
 <script src="comun.js"></script>
-<script>
-const fechaLarga = d => new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
-let PROG = null, HIST = [];
-
-function pintar(){
-  const S = window.SECCIONES || [];
-  document.getElementById("indiceTemas").innerHTML = S.map(s => `<a href="#${s.id}">${s.nombre}</a>`).join("") + `<a href="#partidos">Los partidos</a><a href="#como">Cómo la hacemos</a>`;
-  const P = PROG ? PROG.partidos : [];
-  const conPrograma = P.filter(p => p.programa).length;
-  if (PROG) {
-    document.getElementById("actualizado").textContent = "Actualizada el " + fechaLarga(PROG.actualizado);
-    document.getElementById("criterio").textContent = "Criterio: " + PROG.criterio;
-    if (conPrograma) document.getElementById("estadoProgramas").textContent = `${conPrograma} de ${P.length} partidos han publicado ya su programa. Los demás aparecen como pendientes hasta que lo presenten.`;
-  }
-  document.getElementById("temasElec").innerHTML = S.map((s, i) => {
-    const hoy = HIST.filter(h => window.seccionesDe(h).includes(s.id)).slice(0, 3);
-    return `<section id="${s.id}" class="tema-elec">
-      <div class="tema-cab"><span class="num">${i + 1}</span><div><h2>${s.nombre}</h2>
-        <p class="cis"><span class="cis-barra"><i style="width:${Math.min(100, s.cis * 2)}%"></i></span>Preocupa al <b>${String(s.cis).replace(".", ",")} %</b> de los españoles · ${s.cisNota} · CIS, septiembre de 2026</p></div></div>
-      ${P.some(p => p.programa) ? `<div class="partidos-grid">${P.filter(p => p.programa).map(p => {
-        const lista = (p.propuestas || {})[s.id] || [];
-        return `<div class="p-card"><h3>${esc(p.nombre)}</h3>${lista.length
-          ? `<ul>${lista.map(x => `<li>«${esc(x.texto)}» <a href="${esc(x.url || p.programa.url)}" target="_blank" rel="noopener">pág. ${esc(x.pagina)}</a></li>`).join("")}</ul>`
-          : `<p class="pend">Su programa no incluye propuestas sobre este tema.</p>`}</div>`;
-      }).join("")}</div>` : ""}
-      ${P.some(p => !p.programa) ? `<p class="pendientes"><span class="eti">Programa pendiente</span>${P.filter(p => !p.programa).map(p => `<span class="chip-p">${esc(p.nombre)}</span>`).join("")}</p>` : ""}
-      ${hoy.length ? `<div class="hoy"><span class="eti">Hoy en los medios</span>${hoy.map(h => `<a class="hoy-item" href="${enlace(h)}">${esc(h.t)}${barra(h)}<span class="m">${h.tot} medios</span></a>`).join("")}<a class="mas-sec" href="./?seccion=${s.id}">Ver todas las noticias de ${s.nombre.toLowerCase()} →</a></div>` : ""}
-    </section>`;
-  }).join("");
-  document.getElementById("filasPartidos").innerHTML = P.map(p => `<tr><td><strong>${esc(p.nombre)}</strong></td>
-    <td>${p.programa ? `<a href="${esc(p.programa.url)}" target="_blank" rel="noopener">Publicado el ${fechaLarga(p.programa.fecha)}</a>` : '<span class="pend">Pendiente</span>'}</td>
-    <td><a href="${esc(p.web)}" target="_blank" rel="noopener">${esc(p.web.replace(/^https?:\/\/(www\.)?/, ""))}</a></td></tr>`).join("");
-}
-// Cuenta atrás
-(() => { const d = Math.ceil((new Date("2026-11-29T09:00:00+01:00") - Date.now()) / 864e5); document.getElementById("dias").textContent = d > 0 ? d : "Hoy"; })();
-pintar();
-fetch("programas.json").then(r => r.json()).then(j => { PROG = j; pintar(); }).catch(() => {});
-(async () => {
-  try {
-    const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
-    const r = await fetch(`${SUPA.url}/rest/v1/portada_v2?select=id,titulo,total,voces,pct_izq,pct_cen,pct_der,articulos&order=voces.desc&limit=80`, { headers: h });
-    if (!r.ok) return;
-    HIST = (await r.json()).map(x => ({ id: x.id, t: x.titulo, tot: x.total, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, a: (x.articulos || []).map(a => ({ t: a.titulo })) }));
-    pintar();
-  } catch (e) {}
-})();
-</script>
 
 </body>
 </html>

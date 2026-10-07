@@ -3,11 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Cada noticia, con quién la cuenta y quién la calla.">
-<title>Vista Plena</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Roboto+Mono:wght@500&display=swap">
+<title>Vista Plena · Cada noticia, contada por todos los lados</title>
+<meta name="description" content="La misma noticia contada por medios de izquierda, centro y derecha. Descubre quién cuenta cada historia y lo que tu periódico no te cuenta.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fuentes/roboto-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#111213">
+<meta property="og:site_name" content="Vista Plena">
+<meta property="og:locale" content="es_ES">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vista Plena · Cada noticia, contada por todos los lados">
+<meta property="og:description" content="La misma noticia contada por medios de izquierda, centro y derecha. Descubre quién cuenta cada historia y lo que tu periódico no te cuenta.">
+<meta property="og:url" content="https://juandoga.github.io/el-contraste/">
+<meta property="og:image" content="https://juandoga.github.io/el-contraste/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <style>
+@font-face{font-family:"Roboto";font-style:normal;font-weight:400;font-display:swap;src:url(fuentes/roboto-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto";font-style:normal;font-weight:500;font-display:swap;src:url(fuentes/roboto-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto";font-style:normal;font-weight:700;font-display:swap;src:url(fuentes/roboto-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto";font-style:normal;font-weight:900;font-display:swap;src:url(fuentes/roboto-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto Mono";font-style:normal;font-weight:500;font-display:swap;src:url(fuentes/roboto-mono-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Newsreader";font-style:normal;font-weight:200 800;font-display:swap;src:url(fuentes/newsreader-latin-opsz-normal.woff2) format("woff2-variations")}
+
 /* Layout: barra superior fija con logo y secciones; guía en panel gris; noticia principal a dos columnas (titular grande | titulares por lado); franja de puntos ciegos; rejilla de 3 columnas */
 :root{
   --fondo:#ffffff; --panel:#f4f4f2; --tinta:#111213; --texto:#3d4047; --gris:#7a7e86; --linea:#e6e6e3;
@@ -209,22 +227,97 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .secciones-nav + .temas{padding-top:6px}
 .navlink-29n{color:var(--tinta)!important;font-weight:700}
 .cab-seccion p a{color:var(--tinta);font-weight:600;text-underline-offset:3px}
+
+/* Cabecera y menú */
+.top .wrap.barra-top{display:flex;align-items:center;gap:18px;flex-wrap:nowrap;padding-block:12px}
+a.logo{text-decoration:none;white-space:nowrap}
+.hamb{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:8px 2px;font-size:var(--t-s);font-weight:700;color:var(--tinta);flex:none}
+.hamb i{position:relative;display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:background .2s}
+.hamb i::before,.hamb i::after{content:"";position:absolute;left:0;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .2s}
+.hamb i::before{top:-6px}.hamb i::after{top:6px}
+.hamb[aria-expanded="true"] i{background:transparent}
+.hamb[aria-expanded="true"] i::before{transform:translateY(6px) rotate(45deg)}
+.hamb[aria-expanded="true"] i::after{transform:translateY(-6px) rotate(-45deg)}
+.top .nav{margin-left:auto;flex-wrap:nowrap}
+.navlink{white-space:nowrap}
+.navlink[aria-current="page"]{color:var(--tinta);border-bottom-color:var(--tinta)}
+.btn-bol{flex:none;background:var(--tinta);color:var(--fondo);padding:9px 16px;border-radius:999px;font-size:var(--t-s);font-weight:700;text-decoration:none;white-space:nowrap}
+.btn-bol:hover{opacity:.85}
+@media (max-width:900px){.top .nav{display:none}.btn-bol{margin-left:auto}}
+@media (max-width:420px){.hamb-txt{display:none}.top .logo{font-size:1.6rem}.btn-bol{padding:8px 13px}}
+.menu{position:absolute;left:0;right:0;top:100%;background:var(--fondo);border-bottom:1px solid var(--linea);box-shadow:0 24px 48px rgba(0,0,0,.10);max-height:calc(100dvh - 64px);overflow-y:auto;overscroll-behavior:contain}
+.menu[hidden]{display:none}
+body{margin:0}
+[hidden]{display:none!important}
+.top .menu .menu-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;align-items:start;justify-content:normal;padding-block:28px 36px}
+@media (max-width:900px){.top .menu .menu-cols{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.top .menu .menu-cols{grid-template-columns:1fr;gap:24px;padding-block:20px 28px}}
+.menu-cols > div{display:flex;flex-direction:column;min-width:0}
+.menu-cols .eti{margin-bottom:8px}
+.menu-cols a{padding:6px 0;text-decoration:none;color:var(--tinta);font-weight:500}
+.menu-cols a:hover{text-decoration:underline;text-underline-offset:3px}
+.menu-cols a.fuerte{font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;line-height:1.2;padding:5px 0}
+@media (prefers-reduced-motion:no-preference){.menu:not([hidden]){animation:bajar .18s ease}@keyframes bajar{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}}
+
+/* Pie */
+footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);background:var(--panel);color:var(--texto)}
+.pie-cols{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:28px;padding-block:44px 28px}
+@media (max-width:900px){.pie-cols{grid-template-columns:1fr 1fr}.pie-cols > div:first-child{grid-column:1/-1}}
+@media (max-width:420px){.pie-cols{grid-template-columns:1fr}}
+.pie .logo{font-size:1.5rem}
+.pie p{margin:12px 0 0;font-size:var(--t-s);max-width:36ch}
+.pie nav{display:flex;flex-direction:column;gap:7px;font-size:var(--t-s);min-width:0}
+.pie nav .eti{margin-bottom:4px}
+.pie nav a{text-decoration:none;color:var(--texto)}
+.pie nav a:hover{color:var(--tinta);text-decoration:underline;text-underline-offset:3px}
+.pie-fin{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 20px;border-top:1px solid var(--linea);padding-block:18px 32px;font-size:var(--t-xs);color:var(--gris)}
+.pendiente{background:color-mix(in srgb,var(--aviso) 20%,transparent);color:var(--tinta);padding:0 5px;border-radius:3px;font-weight:500}
+
+/* Titulares enlazados a su página */
+.pieza h3 a,.ciego h3 a,.principal h1 a{color:inherit;text-decoration:none}
+.pieza h3 a:hover,.ciego h3 a:hover,.principal h1 a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.ir-historia{display:inline-block;margin-top:16px;font-size:var(--t-s);font-weight:700;color:var(--tinta);text-underline-offset:3px}
 </style>
 </head>
 <body>
 
 
 <header class="top">
-  <div class="wrap">
-    <div class="logo" aria-label="Vista Plena">Vista Plena<span aria-hidden="true"></span></div>
-    <nav class="nav" role="tablist" aria-label="Secciones">
-      <button role="tab" data-v="portada" aria-selected="true">Portada<span class="n" id="n-portada"></span></button>
-      <button role="tab" data-v="izquierda" aria-selected="false">Puntos ciegos de la izquierda<span class="n" id="n-izquierda"></span></button>
-      <button role="tab" data-v="derecha" aria-selected="false">Puntos ciegos de la derecha<span class="n" id="n-derecha"></span></button>
-      <button id="abrirGuia">Cómo leer</button>
+  <div class="wrap barra-top">
+    <button class="hamb" id="abrirMenu" aria-expanded="false" aria-controls="menu"><i aria-hidden="true"></i><span class="hamb-txt">Menú</span></button>
+    <a class="logo" href="./" aria-label="Vista Plena, ir a la portada">Vista Plena<span aria-hidden="true"></span></a>
+    <nav class="nav" aria-label="Principal">
+      <a class="navlink" href="./" aria-current="page">Portada</a>
+      <a class="navlink" href="./?vista=ciegos">Puntos ciegos</a>
       <a class="navlink navlink-29n" href="elecciones.html">Elecciones 29N</a>
-      <a class="navlink" href="metodologia.html">Metodología</a>
+      <a class="navlink" href="metodologia.html">Cómo lo hacemos</a>
+      <a class="navlink" href="quienes-somos.html">Quiénes somos</a>
     </nav>
+    <a class="btn-bol" href="./#boletin">Boletín</a>
+  </div>
+  <div class="menu" id="menu" hidden>
+    <div class="wrap menu-cols">
+      <div><span class="eti">Noticias</span>
+        <a class="fuerte" href="./">Portada</a>
+        <a class="fuerte" href="./?vista=ciegos">Puntos ciegos</a>
+        <a href="./?vista=izquierda">Lo que la izquierda no cuenta</a>
+        <a href="./?vista=derecha">Lo que la derecha no cuenta</a>
+        <a href="./?guia=1">Cómo leer Vista Plena</a>
+      </div>
+      <div><span class="eti">Secciones</span><a href="./?seccion=vivienda">Vivienda</a><a href="./?seccion=economia">Economía y precios</a><a href="./?seccion=inmigracion">Inmigración</a><a href="./?seccion=politica">Política</a><a href="./?seccion=empleo">Empleo</a><a href="./?seccion=sanidad">Sanidad</a></div>
+      <div><span class="eti">Elecciones 29N</span>
+        <a class="fuerte" href="elecciones.html">Qué propone cada partido</a>
+        <a href="elecciones.html#partidos">Los partidos</a>
+        <a href="elecciones.html#como">Cómo hacemos la guía</a>
+      </div>
+      <div><span class="eti">Vista Plena</span>
+        <a href="quienes-somos.html">Quiénes somos</a>
+        <a href="metodologia.html">Metodología</a>
+        <a href="metodologia.html#datos">Datos abiertos</a>
+        <a href="quienes-somos.html#correcciones">Correcciones</a>
+        <a href="./#boletin">Boletín diario</a>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -289,7 +382,7 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
         <button type="submit" id="btnBoletin">Suscribirme</button>
       </div>
       <p class="aviso-bol" id="msgBoletin" role="status" aria-live="polite"></p>
-      <p class="legal">Te enviaremos un correo para confirmar. Solo usamos tu dirección para el boletín y puedes darte de baja con un clic en cada envío.</p>
+      <p class="legal">Te enviaremos un correo para confirmar. Solo usamos tu dirección para el boletín y puedes darte de baja con un clic en cada envío. Más información en la <a href="privacidad.html">política de privacidad</a>.</p>
     </form>
   </section>
 
@@ -300,58 +393,32 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
     </div>
     <div class="escala" id="escala"></div>
   </section>
-  <footer>Los titulares enlazan a la noticia original. Fuente: canales RSS públicos de cada periódico. <a href="metodologia.html">Cómo lo hacemos</a>.</footer>
 </div>
+<footer class="pie">
+  <div class="wrap pie-cols">
+    <div><a class="logo" href="./">Vista Plena<span aria-hidden="true"></span></a>
+      <p>Cada noticia, contada por todos los lados. Sin opinión y sin algoritmo: la misma portada para todo el mundo.</p></div>
+    <nav aria-label="Noticias"><span class="eti">Noticias</span><a href="./">Portada</a><a href="./?vista=ciegos">Puntos ciegos</a><a href="elecciones.html">Elecciones 29N</a><a href="./#boletin">Boletín</a></nav>
+    <nav aria-label="Proyecto"><span class="eti">Proyecto</span><a href="quienes-somos.html">Quiénes somos</a><a href="metodologia.html">Metodología</a><a href="metodologia.html#datos">Datos abiertos</a><a href="quienes-somos.html#correcciones">Correcciones</a></nav>
+    <nav aria-label="Legal"><span class="eti">Legal</span><a href="aviso-legal.html">Aviso legal</a><a href="privacidad.html">Privacidad</a><a href="https://github.com/juandoga/el-contraste" target="_blank" rel="noopener">Código en GitHub</a></nav>
+  </div>
+  <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
+</footer>
 
 <script src="temas.js"></script>
+<script src="comun.js"></script>
 <script>
 const SNAPSHOT = /*SNAPSHOT*/null;
-const SUPA = { url: "https://yzreenyaerjitbfxsiah.supabase.co", key: "sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF" };
 const NIVELES = [[-2,"Izquierda","var(--izq)"],[-1,"Centroizquierda","var(--izq)"],[0,"Centro","var(--cen)"],[1,"Centroderecha","var(--der)"],[2,"Derecha","var(--der)"]];
-const lado = o => o < 0 ? "izq" : o > 0 ? "der" : "cen";
-const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let DATA = SNAPSHOT || { medios: [], historias: [], generado: null };
-let vista = "portada";
+const PARAM = new URLSearchParams(location.search);
+let vista = ["ciegos","izquierda","derecha"].includes(PARAM.get("vista")) ? PARAM.get("vista") : "portada";
 const fh = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 document.getElementById("fechaHoy").textContent = fh.charAt(0).toUpperCase() + fh.slice(1);
-
-function haceCuanto(iso){
-  if (!iso) return "";
-  const m = Math.round((Date.now() - new Date(iso)) / 60000);
-  if (m < 60) return `hace ${Math.max(m,1)} min`;
-  const h = Math.round(m / 60);
-  return h < 24 ? `hace ${h} h` : `hace ${Math.round(h/24)} d`;
-}
-function lectura(h){
-  if (h.ciego === "izquierda") return `<strong>Punto ciego de la izquierda.</strong> Casi ningún medio de izquierdas la cuenta.`;
-  if (h.ciego === "derecha") return `<strong>Punto ciego de la derecha.</strong> Casi ningún medio de derechas la cuenta.`;
-  const d = h.pi - h.pd;
-  if (d >= 20) return `La cuentan <strong>más los medios de izquierdas</strong>.`;
-  if (d <= -20) return `La cuentan <strong>más los medios de derechas</strong>.`;
-  return `<strong>Cobertura repartida</strong> entre izquierda, centro y derecha.`;
-}
-function barra(h, grande){
-  const seg = (cls, v, et) => v ? `<div class="${cls}" style="flex-grow:${v}" title="${et}: ${v} %">${grande && v >= 12 ? v + " %" : ""}</div>` : "";
-  return `<div class="barra${grande ? " grande" : ""}" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("b-izq",h.pi,"Izquierda")}${seg("b-cen",h.pc,"Centro")}${seg("b-der",h.pd,"Derecha")}</div>`;
-}
-const pct = h => `<div class="pct"><span class="i">Izquierda <b>${h.pi} %</b></span><span>Centro <b>${h.pc} %</b></span><span class="d">Derecha <b>${h.pd} %</b></span></div>`;
-const meta = h => `<div class="meta"><span title="Dos medios del mismo grupo editorial y del mismo lado cuentan como una voz">${h.tot} medios${h.voces && h.voces < h.tot ? ` · ${h.voces} voces` : ""}</span><span>${haceCuanto(h.act)}</span>${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
-function bloques(h, max = 99){
-  const g = { izq: [], cen: [], der: [] }, vistos = new Set();
-  for (const a of h.a) { if (vistos.has(a.m)) continue; vistos.add(a.m); g[lado(a.o)].push(a); }
-  const b = (k, n, c) => `<div class="bloque"><div class="lado eti"><i style="background:${c}"></i>${n}</div>${g[k].length ? `<ul>${g[k].map((a, i) => `<li${i >= max ? " hidden" : ""}><span class="medio">${esc(a.m)}</span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`).join("")}</ul>${g[k].length > max ? `<button class="mas" data-n="${g[k].length - max}">Ver ${g[k].length - max} más</button>` : ""}` : `<p class="vacio">Ningún medio de este lado la ha publicado.</p>`}</div>`;
-  return b("izq","Izquierda","var(--izq)") + b("cen","Centro","var(--cen)") + b("der","Derecha","var(--der)");
-}
-// Foto del propio medio, enlazada desde su web y con crédito. Si no carga, desaparece.
-function foto(h, extra = ""){
-  if (!h.f) return "";
-  return `<figure class="foto ${extra}"><img src="${esc(h.f)}" alt="" loading="lazy" referrerpolicy="no-referrer" decoding="async"
-    onload="this.classList.add('ok')" onerror="this.closest('figure').remove()"><figcaption>Foto: ${esc(h.fm)}</figcaption></figure>`;
-}
 function pieza(h){
   const el = document.createElement("article");
   el.className = "pieza"; el.id = "h-" + (h.idx ?? "");
-  el.innerHTML = `${foto(h)}${meta(h)}<h3>${esc(h.t)}</h3>${barra(h)}${pct(h)}<p class="nota">${lectura(h)}</p>
+  el.innerHTML = `${foto(h)}${meta(h)}<h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}${pct(h)}<p class="nota">${lectura(h)}</p>
     <button class="ver" aria-expanded="false">Cómo la titula cada lado</button><div hidden>${bloques(h)}</div>`;
   const b = el.querySelector(".ver"), d = b.nextElementSibling;
   b.addEventListener("click", () => { d.hidden = !d.hidden; b.setAttribute("aria-expanded", !d.hidden); });
@@ -439,9 +506,6 @@ function render(){
   pintarSecciones(H);
   pintarTemas(H);
   const ci = H.filter(h => h.ciego === "izquierda"), cd = H.filter(h => h.ciego === "derecha");
-  document.getElementById("n-portada").textContent = H.length;
-  document.getElementById("n-izquierda").textContent = ci.length;
-  document.getElementById("n-derecha").textContent = cd.length;
   const c = document.getElementById("contenido");
   c.innerHTML = "";
   if (vista === "portada" && seccion) {
@@ -467,14 +531,13 @@ function render(){
       c.insertAdjacentHTML("beforeend", resumenDia(H));
       c.insertAdjacentHTML("beforeend", `
         <section class="principal" id="h-0">
-          <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1>${esc(lead.t)}</h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1>${esc(lead.t)}</h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p></div>
+          <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p><a class="ir-historia" href="${enlace(lead)}">Ver la historia completa →</a></div>
           <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}</div>
         </section>`);
-      c.querySelectorAll(".mas").forEach(b => b.addEventListener("click", () => { b.previousElementSibling.querySelectorAll("li[hidden]").forEach(li => li.hidden = false); b.remove(); }));
       if (ciegos.length) {
         c.insertAdjacentHTML("beforeend", cab("Lo que un lado no cuenta", "Puntos ciegos de hoy: noticias que casi solo publica un bloque."));
         const grid = document.createElement("div"); grid.className = "ciegos";
-        grid.innerHTML = ciegos.slice(0, 4).map(h => `<article class="ciego">${foto(h)}<span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3>${esc(h.t)}</h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
+        grid.innerHTML = ciegos.slice(0, 4).map(h => `<article class="ciego">${foto(h)}<span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
         c.appendChild(grid);
       }
       c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas de más a menos medios que las cuentan."));
@@ -483,14 +546,17 @@ function render(){
       c.appendChild(rej);
     }
   } else {
-    const lista = vista === "izquierda" ? ci : cd;
-    c.insertAdjacentHTML("beforeend", cab(vista === "izquierda" ? "Puntos ciegos de la izquierda" : "Puntos ciegos de la derecha",
-      vista === "izquierda" ? "Noticias que publican sobre todo medios de derechas y que la prensa de izquierdas casi no está contando."
-                            : "Noticias que publican sobre todo medios de izquierdas y que la prensa de derechas casi no está contando."));
-    const rej = document.createElement("div"); rej.className = "rejilla";
-    if (!lista.length) rej.innerHTML = `<p class="vacia">Ahora mismo no hay puntos ciegos de este lado. Se recalcula cada hora.</p>`;
-    lista.forEach(h => rej.appendChild(pieza(h)));
-    c.appendChild(rej);
+    const lados = vista === "ciegos" ? ["izquierda", "derecha"] : [vista];
+    for (const l of lados) {
+      const lista = l === "izquierda" ? ci : cd;
+      c.insertAdjacentHTML("beforeend", cab(l === "izquierda" ? "Puntos ciegos de la izquierda" : "Puntos ciegos de la derecha",
+        l === "izquierda" ? "Noticias que publican sobre todo medios de derechas y que la prensa de izquierdas casi no está contando."
+                          : "Noticias que publican sobre todo medios de izquierdas y que la prensa de derechas casi no está contando."));
+      const rej = document.createElement("div"); rej.className = "rejilla";
+      if (!lista.length) rej.innerHTML = `<p class="vacia">Ahora mismo no hay puntos ciegos de este lado. Se recalcula cada hora.</p>`;
+      lista.forEach(h => rej.appendChild(pieza(h)));
+      c.appendChild(rej);
+    }
   }
   const M = DATA.medios || [];
   document.getElementById("nMedios").textContent = M.length || 21;
@@ -498,40 +564,32 @@ function render(){
     `<div><h4 style="border-color:${col};${Math.abs(v)===1?"border-top-style:dashed":""}">${n}</h4><ul>${M.filter(m => m.o === v).map(m => `<li>${esc(m.n)}</li>`).join("")}</ul></div>`).join("");
   document.getElementById("estado").textContent = DATA.generado ? `Actualizado ${haceCuanto(DATA.generado)} · ${M.length} medios` : "Sin datos";
 }
-document.querySelectorAll(".nav [data-v]").forEach(t => t.addEventListener("click", () => {
-  vista = t.dataset.v; tema = null; seccion = null;
-  document.querySelectorAll(".nav [data-v]").forEach(x => x.setAttribute("aria-selected", x === t));
-  render(); window.scrollTo({ top: 0 });
-}));
 const guia = document.getElementById("guia");
 function guiaVisible(v){ guia.hidden = !v; try { localStorage.setItem("contraste-guia", v ? "1" : "0"); } catch(e){} }
 document.getElementById("cerrarGuia").addEventListener("click", () => guiaVisible(false));
-document.getElementById("abrirGuia").addEventListener("click", () => { guiaVisible(true); guia.scrollIntoView({ behavior: "smooth" }); });
 try { if (localStorage.getItem("contraste-guia") === "0") guiaVisible(false); } catch(e){}
+if (PARAM.get("guia")) { guiaVisible(true); setTimeout(() => guia.scrollIntoView(), 100); }
+if (vista !== "portada") guia.hidden = true;
+if (vista !== "portada") document.querySelectorAll('.top .navlink').forEach(l => {
+  const ciegos = l.getAttribute("href") === "./?vista=ciegos";
+  if (ciegos) l.setAttribute("aria-current", "page"); else l.removeAttribute("aria-current");
+});
 render();
 
 // Datos en directo desde Supabase (funciona cuando la página está en una web propia, como GitHub Pages)
 (async () => {
   try {
-    const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
-    const [rh, rm] = await Promise.all([
-      fetch(`${SUPA.url}/rest/v1/portada_v2?select=titulo,total,voces,imagen,imagen_medio,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos&order=total.desc,actualizada.desc&limit=40`, { headers: h }),
-      fetch(`${SUPA.url}/rest/v1/medios?select=nombre,orientacion&activo=eq.true&order=orientacion,nombre`, { headers: h })
+    const [hist, med] = await Promise.all([
+      pedir(`portada_v2?select=${CAMPOS}&order=total.desc,actualizada.desc&limit=40`),
+      pedir("medios?select=nombre,orientacion&activo=eq.true&order=orientacion,nombre")
     ]);
-    if (!rh.ok || !rm.ok) return;
-    const hist = await rh.json(), med = await rm.json();
-    DATA = {
-      generado: new Date().toISOString(),
-      medios: med.map(m => ({ n: m.nombre, o: m.orientacion })),
-      historias: hist.map(x => ({ t: x.titulo, tot: x.total, voces: x.voces, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, ciego: x.punto_ciego, act: x.actualizada, f: x.imagen, fm: x.imagen_medio,
-        a: (x.articulos || []).map(a => ({ m: a.medio, o: a.orientacion, t: a.titulo, u: a.url })) }))
-    };
+    DATA = { generado: new Date().toISOString(), medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: hist.map(mapear) };
     render();
   } catch (e) { /* sin conexión: se queda la última edición guardada */ }
 })();
 
 // Boletín: alta y mensajes al volver de los enlaces del correo
-const BOLETIN = "https://yzreenyaerjitbfxsiah.supabase.co/functions/v1/boletin";
+const BOLETIN = `${SUPA.url}/functions/v1/boletin`;
 (() => {
   const f = document.getElementById("formBoletin"), msg = document.getElementById("msgBoletin"), btn = document.getElementById("btnBoletin");
   const MENSAJES = { confirmado: "Suscripción confirmada. Mañana a las 8:00 recibirás tu primer resumen.", baja: "Te has dado de baja. No volverás a recibir el boletín.", error: "El enlace no es válido o ha caducado. Vuelve a suscribirte." };
