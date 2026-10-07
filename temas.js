@@ -1,4 +1,4 @@
-// El Contraste — secciones por tema, ordenadas según los principales problemas del CIS (septiembre de 2026).
+// Vista Plena — secciones por tema, ordenadas según los principales problemas del CIS (septiembre de 2026).
 // Una historia entra en una sección si su titular, o al menos dos titulares de sus medios, contienen palabras de esa sección.
 // Esta lista es pública y cualquiera puede proponer cambios.
 window.SECCIONES = [
