@@ -72,3 +72,13 @@ alter table reportes enable row level security;
 create policy "cualquiera puede avisar" on reportes for insert to anon, authenticated with check (revisado = false and historia_id > 0);
 revoke all on reportes from anon, authenticated;
 grant insert (historia_id, motivo, detalle) on reportes to anon, authenticated;
+
+-- Archivo histórico: una ficha por historia (cobertura y medios que la publicaron), que no se borra.
+create table if not exists archivo (
+  historia_id bigint primary key, titulo text not null, creada timestamptz, actualizada timestamptz,
+  total int, voces int, izq int, cen int, der int, pct_izq int, pct_cen int, pct_der int,
+  punto_ciego text, ligera boolean, medios jsonb, archivada timestamptz not null default now(),
+  fusionada boolean not null default false
+);
+-- archivar(): copia cada hora (minuto 20) las historias visibles de portada_v2 y marca como «fusionada»
+-- la historia reciente que desaparece al unirse con otra. Lectura pública; solo el servidor escribe.

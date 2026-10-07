@@ -480,8 +480,9 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
     <ul class="lista">
       <li><a id="d-medios" href="#" target="_blank" rel="noopener">Medios: etiqueta, grupo, método de lectura y estado</a></li>
       <li><a id="d-historias" href="#" target="_blank" rel="noopener">Historias de las últimas 48 horas, con todos sus titulares y porcentajes</a></li>
+      <li><a id="d-archivo" href="#" target="_blank" rel="noopener">Archivo histórico: una ficha por historia desde el 8 de octubre de 2026, con su cobertura y los medios que la publicaron</a></li>
     </ul>
-    <p class="aparte">Los datos se actualizan cada hora. Los titulares pertenecen a cada medio; nosotros solo guardamos el titular, el enlace y la fecha.</p>
+    <p class="aparte">Los datos se actualizan cada hora. Los titulares pertenecen a cada medio; nosotros solo guardamos el titular, el enlace y la fecha. Los titulares completos se conservan 14 días; el archivo histórico guarda para siempre la ficha de cada historia. Puedes usar estos datos citando a Vista Plena; las condiciones están en el <a href="aviso-legal.html#uso">aviso legal</a>.</p>
   </section>
 
   <section id="cambios">
@@ -510,6 +511,7 @@ const COL = { "-2": "var(--izq)", "-1": "var(--izq)", "0": "var(--cen)", "1": "v
 const fecha = d => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : "";
 document.getElementById("d-medios").href = `${SUPA.url}/rest/v1/estado_medios?select=*&apikey=${SUPA.key}`;
 document.getElementById("d-historias").href = `${SUPA.url}/rest/v1/portada_v2?select=*&order=voces.desc&apikey=${SUPA.key}`;
+document.getElementById("d-archivo").href = `${SUPA.url}/rest/v1/archivo?select=*&fusionada=eq.false&order=creada.desc&apikey=${SUPA.key}`;
 const hace = iso => { if (!iso) return "—"; const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? `hace ${Math.max(m,1)} min` : `hace ${Math.round(m/60)} h`; };
 (async () => {
   const tb = document.getElementById("filas");

@@ -32,6 +32,7 @@ Los datos se pueden consultar libremente en formato JSON:
 
 - Historias con su cobertura: `https://yzreenyaerjitbfxsiah.supabase.co/rest/v1/portada_v2?select=*&apikey=sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF`
 - Medios, etiquetas y estado de lectura: `https://yzreenyaerjitbfxsiah.supabase.co/rest/v1/estado_medios?select=*&apikey=sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF`
+- Archivo histórico (una ficha por historia desde el 8 de octubre de 2026): `https://yzreenyaerjitbfxsiah.supabase.co/rest/v1/archivo?select=*&fusionada=eq.false&apikey=sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF`
 - Guía electoral 29N: [`programas.json`](programas.json)
 
 La clave que aparece en estas direcciones es pública y solo permite leer.
@@ -58,6 +59,16 @@ La web es estática y se publica con GitHub Pages. Los datos y los programas del
 - La agrupación es automática y a veces junta dos noticias distintas o separa la misma en dos.
 - Algunos medios publican muchos más titulares que otros. Para compensarlo se limita el número de titulares por medio y se excluyen las ediciones locales y la opinión.
 - Algunos medios no ofrecen canales que se puedan leer, como Telecinco, y no están incluidos.
+
+## Derechos de uso
+
+© 2026 Vista Plena. Todos los derechos reservados.
+
+- **Datos:** se pueden consultar, citar y usar con fines periodísticos, de investigación, educativos o personales, citando la fuente: *Vista Plena (vistaplena.es)*.
+- **Código, diseño, marca y textos:** se pueden consultar, pero no reutilizar sin permiso por escrito.
+- Cualquier uso comercial, la copia sistemática de los datos o su uso para crear un servicio parecido necesitan permiso por escrito.
+
+Las condiciones completas están en el [aviso legal](https://vistaplena.es/aviso-legal.html#uso).
 
 ## Errores y propuestas
 
