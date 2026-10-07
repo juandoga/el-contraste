@@ -40,7 +40,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .logo span{display:inline-block;width:.32em;height:.32em;margin-left:.06em;border-radius:50%;background:var(--tinta);vertical-align:baseline}
 .nav{display:flex;gap:4px 22px;flex-wrap:wrap}
 .nav button{background:none;border:0;padding:6px 0;font-size:var(--t-s);font-weight:500;color:var(--gris);border-bottom:2px solid transparent}
-.nav button:hover{color:var(--tinta)}
+.nav button:hover,.navlink:hover{color:var(--tinta)}
+.navlink{padding:6px 0;font-size:var(--t-s);font-weight:500;color:var(--gris);text-decoration:none;border-bottom:2px solid transparent}
 .nav button[aria-selected="true"]{color:var(--tinta);border-bottom-color:var(--tinta)}
 .nav .n{font-family:var(--num);font-size:var(--t-xs);margin-left:5px;color:var(--gris)}
 .subtop{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;padding-block:14px 0;font-size:var(--t-s);color:var(--gris)}
@@ -144,6 +145,7 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
       <button role="tab" data-v="izquierda" aria-selected="false">Puntos ciegos de la izquierda<span class="n" id="n-izquierda"></span></button>
       <button role="tab" data-v="derecha" aria-selected="false">Puntos ciegos de la derecha<span class="n" id="n-derecha"></span></button>
       <button id="abrirGuia">Cómo leer</button>
+      <a class="navlink" href="metodologia.html">Metodología</a>
     </nav>
   </div>
 </header>
@@ -197,11 +199,11 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
   <section class="medios" aria-labelledby="medios-t">
     <div class="cab-seccion" style="margin-top:0">
       <h2 id="medios-t">Los medios y su etiqueta</h2>
-      <p>Primera versión, revisable. Basada en la ideología de los lectores de cada medio en encuestas como el Digital News Report (Universidad de Navarra) y en su línea editorial.</p>
+      <p>Primera versión, revisable. Cada etiqueta se explica en la <a href="metodologia.html">página de metodología</a>, donde también puedes proponer un cambio.</p>
     </div>
     <div class="escala" id="escala"></div>
   </section>
-  <footer>Los titulares enlazan a la noticia original. Fuente: canales RSS públicos de cada periódico.</footer>
+  <footer>Los titulares enlazan a la noticia original. Fuente: canales RSS públicos de cada periódico. <a href="metodologia.html">Cómo lo hacemos</a>.</footer>
 </div>
 
 <script>
@@ -235,7 +237,7 @@ function barra(h, grande){
   return `<div class="barra${grande ? " grande" : ""}" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("b-izq",h.pi,"Izquierda")}${seg("b-cen",h.pc,"Centro")}${seg("b-der",h.pd,"Derecha")}</div>`;
 }
 const pct = h => `<div class="pct"><span class="i">Izquierda <b>${h.pi} %</b></span><span>Centro <b>${h.pc} %</b></span><span class="d">Derecha <b>${h.pd} %</b></span></div>`;
-const meta = h => `<div class="meta"><span>${h.tot} medios</span><span>${haceCuanto(h.act)}</span>${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
+const meta = h => `<div class="meta"><span title="Dos medios del mismo grupo editorial y del mismo lado cuentan como una voz">${h.tot} medios${h.voces && h.voces < h.tot ? ` · ${h.voces} voces` : ""}</span><span>${haceCuanto(h.act)}</span>${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
 function bloques(h, max = 99){
   const g = { izq: [], cen: [], der: [] }, vistos = new Set();
   for (const a of h.a) { if (vistos.has(a.m)) continue; vistos.add(a.m); g[lado(a.o)].push(a); }
@@ -315,7 +317,7 @@ render();
   try {
     const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
     const [rh, rm] = await Promise.all([
-      fetch(`${SUPA.url}/rest/v1/portada?select=titulo,total,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos&order=total.desc,actualizada.desc&limit=40`, { headers: h }),
+      fetch(`${SUPA.url}/rest/v1/portada_v2?select=titulo,total,voces,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos&order=total.desc,actualizada.desc&limit=40`, { headers: h }),
       fetch(`${SUPA.url}/rest/v1/medios?select=nombre,orientacion&activo=eq.true&order=orientacion,nombre`, { headers: h })
     ]);
     if (!rh.ok || !rm.ok) return;
@@ -323,7 +325,7 @@ render();
     DATA = {
       generado: new Date().toISOString(),
       medios: med.map(m => ({ n: m.nombre, o: m.orientacion })),
-      historias: hist.map(x => ({ t: x.titulo, tot: x.total, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, ciego: x.punto_ciego, act: x.actualizada,
+      historias: hist.map(x => ({ t: x.titulo, tot: x.total, voces: x.voces, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, ciego: x.punto_ciego, act: x.actualizada,
         a: (x.articulos || []).map(a => ({ m: a.medio, o: a.orientacion, t: a.titulo, u: a.url })) }))
     };
     render();

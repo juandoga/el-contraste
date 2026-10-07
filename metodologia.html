@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Cómo etiquetamos a cada medio y cómo calculamos la cobertura en El Contraste.">
+<title>Metodología · El Contraste</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Roboto+Mono:wght@500&display=swap">
+<style>
+/* Layout: barra superior fija con logo y secciones; guía en panel gris; noticia principal a dos columnas (titular grande | titulares por lado); franja de puntos ciegos; rejilla de 3 columnas */
+:root{
+  --fondo:#ffffff; --panel:#f4f4f2; --tinta:#111213; --texto:#3d4047; --gris:#7a7e86; --linea:#e6e6e3;
+  --izq:#c0392b; --cen:#b3b5b9; --der:#2c5aa0; --aviso:#b26b00;
+  --logo:"Roboto",system-ui,sans-serif;
+  --titular:"Newsreader",Georgia,serif;
+  --ui:"Roboto",system-ui,sans-serif;
+  --num:"Roboto Mono",ui-monospace,monospace;
+  /* Escala tipográfica */
+  --t-xs:.75rem; --t-s:.875rem; --t-m:1.0625rem; --t-l:1.375rem; --t-xl:1.875rem; --t-xxl:clamp(2.1rem,5vw,3.4rem);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --fondo:#121315; --panel:#1b1c1f; --tinta:#f2f2f0; --texto:#c4c6cb; --gris:#8c9099; --linea:#2a2c30;
+  --izq:#e0645a; --cen:#6b6e74; --der:#6c95d8; --aviso:#e6a23c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --fondo:#121315; --panel:#1b1c1f; --tinta:#f2f2f0; --texto:#c4c6cb; --gris:#8c9099; --linea:#2a2c30;
+  --izq:#e0645a; --cen:#6b6e74; --der:#6c95d8; --aviso:#e6a23c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--fondo);color:var(--texto);font-family:var(--ui);font-size:var(--t-m);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--der);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:20px}
+.eti{font-family:var(--ui);font-size:var(--t-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+
+/* Barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--fondo) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--linea)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px 28px;flex-wrap:wrap;padding-block:14px}
+.logo{margin:0;font-family:var(--logo);font-weight:900;font-size:1.9rem;letter-spacing:-.045em;line-height:1;color:var(--tinta)}
+.logo span{display:inline-block;width:.32em;height:.32em;margin-left:.06em;border-radius:50%;background:var(--tinta);vertical-align:baseline}
+.nav{display:flex;gap:4px 22px;flex-wrap:wrap}
+.nav button{background:none;border:0;padding:6px 0;font-size:var(--t-s);font-weight:500;color:var(--gris);border-bottom:2px solid transparent}
+.nav button:hover,.navlink:hover{color:var(--tinta)}
+.navlink{padding:6px 0;font-size:var(--t-s);font-weight:500;color:var(--gris);text-decoration:none;border-bottom:2px solid transparent}
+.nav button[aria-selected="true"]{color:var(--tinta);border-bottom-color:var(--tinta)}
+.nav .n{font-family:var(--num);font-size:var(--t-xs);margin-left:5px;color:var(--gris)}
+.subtop{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;padding-block:14px 0;font-size:var(--t-s);color:var(--gris)}
+
+/* Guía */
+.guia{margin-top:24px;background:var(--panel);border-radius:14px;padding:clamp(22px,4vw,40px)}
+.guia-cab{display:flex;justify-content:space-between;align-items:start;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+.guia h2{margin:6px 0 8px;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.1;color:var(--tinta)}
+.guia .entradilla{margin:0;font-size:var(--t-l);line-height:1.4;max-width:46ch;color:var(--texto)}
+.cerrar{background:var(--tinta);color:var(--fondo);border:0;border-radius:999px;padding:11px 22px;font-weight:700;font-size:var(--t-s)}
+.guia-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:32px}
+.guia-cols > div{min-width:0}
+.guia h3{margin:0 0 12px;font-size:var(--t-m);font-weight:700;color:var(--tinta)}
+.guia p{margin:0 0 10px;font-size:.95rem}
+.guia .aparte{color:var(--gris);font-size:var(--t-s)}
+.leyenda{display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px;font-size:var(--t-xs);color:var(--gris)}
+.leyenda span:nth-child(2){text-align:center}.leyenda span:nth-child(3){text-align:right}
+.lectura{display:grid;gap:12px;font-size:.95rem}
+.lectura div{display:grid;grid-template-columns:48px 1fr;gap:12px;align-items:start}
+.mini{display:flex;height:8px;margin-top:8px;border-radius:4px;overflow:hidden}
+.mini i{display:block}
+.proceso{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:30px;padding-top:20px;border-top:1px solid var(--linea);font-size:var(--t-s);color:var(--texto)}
+.proceso b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--tinta);color:var(--fondo);font-size:var(--t-xs);margin-right:8px}
+
+/* Barra de cobertura */
+.barra{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--linea);gap:2px}
+.barra.grande{height:30px;border-radius:6px;font-family:var(--num);font-size:var(--t-xs);color:#fff}
+.barra > div{display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:nowrap;min-width:0}
+.b-izq{background:var(--izq)}.b-cen{background:var(--cen)}.b-der{background:var(--der)}
+.barra.grande .b-cen{color:#1b1c1f}
+.pct{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--t-s);color:var(--gris);font-variant-numeric:tabular-nums}
+.pct b{font-weight:500;color:var(--tinta)}
+.pct .i b{color:var(--izq)}.pct .d b{color:var(--der)}
+
+/* Sección */
+.cab-seccion{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:56px 0 20px;flex-wrap:wrap}
+.cab-seccion h2{margin:0;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;color:var(--tinta)}
+.cab-seccion p{margin:0;color:var(--gris);font-size:var(--t-s);max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:var(--t-s);color:var(--gris)}
+.chip{font-size:var(--t-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aviso);background:color-mix(in srgb,var(--aviso) 12%,transparent);padding:3px 8px;border-radius:4px}
+
+/* Principal */
+.principal{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:48px;margin-top:40px;padding-bottom:48px;border-bottom:1px solid var(--linea)}
+@media (max-width:880px){.principal{grid-template-columns:1fr;gap:28px}}
+.principal h1{margin:12px 0 24px;font-family:var(--titular);font-weight:600;font-size:var(--t-xxl);line-height:1.06;letter-spacing:-.02em;color:var(--tinta);text-wrap:balance}
+.principal .resumen{margin:20px 0 0;font-size:var(--t-l);line-height:1.45;color:var(--texto);max-width:40ch}
+.principal .resumen strong{color:var(--tinta);font-weight:700}
+.asi h3{margin:0 0 16px;font-size:var(--t-m);font-weight:700;color:var(--tinta)}
+.bloque{padding:14px 0;border-top:1px solid var(--linea)}
+.bloque:first-of-type{border-top:0;padding-top:0}
+.bloque .lado{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bloque .lado i{width:10px;height:10px;border-radius:50%}
+.bloque ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.bloque li a{display:block;text-decoration:none;font-family:var(--titular);font-size:1.12rem;font-weight:500;line-height:1.3;color:var(--tinta)}
+.bloque li a:hover{text-decoration:underline;text-underline-offset:3px}
+.bloque .medio{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:2px;font-weight:500}
+.mas{margin-top:10px;background:none;border:0;padding:0;font-size:var(--t-s);font-weight:700;color:var(--gris);text-decoration:underline;text-underline-offset:3px}
+.principal > div:first-child{position:sticky;top:96px;align-self:start}
+@media (max-width:880px){.principal > div:first-child{position:static}}
+.vacio{margin:0;color:var(--gris);font-size:var(--t-s);font-style:italic}
+
+/* Puntos ciegos */
+.ciegos{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.ciego{background:var(--panel);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.ciego h3{margin:0;font-family:var(--titular);font-weight:600;font-size:var(--t-l);line-height:1.2;color:var(--tinta);text-wrap:balance}
+.ciego p{margin:0;font-size:var(--t-s);color:var(--gris)}
+
+/* Rejilla */
+.rejilla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 36px}
+@media (max-width:960px){.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.rejilla{grid-template-columns:1fr;gap:32px}}
+.pieza{display:flex;flex-direction:column;gap:12px;min-width:0;padding-top:20px;border-top:1px solid var(--linea)}
+.pieza h3{margin:0;font-family:var(--titular);font-weight:600;font-size:var(--t-l);line-height:1.2;letter-spacing:-.01em;color:var(--tinta);text-wrap:balance}
+.pieza .nota{margin:0;font-size:var(--t-s);color:var(--texto)}
+.pieza .nota strong{color:var(--tinta);font-weight:700}
+.ver{align-self:flex-start;background:none;border:0;padding:0;font-size:var(--t-s);font-weight:700;color:var(--tinta);display:flex;align-items:center;gap:6px}
+.ver::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.ver[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(-1px)}
+.pieza .bloque li a{font-size:1rem}
+.vacia{grid-column:1/-1;padding:56px 0;text-align:center;color:var(--gris);font-size:var(--t-l)}
+
+/* Medios */
+.medios{margin-top:72px;padding-block:40px;border-top:1px solid var(--linea)}
+.escala{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px}
+@media (max-width:760px){.escala{grid-template-columns:1fr 1fr}}
+.escala > div{min-width:0}
+.escala h4{margin:0 0 10px;padding-top:12px;border-top:4px solid;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.escala ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.95rem}
+footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(--t-s);color:var(--gris)}
+@media (prefers-reduced-motion:no-preference){.barra > div{transition:flex-grow .5s ease}}
+
+.metodo{max-width:820px}
+.metodo-cab{margin:40px 0 28px}
+.metodo-cab h1{margin:10px 0 14px;font-family:var(--titular);font-weight:600;font-size:var(--t-xxl);line-height:1.06;letter-spacing:-.02em;color:var(--tinta);text-wrap:balance}
+.metodo .resumen{margin:0;font-size:var(--t-l);line-height:1.45;max-width:46ch}
+.indice{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.indice a{font-size:var(--t-s);text-decoration:none;background:var(--panel);padding:6px 12px;border-radius:999px;color:var(--tinta)}
+.indice a:hover{background:var(--linea)}
+.metodo section{padding-top:44px;scroll-margin-top:80px}
+.metodo h2{margin:0 0 14px;font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.15;color:var(--tinta)}
+.metodo h3{margin:26px 0 10px;font-size:var(--t-m);font-weight:700;color:var(--tinta)}
+.metodo p{margin:0 0 14px;max-width:66ch}
+.metodo p a,.lista a,footer a{color:var(--tinta);text-underline-offset:3px}
+.lista{margin:0 0 14px;padding-left:20px;display:grid;gap:8px;max-width:66ch}
+.niveles{display:grid;gap:2px;margin:18px 0 8px;border-radius:12px;overflow:hidden}
+.niveles div{display:grid;grid-template-columns:14px 150px 1fr;gap:14px;align-items:baseline;background:var(--panel);padding:14px 18px}
+.niveles i{width:12px;height:12px;border-radius:50%;display:inline-block;transform:translateY(1px)}
+.niveles strong{color:var(--tinta)}
+.niveles span{font-size:.95rem}
+@media (max-width:600px){.niveles div{grid-template-columns:14px 1fr}.niveles span{grid-column:2}}
+.aviso{background:color-mix(in srgb,var(--aviso) 10%,transparent);border-left:3px solid var(--aviso);padding:14px 16px;border-radius:0 8px 8px 0;font-size:.95rem}
+.ejemplos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:6px 0 16px}
+.ejemplos div{background:var(--panel);border-radius:12px;padding:16px 18px;display:grid;gap:6px;font-size:.95rem}
+.ejemplos strong{color:var(--tinta)}
+.tabla-wrap{overflow-x:auto;margin-top:8px}
+.tabla{width:100%;border-collapse:collapse;font-size:.95rem;min-width:520px}
+.tabla th{text-align:left;font-size:var(--t-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gris);padding:10px 12px 10px 0;border-bottom:1px solid var(--tinta)}
+.tabla td{padding:11px 12px 11px 0;border-bottom:1px solid var(--linea);vertical-align:top}
+.tabla td a{color:var(--tinta);text-decoration:none;font-weight:500}
+.tabla td a:hover{text-decoration:underline}
+.tabla .num{font-variant-numeric:tabular-nums;color:var(--gris);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.pill i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.gris{color:var(--gris)}
+.boton{display:inline-block;background:var(--tinta);color:var(--fondo)!important;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:700;font-size:var(--t-s)}
+.aparte{color:var(--gris);font-size:var(--t-s)}
+.metodo footer{margin-top:56px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="./" style="text-decoration:none" aria-label="El Contraste, volver a la portada">El Contraste<span aria-hidden="true"></span></a>
+    <nav class="nav" aria-label="Secciones">
+      <a class="navlink" href="./">Portada</a>
+      <a class="navlink" href="metodologia.html" aria-current="page" style="color:var(--tinta);border-bottom-color:var(--tinta)">Metodología</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap metodo">
+  <div class="subtop"><span>Versión 1 · provisional</span><span id="revision">Última revisión: 7 de octubre de 2026</span></div>
+
+  <header class="metodo-cab">
+    <span class="eti">Transparencia</span>
+    <h1>Cómo hacemos El Contraste</h1>
+    <p class="resumen">Qué medimos, cómo etiquetamos a cada medio y qué límites tiene. Si crees que una etiqueta está mal, al final de la página puedes proponer un cambio.</p>
+  </header>
+
+  <nav class="indice" aria-label="En esta página">
+    <a href="#que">Qué medimos</a><a href="#etiquetas">Las etiquetas</a><a href="#voces">Medios y voces</a><a href="#agrupar">Cómo agrupamos</a><a href="#ciegos">Puntos ciegos</a><a href="#limites">Límites</a><a href="#medios">Los medios</a><a href="#cambios">Proponer un cambio</a>
+  </nav>
+
+  <section id="que">
+    <h2>Qué medimos</h2>
+    <p>Medimos <strong>quién cuenta cada noticia</strong>. Para cada hecho reunimos los titulares de los medios que lo han publicado y calculamos qué parte procede de medios de izquierda, de centro y de derecha.</p>
+    <p>No medimos si una noticia es verdadera, si está bien escrita ni si su enfoque está sesgado. Una noticia que cuenta sobre todo la prensa de un lado puede ser perfectamente cierta. Para ver el enfoque, la portada enseña cómo la titula cada medio.</p>
+  </section>
+
+  <section id="etiquetas">
+    <h2>Cómo etiquetamos a cada medio</h2>
+    <p>Etiquetamos a <strong>cada periódico</strong>, no a cada artículo. Usamos cinco niveles, que en la barra se agrupan en tres colores.</p>
+    <div class="niveles">
+      <div><i style="background:var(--izq)"></i><strong>Izquierda</strong><span>Línea editorial claramente de izquierda. Sus lectores se sitúan mayoritariamente a la izquierda en las encuestas.</span></div>
+      <div><i style="background:var(--izq);opacity:.6"></i><strong>Centroizquierda</strong><span>Línea editorial progresista moderada. Lectores de centroizquierda.</span></div>
+      <div><i style="background:var(--cen)"></i><strong>Centro</strong><span>Medios generalistas, agencias o regionales sin una línea ideológica marcada. Lectores repartidos.</span></div>
+      <div><i style="background:var(--der);opacity:.6"></i><strong>Centroderecha</strong><span>Línea editorial liberal o conservadora moderada. Lectores de centroderecha.</span></div>
+      <div><i style="background:var(--der)"></i><strong>Derecha</strong><span>Línea editorial claramente conservadora. Sus lectores se sitúan mayoritariamente a la derecha en las encuestas.</span></div>
+    </div>
+    <h3>En qué nos basamos</h3>
+    <ul class="lista">
+      <li><strong>Dónde se sitúan sus lectores.</strong> Encuestas que preguntan a la gente qué medios lee y cómo se define ideológicamente, como el <a href="https://www.unav.edu/web/digital-news-report" target="_blank" rel="noopener">Digital News Report España</a> (Universidad de Navarra y Reuters Institute) y el estudio sobre <a href="https://www.esade.edu/ecpol/es/publicaciones/polarizacion-medios-espana/" target="_blank" rel="noopener">polarización de las audiencias</a> de EsadeEcPol.</li>
+      <li><strong>Su línea editorial.</strong> Qué defienden sus editoriales y sus columnas de opinión de la casa.</li>
+    </ul>
+    <p class="aviso">Esta es la versión 1. Las etiquetas se han asignado combinando estos criterios, pero todavía no publicamos la cifra exacta de cada encuesta para cada medio. Es lo siguiente que añadiremos. Revisaremos la clasificación al menos una vez al año y cada vez que salga un nuevo Digital News Report.</p>
+  </section>
+
+  <section id="voces">
+    <h2>Medios y voces</h2>
+    <p>Varios medios pertenecen al mismo grupo editorial y a menudo comparten noticias. Si contáramos cada cabecera por separado, un grupo con dos periódicos pesaría el doble.</p>
+    <p>Por eso los porcentajes no se calculan sobre medios, sino sobre <strong>voces</strong>. <strong>Dos medios del mismo grupo y del mismo lado cuentan como una sola voz.</strong></p>
+    <div class="ejemplos">
+      <div><strong>Cuentan como una voz</strong><span>El País y Cadena SER (PRISA, ambos de centroizquierda)</span><span>20minutos y Heraldo de Aragón (Henneo, ambos de centro)</span></div>
+      <div><strong>Cuentan por separado</strong><span>Antena 3 Noticias y laSexta (Atresmedia, pero de centro y de centroizquierda)</span><span>ABC y El Correo (Vocento, pero de derecha y de centro)</span></div>
+    </div>
+    <p>En cada noticia verás las dos cifras cuando no coinciden; por ejemplo, «12 medios · 11 voces».</p>
+  </section>
+
+  <section id="agrupar">
+    <h2>Cómo agrupamos las noticias</h2>
+    <p>Cada hora leemos los canales RSS públicos de cada medio. Juntamos los titulares que hablan del mismo hecho comparando sus palabras clave. Las palabras poco habituales, como nombres propios o lugares, pesan más que las comunes. Una historia aparece en portada cuando la han publicado al menos 3 medios.</p>
+    <p>El sistema es automático y a veces se equivoca: puede juntar dos noticias parecidas o separar una en dos. Si ves un error, también puedes avisarnos.</p>
+  </section>
+
+  <section id="ciegos">
+    <h2>Qué es un punto ciego</h2>
+    <p>Una noticia es un <strong>punto ciego de la izquierda</strong> cuando se cumplen tres condiciones a la vez:</p>
+    <ul class="lista">
+      <li>La cuentan al menos 4 voces.</li>
+      <li>La mitad o más son de derechas.</li>
+      <li>Las de izquierdas son el 10 % o menos.</li>
+    </ul>
+    <p>El punto ciego de la derecha es lo mismo al revés. La regla está inspirada en la de <a href="https://ground.news/rating-system" target="_blank" rel="noopener">Ground News</a>, adaptada al menor número de medios que hay en España.</p>
+  </section>
+
+  <section id="limites">
+    <h2>Límites que conviene conocer</h2>
+    <ul class="lista">
+      <li><strong>Faltan algunos medios importantes.</strong> Público, La Razón, RTVE, Telecinco, Vozpópuli y Onda Cero no ofrecen un canal RSS que podamos leer. Trabajamos en incluirlos.</li>
+      <li><strong>No todos los medios publican lo mismo en su RSS.</strong> Algunos dan 10 titulares y otros más de 100, así que la presencia de cada medio no es idéntica.</li>
+      <li><strong>Solo vemos titulares.</strong> No leemos el artículo completo ni sabemos si la noticia iba en portada o escondida en una sección.</li>
+    </ul>
+  </section>
+
+  <section id="medios">
+    <h2>Los medios, uno a uno</h2>
+    <p>Datos en directo de nuestra base de datos.</p>
+    <div class="tabla-wrap">
+      <table class="tabla">
+        <thead><tr><th>Medio</th><th>Etiqueta</th><th>Grupo editorial</th><th>Revisado</th></tr></thead>
+        <tbody id="filas"><tr><td colspan="4" class="vacio">Cargando la lista de medios…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="cambios">
+    <h2>Proponer un cambio</h2>
+    <p>Si crees que un medio está mal etiquetado, que falta alguno o que hay una noticia mal agrupada, abre una propuesta pública. Explica qué cambiarías y, si puedes, aporta una fuente: una encuesta, un editorial, un dato de propiedad.</p>
+    <p><a class="boton" href="https://github.com/juandoga/el-contraste/issues/new?title=Propuesta%3A%20&amp;body=%C2%BFQu%C3%A9%20medio%20o%20noticia%3F%0A%0A%C2%BFQu%C3%A9%20cambiar%C3%ADas%3F%0A%0AFuente%20que%20lo%20apoya%3A" target="_blank" rel="noopener">Proponer un cambio</a></p>
+    <p class="aparte">Las propuestas se publican en GitHub y necesitas una cuenta gratuita. Revisamos cada propuesta, y los cambios aceptados quedan reflejados con su fecha en la tabla de medios.</p>
+  </section>
+
+  <footer><a href="./">Volver a la portada</a></footer>
+</div>
+
+<script>
+const SUPA = { url: "https://yzreenyaerjitbfxsiah.supabase.co", key: "sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF" };
+const ETI = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
+const COL = { "-2": "var(--izq)", "-1": "var(--izq)", "0": "var(--cen)", "1": "var(--der)", "2": "var(--der)" };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fecha = d => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : "";
+(async () => {
+  const tb = document.getElementById("filas");
+  try {
+    const r = await fetch(`${SUPA.url}/rest/v1/medios?select=nombre,web,orientacion,grupo,revisado&activo=eq.true&order=orientacion,nombre`,
+      { headers: { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key } });
+    if (!r.ok) throw new Error(r.status);
+    const M = await r.json();
+    tb.innerHTML = M.map(m => `<tr>
+      <td><a href="${esc(m.web)}" target="_blank" rel="noopener">${esc(m.nombre)}</a></td>
+      <td><span class="pill"><i style="background:${COL[m.orientacion]};${Math.abs(m.orientacion) === 1 ? "opacity:.6" : ""}"></i>${ETI[m.orientacion]}</span></td>
+      <td>${m.grupo && m.grupo !== m.nombre ? esc(m.grupo) : '<span class="gris">Grupo propio</span>'}</td>
+      <td class="num">${fecha(m.revisado)}</td></tr>`).join("");
+  } catch (e) {
+    tb.innerHTML = `<tr><td colspan="4" class="vacio">No se ha podido cargar la lista ahora mismo. Vuelve a intentarlo en unos minutos.</td></tr>`;
+  }
+})();
+</script>
+
+</body>
+</html>
