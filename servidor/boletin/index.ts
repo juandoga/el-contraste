@@ -61,7 +61,7 @@ function correoDiario(top: any[], ciegos: any[], fecha: string, baja: string) {
   return `<!doctype html><html lang="es"><body style="margin:0;background:#f4f4f2">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f2"><tr><td align="center" style="padding:24px 12px">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#fff;border-radius:12px"><tr><td style="padding:28px 28px 8px">
-    <div style="font:900 26px Arial,sans-serif;letter-spacing:-1px;color:#111">Vista Plena.</div>
+    <img src="${WEB}logo-correo.png" width="190" height="36" alt="Vista Plena" style="display:block;border:0;height:36px;width:190px">
     <div style="font:13px Arial,sans-serif;color:#888;margin-top:4px">Resumen del ${esc(fecha)}</div>
     <p style="font:15px/1.5 Arial,sans-serif;color:#3d4047;margin:16px 0 0">Las ${top.length} historias que más medios contaron ayer, con quién las contó y cómo las tituló cada lado.</p>
   </td></tr>
@@ -76,7 +76,7 @@ function correoDiario(top: any[], ciegos: any[], fecha: string, baja: string) {
 const correoConfirmar = (enlace: string) => `<!doctype html><html lang="es"><body style="margin:0;background:#f4f4f2;padding:24px 12px">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
   <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#fff;border-radius:12px"><tr><td style="padding:28px">
-    <div style="font:900 24px Arial,sans-serif;letter-spacing:-1px;color:#111">Vista Plena.</div>
+    <img src="${WEB}logo-correo.png" width="170" height="32" alt="Vista Plena" style="display:block;border:0;height:32px;width:170px">
     <p style="font:16px/1.5 Arial,sans-serif;color:#3d4047">Confirma que quieres recibir cada mañana el resumen del día: las historias que más medios cuentan, quién las cuenta y lo que un lado no cuenta.</p>
     <p style="margin:24px 0"><a href="${enlace}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;font:bold 15px Arial,sans-serif;padding:13px 24px;border-radius:999px">Confirmar suscripción</a></p>
     <p style="font:13px/1.5 Arial,sans-serif;color:#888">Si no has sido tú, ignora este correo y no volveremos a escribirte.</p>
