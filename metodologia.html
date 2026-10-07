@@ -55,7 +55,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--fondo) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--linea)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px 28px;flex-wrap:wrap;padding-block:14px}
 .logo{margin:0;font-family:var(--logo);font-weight:900;font-size:1.9rem;letter-spacing:-.045em;line-height:1;color:var(--tinta)}
-.logo span{display:inline-block;width:.32em;height:.32em;margin-left:.06em;border-radius:50%;background:var(--tinta);vertical-align:baseline}
+
 .nav{display:flex;gap:4px 22px;flex-wrap:wrap}
 .nav button{background:none;border:0;padding:6px 0;font-size:var(--t-s);font-weight:500;color:var(--gris);border-bottom:2px solid transparent}
 .nav button:hover,.navlink:hover{color:var(--tinta)}
@@ -230,7 +230,8 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 
 /* Cabecera y menú */
 .top .wrap.barra-top{display:flex;align-items:center;gap:18px;flex-wrap:nowrap;padding-block:12px}
-a.logo{text-decoration:none;white-space:nowrap}
+a.logo{text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:.26em}
+.logo-ic{width:1em;height:1em;flex:none;transform:translateY(.02em)}
 .hamb{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:8px 2px;font-size:var(--t-s);font-weight:700;color:var(--tinta);flex:none}
 .hamb i{position:relative;display:block;width:18px;height:2px;background:currentColor;border-radius:2px;transition:background .2s}
 .hamb i::before,.hamb i::after{content:"";position:absolute;left:0;width:18px;height:2px;background:currentColor;border-radius:2px;transition:transform .2s}
@@ -325,7 +326,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 <header class="top">
   <div class="wrap barra-top">
     <button class="hamb" id="abrirMenu" aria-expanded="false" aria-controls="menu"><i aria-hidden="true"></i><span class="hamb-txt">Menú</span></button>
-    <a class="logo" href="./" aria-label="Vista Plena, ir a la portada">Vista Plena<span aria-hidden="true"></span></a>
+    <a class="logo" href="./" aria-label="Vista Plena, ir a la portada"><svg class="logo-ic" viewBox="0 0 64 64" aria-hidden="true"><path d="M6 40V58H24" style="fill:none;stroke:var(--izq);stroke-width:7;stroke-linecap:square"/><path d="M40 6H58V24" style="fill:none;stroke:var(--der);stroke-width:7;stroke-linecap:square"/><circle cx="32" cy="32" r="10" fill="currentColor"/></svg>Vista Plena</a>
     <nav class="nav" aria-label="Principal">
       <a class="navlink" href="./">Portada</a>
       <a class="navlink" href="./?vista=ciegos">Puntos ciegos</a>
@@ -494,7 +495,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 
 <footer class="pie">
   <div class="wrap pie-cols">
-    <div><a class="logo" href="./">Vista Plena<span aria-hidden="true"></span></a>
+    <div><a class="logo" href="./" aria-label="Vista Plena"><svg class="logo-ic" viewBox="0 0 64 64" aria-hidden="true"><path d="M6 40V58H24" style="fill:none;stroke:var(--izq);stroke-width:7;stroke-linecap:square"/><path d="M40 6H58V24" style="fill:none;stroke:var(--der);stroke-width:7;stroke-linecap:square"/><circle cx="32" cy="32" r="10" fill="currentColor"/></svg>Vista Plena</a>
       <p>Cada noticia, contada por todos los lados. Sin opinión y sin algoritmo: la misma portada para todo el mundo.</p></div>
     <nav aria-label="Noticias"><span class="eti">Noticias</span><a href="./">Portada</a><a href="./?vista=ciegos">Puntos ciegos</a><a href="elecciones.html">Elecciones 29N</a><a href="./#boletin">Boletín</a></nav>
     <nav aria-label="Proyecto"><span class="eti">Proyecto</span><a href="quienes-somos.html">Quiénes somos</a><a href="metodologia.html">Metodología</a><a href="metodologia.html#datos">Datos abiertos</a><a href="quienes-somos.html#correcciones">Correcciones</a></nav>
