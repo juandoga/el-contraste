@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Cómo etiquetamos a cada medio y cómo calculamos la cobertura en El Contraste.">
-<title>Metodología · El Contraste</title>
+<meta name="description" content="Qué propone cada partido para las elecciones del 29 de noviembre, con cita literal del programa.">
+<title>Elecciones 29N · El Contraste</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Roboto+Mono:wght@500&display=swap">
 <style>
@@ -252,6 +252,32 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .boton{display:inline-block;background:var(--tinta);color:var(--fondo)!important;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:700;font-size:var(--t-s)}
 .aparte{color:var(--gris);font-size:var(--t-s)}
 .metodo footer{margin-top:56px}
+
+.elecc .cuenta{display:inline-flex;align-items:baseline;gap:10px;margin-top:22px;background:var(--tinta);color:var(--fondo);border-radius:999px;padding:10px 20px}
+.elecc .cuenta b{font-size:1.6rem;font-weight:900;font-variant-numeric:tabular-nums}
+.elecc .cuenta span{font-size:var(--t-s)}
+.tema-elec{padding-top:48px;scroll-margin-top:80px}
+.tema-cab{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start;margin-bottom:18px}
+.tema-cab .num{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--tinta);color:var(--fondo);font-weight:800}
+.tema-cab h2{margin:0 0 6px!important}
+.cis{margin:0!important;font-size:var(--t-s);color:var(--texto)}
+.cis-barra{display:block;height:8px;background:var(--linea);border-radius:4px;margin-bottom:8px;max-width:420px;overflow:hidden}
+.cis-barra i{display:block;height:100%;background:var(--tinta);border-radius:4px}
+.partidos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.p-card{background:var(--panel);border-radius:10px;padding:14px 16px;min-width:0}
+.p-card h3{margin:0 0 6px!important;font-size:var(--t-m)}
+.p-card ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.9rem}
+.p-card a{color:var(--gris);font-size:var(--t-xs)}
+.pend{color:var(--gris);font-size:var(--t-s);margin:0!important}
+.pendientes{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0 0!important}
+.pendientes .eti{margin-right:4px}
+.chip-p{font-size:var(--t-s);border:1px dashed var(--linea);border-radius:999px;padding:4px 11px;color:var(--gris)}
+.hoy{margin-top:16px;display:grid;gap:10px;border-left:3px solid var(--tinta);padding-left:16px}
+.hoy-item{display:grid;gap:6px;text-decoration:none;color:var(--tinta);font-family:var(--titular);font-weight:600;font-size:1.02rem;line-height:1.25}
+.hoy-item:hover{text-decoration:underline}
+.hoy .barra{height:6px;max-width:320px}
+.hoy .m{font-family:var(--ui);font-weight:400;font-size:var(--t-xs);color:var(--gris)}
+.mas-sec{font-size:var(--t-s);font-weight:700;color:var(--tinta)}
 </style>
 </head>
 <body>
@@ -260,166 +286,108 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
     <a class="logo" href="./" style="text-decoration:none" aria-label="El Contraste, volver a la portada">El Contraste<span aria-hidden="true"></span></a>
     <nav class="nav" aria-label="Secciones">
       <a class="navlink" href="./">Portada</a>
-      <a class="navlink" href="metodologia.html" aria-current="page" style="color:var(--tinta);border-bottom-color:var(--tinta)">Metodología</a>
+      <a class="navlink" href="elecciones.html" aria-current="page" style="color:var(--tinta);border-bottom-color:var(--tinta)">Elecciones 29N</a>
+      <a class="navlink" href="metodologia.html">Metodología</a>
     </nav>
   </div>
 </header>
 
-<div class="wrap metodo">
-  <div class="subtop"><span>Versión 1 · provisional</span><span id="revision">Última revisión: 7 de octubre de 2026</span></div>
+<div class="wrap metodo elecc">
+  <div class="subtop"><span>Guía de voto</span><span id="actualizado"></span></div>
 
   <header class="metodo-cab">
-    <span class="eti">Transparencia</span>
-    <h1>Cómo hacemos El Contraste</h1>
-    <p class="resumen">Qué medimos, cómo etiquetamos a cada medio y qué límites tiene. Todos los datos son públicos y se pueden descargar.</p>
+    <span class="eti">Elecciones generales · 29 de noviembre de 2026</span>
+    <h1>Qué propone cada partido</h1>
+    <p class="resumen">Las propuestas de cada partido sobre lo que más preocupa a los españoles, con la frase exacta de su programa y el enlace a la página. Sin opiniones.</p>
+    <div class="cuenta"><b id="dias">—</b><span>días para votar</span></div>
   </header>
 
-  <nav class="indice" aria-label="En esta página">
-    <a href="#como">Cuatro pasos</a><a href="#que">Qué medimos</a><a href="#etiquetas">Las etiquetas</a><a href="#voces">Medios y voces</a><a href="#agrupar">Cómo agrupamos</a><a href="#ciegos">Puntos ciegos</a><a href="#limites">Límites</a><a href="#medios">Los medios</a><a href="#datos">Datos abiertos</a><a href="#cambios">Proponer un cambio</a>
-  </nav>
+  <div class="aviso" id="estadoProgramas">Los partidos todavía no han presentado sus programas para el 29N. En cuanto cada uno publique el suyo, añadiremos sus propuestas tema a tema, con cita literal y enlace al documento original.</div>
 
-  <section class="premisa" id="premisa" style="padding-top:8px">
-    <span class="eti">Nuestra premisa</span>
-    <p class="frase">Cada medio te cuenta una parte. Aquí ves la noticia contada por todos y lo que tu periódico no te está contando.</p>
-    <p>Las redes y los buscadores te enseñan sobre todo lo que ya te gusta, y cada periódico elige qué noticias destaca. Si lees siempre las mismas fuentes, hay historias que nunca te llegan. El Contraste no te dice qué pensar: te enseña quién cuenta cada noticia y quién la calla.</p>
-  </section>
+  <nav class="indice" aria-label="Temas" id="indiceTemas"></nav>
 
-  <section id="como">
-    <h2>Cómo trabajamos, en cuatro pasos</h2>
-    <ol class="pasos-m">
-      <li><strong>Leemos.</strong> Cada hora recogemos los titulares públicos de 35 medios españoles: su canal RSS, su mapa de noticias para buscadores o, si no tienen ninguno, su portada.</li>
-      <li><strong>Agrupamos.</strong> Juntamos los titulares que cuentan el mismo hecho.</li>
-      <li><strong>Contamos.</strong> Miramos qué medios lo han publicado y cuántos son de izquierda, de centro y de derecha, según una etiqueta pública para cada medio.</li>
-      <li><strong>Señalamos.</strong> Lo mostramos con una barra, comparamos cómo lo titula cada lado y avisamos cuando un lado casi no lo cuenta.</li>
-    </ol>
-    <h3>Tres compromisos</h3>
-    <ul class="lista">
-      <li><strong>La misma portada para todos.</strong> No hay algoritmo que personalice lo que ves. Las noticias se ordenan solo por cuántos medios las cuentan.</li>
-      <li><strong>No opinamos.</strong> No escribimos noticias ni valoramos ninguna. Solo enlazamos a cada medio.</li>
-      <li><strong>Todo es comprobable.</strong> Las etiquetas, las reglas y los datos brutos están en esta página.</li>
-    </ul>
-  </section>
+  <div id="temasElec"></div>
 
-
-  <section id="que">
-    <h2>Qué medimos</h2>
-    <p>Medimos <strong>quién cuenta cada noticia</strong>. Para cada hecho reunimos los titulares de los medios que lo han publicado y calculamos qué parte procede de medios de izquierda, de centro y de derecha.</p>
-    <p>No medimos si una noticia es verdadera, si está bien escrita ni si su enfoque está sesgado. Una noticia que cuenta sobre todo la prensa de un lado puede ser perfectamente cierta. Para ver el enfoque, la portada enseña cómo la titula cada medio.</p>
-  </section>
-
-  <section id="etiquetas">
-    <h2>Cómo etiquetamos a cada medio</h2>
-    <p>Etiquetamos a <strong>cada periódico</strong>, no a cada artículo. Usamos cinco niveles, que en la barra se agrupan en tres colores.</p>
-    <div class="niveles">
-      <div><i style="background:var(--izq)"></i><strong>Izquierda</strong><span>Línea editorial claramente de izquierda. Sus lectores se sitúan mayoritariamente a la izquierda en las encuestas.</span></div>
-      <div><i style="background:var(--izq);opacity:.6"></i><strong>Centroizquierda</strong><span>Línea editorial progresista moderada. Lectores de centroizquierda.</span></div>
-      <div><i style="background:var(--cen)"></i><strong>Centro</strong><span>Medios generalistas, agencias o regionales sin una línea ideológica marcada. Lectores repartidos.</span></div>
-      <div><i style="background:var(--der);opacity:.6"></i><strong>Centroderecha</strong><span>Línea editorial liberal o conservadora moderada. Lectores de centroderecha.</span></div>
-      <div><i style="background:var(--der)"></i><strong>Derecha</strong><span>Línea editorial claramente conservadora. Sus lectores se sitúan mayoritariamente a la derecha en las encuestas.</span></div>
-    </div>
-    <h3>En qué nos basamos</h3>
-    <ul class="lista">
-      <li><strong>Dónde se sitúan sus lectores.</strong> Encuestas que preguntan a la gente qué medios lee y cómo se define ideológicamente, como el <a href="https://www.unav.edu/web/digital-news-report" target="_blank" rel="noopener">Digital News Report España</a> (Universidad de Navarra y Reuters Institute) y el estudio sobre <a href="https://www.esade.edu/ecpol/es/publicaciones/polarizacion-medios-espana/" target="_blank" rel="noopener">polarización de las audiencias</a> de EsadeEcPol.</li>
-      <li><strong>Su línea editorial.</strong> Qué defienden sus editoriales y sus columnas de opinión de la casa.</li>
-    </ul>
-    <p class="aviso">Esta es la versión 1. Las etiquetas se han asignado combinando estos criterios, pero todavía no publicamos la cifra exacta de cada encuesta para cada medio. Es lo siguiente que añadiremos. Revisaremos la clasificación al menos una vez al año y cada vez que salga un nuevo Digital News Report.</p>
-  </section>
-
-  <section id="voces">
-    <h2>Medios y voces</h2>
-    <p>Varios medios pertenecen al mismo grupo editorial y a menudo comparten noticias. Si contáramos cada cabecera por separado, un grupo con dos periódicos pesaría el doble.</p>
-    <p>Por eso los porcentajes no se calculan sobre medios, sino sobre <strong>voces</strong>. <strong>Dos medios del mismo grupo y del mismo lado cuentan como una sola voz.</strong></p>
-    <div class="ejemplos">
-      <div><strong>Cuentan como una voz</strong><span>El País y Cadena SER (PRISA, ambos de centroizquierda)</span><span>20minutos y Heraldo de Aragón (Henneo, ambos de centro)</span></div>
-      <div><strong>Cuentan por separado</strong><span>Antena 3 Noticias y laSexta (Atresmedia, pero de centro y de centroizquierda)</span><span>ABC y El Correo (Vocento, pero de derecha y de centro)</span></div>
-    </div>
-    <p>En cada noticia verás las dos cifras cuando no coinciden; por ejemplo, «12 medios · 11 voces».</p>
-  </section>
-
-  <section id="agrupar">
-    <h2>Cómo agrupamos las noticias</h2>
-    <p>Cada hora leemos los canales RSS públicos de cada medio. Juntamos los titulares que hablan del mismo hecho comparando sus palabras clave. Las palabras poco habituales, como nombres propios o lugares, pesan más que las comunes. Una historia aparece en portada cuando la han publicado al menos 3 medios.</p>
-    <p>El sistema es automático y a veces se equivoca: puede juntar dos noticias parecidas o separar una en dos. Si ves un error, también puedes avisarnos.</p>
-  </section>
-
-  <section id="ciegos">
-    <h2>Qué es un punto ciego</h2>
-    <p>Una noticia es un <strong>punto ciego de la izquierda</strong> cuando se cumplen tres condiciones a la vez:</p>
-    <ul class="lista">
-      <li>La cuentan al menos 4 voces.</li>
-      <li>La mitad o más son de derechas.</li>
-      <li>Las de izquierdas son el 10 % o menos.</li>
-    </ul>
-    <p>El punto ciego de la derecha es lo mismo al revés. La regla está inspirada en la de <a href="https://ground.news/rating-system" target="_blank" rel="noopener">Ground News</a>, adaptada al menor número de medios que hay en España.</p>
-  </section>
-
-  <section id="limites">
-    <h2>Límites que conviene conocer</h2>
-    <ul class="lista">
-      <li><strong>Faltan Telecinco y, por ahora, RTVE.</strong> Telecinco bloquea cualquier lectura automática y el mapa de noticias de RTVE no trae noticias recientes.</li>
-      <li><strong>No todos los medios publican lo mismo.</strong> Tomamos como mucho 50 titulares por medio en cada lectura para que nadie pese más por publicar más, pero algunos medios solo ofrecen 10 o 20.</li>
-      <li><strong>Hay más medios de derecha que de izquierda en la lista.</strong> Ahora son 13 de derecha, 10 de centro y 11 de izquierda. Contar por voces lo compensa en parte; seguimos buscando medios de izquierda con datos accesibles.</li>
-      <li><strong>Solo vemos titulares.</strong> No leemos el artículo completo ni sabemos si la noticia iba en portada o escondida en una sección.</li>
-    </ul>
-  </section>
-
-  <section id="medios">
-    <h2>Los medios, uno a uno</h2>
-    <p>Datos en directo de nuestra base de datos: etiqueta, grupo, cómo leemos cada medio, cuándo lo leímos por última vez y cuántos titulares suyos tenemos de las últimas 48 horas.</p>
+  <section id="partidos">
+    <h2>Los partidos</h2>
+    <p id="criterio"></p>
     <div class="tabla-wrap">
       <table class="tabla">
-        <thead><tr><th>Medio</th><th>Etiqueta</th><th>Grupo editorial</th><th>Cómo lo leemos</th><th>Titulares 48 h</th><th>Última lectura</th></tr></thead>
-        <tbody id="filas"><tr><td colspan="6" class="vacio">Cargando la lista de medios…</td></tr></tbody>
+        <thead><tr><th>Partido</th><th>Programa para el 29N</th><th>Web oficial</th></tr></thead>
+        <tbody id="filasPartidos"><tr><td colspan="3" class="vacio">Cargando…</td></tr></tbody>
       </table>
     </div>
   </section>
 
-  <section id="datos">
-    <h2>Datos abiertos</h2>
-    <p>Cualquiera puede descargar los mismos datos que usamos para la portada, en formato JSON, y comprobar los cálculos.</p>
-    <ul class="lista">
-      <li><a id="d-medios" href="#" target="_blank" rel="noopener">Medios: etiqueta, grupo, método de lectura y estado</a></li>
-      <li><a id="d-historias" href="#" target="_blank" rel="noopener">Historias de las últimas 48 horas, con todos sus titulares y porcentajes</a></li>
-    </ul>
-    <p class="aparte">Los datos se actualizan cada hora. Los titulares pertenecen a cada medio; nosotros solo guardamos el titular, el enlace y la fecha.</p>
+  <section id="como">
+    <h2>Cómo construimos esta guía</h2>
+    <ol class="pasos-m">
+      <li><strong>Solo el programa oficial.</strong> Usamos el documento que publica cada partido, nunca resúmenes de otros medios.</li>
+      <li><strong>Cita literal y página.</strong> Para cada tema extraemos sus propuestas con la frase exacta y la página donde aparece.</li>
+      <li><strong>Revisión humana.</strong> Una persona comprueba cada cita contra el original antes de publicarla.</li>
+      <li><strong>La misma plantilla para todos.</strong> Mismos temas y mismo espacio para cada partido, en el orden de lo que más preocupa según el CIS. No valoramos ninguna propuesta.</li>
+      <li><strong>Con fecha y corrección visible.</strong> Cada propuesta indica cuándo se añadió. Si encontramos un error, lo corregimos y lo señalamos.</li>
+    </ol>
+    <h3>Próximamente: lo que votaron</h3>
+    <p>Junto a cada propuesta mostraremos cómo votó ese partido en el Congreso sobre ese mismo tema durante la legislatura, con los datos abiertos de votaciones del Congreso. Así se podrá comparar lo que se promete con lo que se ha hecho.</p>
+    <p class="aparte">Los datos de esta guía están en un archivo público, <a href="programas.json">programas.json</a>, con su historial de cambios en GitHub. Si ves un error, <a href="https://github.com/juandoga/el-contraste/issues/new?title=Gu%C3%ADa%2029N%3A%20">avísanos</a>.</p>
   </section>
 
-  <section id="cambios">
-    <h2>Proponer un cambio</h2>
-    <p>Si crees que un medio está mal etiquetado, que falta alguno o que hay una noticia mal agrupada, abre una propuesta pública. Explica qué cambiarías y, si puedes, aporta una fuente: una encuesta, un editorial, un dato de propiedad.</p>
-    <p><a class="boton" href="https://github.com/juandoga/el-contraste/issues/new?title=Propuesta%3A%20&amp;body=%C2%BFQu%C3%A9%20medio%20o%20noticia%3F%0A%0A%C2%BFQu%C3%A9%20cambiar%C3%ADas%3F%0A%0AFuente%20que%20lo%20apoya%3A" target="_blank" rel="noopener">Proponer un cambio</a></p>
-    <p class="aparte">Las propuestas se publican en GitHub y necesitas una cuenta gratuita. Revisamos cada propuesta, y los cambios aceptados quedan reflejados con su fecha en la tabla de medios.</p>
-  </section>
-
-  <footer><a href="./">Volver a la portada</a></footer>
+  <footer><a href="./">Volver a la portada</a> · <a href="metodologia.html">Cómo lo hacemos</a></footer>
 </div>
 
+<script src="temas.js"></script>
 <script>
 const SUPA = { url: "https://yzreenyaerjitbfxsiah.supabase.co", key: "sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF" };
-const ETI = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
-const COL = { "-2": "var(--izq)", "-1": "var(--izq)", "0": "var(--cen)", "1": "var(--der)", "2": "var(--der)" };
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const fecha = d => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : "";
-document.getElementById("d-medios").href = `${SUPA.url}/rest/v1/estado_medios?select=*&apikey=${SUPA.key}`;
-document.getElementById("d-historias").href = `${SUPA.url}/rest/v1/portada_v2?select=*&order=voces.desc&apikey=${SUPA.key}`;
-const hace = iso => { if (!iso) return "—"; const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? `hace ${Math.max(m,1)} min` : `hace ${Math.round(m/60)} h`; };
-(async () => {
-  const tb = document.getElementById("filas");
-  try {
-    const r = await fetch(`${SUPA.url}/rest/v1/estado_medios?select=*&order=orientacion,nombre`,
-      { headers: { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key } });
-    if (!r.ok) throw new Error(r.status);
-    const M = await r.json();
-    tb.innerHTML = M.map(m => `<tr>
-      <td><a href="${esc(m.web)}" target="_blank" rel="noopener">${esc(m.nombre)}</a></td>
-      <td><span class="pill"><i style="background:${COL[m.orientacion]};${Math.abs(m.orientacion) === 1 ? "opacity:.6" : ""}"></i>${ETI[m.orientacion]}</span></td>
-      <td>${m.grupo && m.grupo !== m.nombre ? esc(m.grupo) : '<span class="gris">Grupo propio</span>'}</td>
-      <td>${esc(m.metodo)}</td>
-      <td class="num">${m.titulares_48h ? m.titulares_48h : '<span class="sin">Sin datos</span>'}</td>
-      <td class="num">${m.con_error ? '<span class="sin">Error</span>' : hace(m.ultima_lectura)}</td></tr>`).join("");
-  } catch (e) {
-    tb.innerHTML = `<tr><td colspan="6" class="vacio">No se ha podido cargar la lista ahora mismo. Vuelve a intentarlo en unos minutos.</td></tr>`;
+const fechaLarga = d => new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
+let PROG = null, HIST = [];
+
+function barra(h){
+  const seg = (c, v) => v ? `<div style="flex-grow:${v};background:var(--${c})"></div>` : "";
+  return `<div class="barra" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("izq",h.pi)}${seg("cen",h.pc)}${seg("der",h.pd)}</div>`;
+}
+function pintar(){
+  const S = window.SECCIONES || [];
+  document.getElementById("indiceTemas").innerHTML = S.map(s => `<a href="#${s.id}">${s.nombre}</a>`).join("") + `<a href="#partidos">Los partidos</a><a href="#como">Cómo la hacemos</a>`;
+  const P = PROG ? PROG.partidos : [];
+  const conPrograma = P.filter(p => p.programa).length;
+  if (PROG) {
+    document.getElementById("actualizado").textContent = "Actualizada el " + fechaLarga(PROG.actualizado);
+    document.getElementById("criterio").textContent = "Criterio: " + PROG.criterio;
+    if (conPrograma) document.getElementById("estadoProgramas").textContent = `${conPrograma} de ${P.length} partidos han publicado ya su programa. Los demás aparecen como pendientes hasta que lo presenten.`;
   }
+  document.getElementById("temasElec").innerHTML = S.map((s, i) => {
+    const hoy = HIST.filter(h => window.seccionesDe(h).includes(s.id)).slice(0, 3);
+    return `<section id="${s.id}" class="tema-elec">
+      <div class="tema-cab"><span class="num">${i + 1}</span><div><h2>${s.nombre}</h2>
+        <p class="cis"><span class="cis-barra"><i style="width:${Math.min(100, s.cis * 2)}%"></i></span>Preocupa al <b>${String(s.cis).replace(".", ",")} %</b> de los españoles · ${s.cisNota} · CIS, septiembre de 2026</p></div></div>
+      ${P.some(p => p.programa) ? `<div class="partidos-grid">${P.filter(p => p.programa).map(p => {
+        const lista = (p.propuestas || {})[s.id] || [];
+        return `<div class="p-card"><h3>${esc(p.nombre)}</h3>${lista.length
+          ? `<ul>${lista.map(x => `<li>«${esc(x.texto)}» <a href="${esc(x.url || p.programa.url)}" target="_blank" rel="noopener">pág. ${esc(x.pagina)}</a></li>`).join("")}</ul>`
+          : `<p class="pend">Su programa no incluye propuestas sobre este tema.</p>`}</div>`;
+      }).join("")}</div>` : ""}
+      ${P.some(p => !p.programa) ? `<p class="pendientes"><span class="eti">Programa pendiente</span>${P.filter(p => !p.programa).map(p => `<span class="chip-p">${esc(p.nombre)}</span>`).join("")}</p>` : ""}
+      ${hoy.length ? `<div class="hoy"><span class="eti">Hoy en los medios</span>${hoy.map(h => `<a class="hoy-item" href="./?seccion=${s.id}">${esc(h.t)}${barra(h)}<span class="m">${h.tot} medios</span></a>`).join("")}<a class="mas-sec" href="./?seccion=${s.id}">Ver todas las noticias de ${s.nombre.toLowerCase()} →</a></div>` : ""}
+    </section>`;
+  }).join("");
+  document.getElementById("filasPartidos").innerHTML = P.map(p => `<tr><td><strong>${esc(p.nombre)}</strong></td>
+    <td>${p.programa ? `<a href="${esc(p.programa.url)}" target="_blank" rel="noopener">Publicado el ${fechaLarga(p.programa.fecha)}</a>` : '<span class="pend">Pendiente</span>'}</td>
+    <td><a href="${esc(p.web)}" target="_blank" rel="noopener">${esc(p.web.replace(/^https?:\/\/(www\.)?/, ""))}</a></td></tr>`).join("");
+}
+// Cuenta atrás
+(() => { const d = Math.ceil((new Date("2026-11-29T09:00:00+01:00") - Date.now()) / 864e5); document.getElementById("dias").textContent = d > 0 ? d : "Hoy"; })();
+pintar();
+fetch("programas.json").then(r => r.json()).then(j => { PROG = j; pintar(); }).catch(() => {});
+(async () => {
+  try {
+    const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
+    const r = await fetch(`${SUPA.url}/rest/v1/portada_v2?select=titulo,total,voces,pct_izq,pct_cen,pct_der,articulos&order=voces.desc&limit=80`, { headers: h });
+    if (!r.ok) return;
+    HIST = (await r.json()).map(x => ({ t: x.titulo, tot: x.total, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, a: (x.articulos || []).map(a => ({ t: a.titulo })) }));
+    pintar();
+  } catch (e) {}
 })();
 </script>
 

@@ -204,6 +204,11 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .boletin .aviso-bol{min-height:1.4em;font-weight:500;color:var(--fondo)}
 .boletin .legal{font-size:var(--t-xs);color:color-mix(in srgb,var(--fondo) 55%,transparent)}
 .resumen-dia .al-correo{display:inline-block;margin-top:12px;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+
+.secciones-nav{padding-top:18px}
+.secciones-nav + .temas{padding-top:6px}
+.navlink-29n{color:var(--tinta)!important;font-weight:700}
+.cab-seccion p a{color:var(--tinta);font-weight:600;text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -217,6 +222,7 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
       <button role="tab" data-v="izquierda" aria-selected="false">Puntos ciegos de la izquierda<span class="n" id="n-izquierda"></span></button>
       <button role="tab" data-v="derecha" aria-selected="false">Puntos ciegos de la derecha<span class="n" id="n-derecha"></span></button>
       <button id="abrirGuia">Cómo leer</button>
+      <a class="navlink navlink-29n" href="elecciones.html">Elecciones 29N</a>
       <a class="navlink" href="metodologia.html">Metodología</a>
     </nav>
   </div>
@@ -266,6 +272,7 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
     <div class="proceso"><span><b>1</b>Cada hora leemos <span id="nMedios">21</span> medios</span><span><b>2</b>Juntamos los titulares del mismo hecho</span><span><b>3</b>Contamos cuántos medios de cada lado lo publican</span></div>
   </section>
 
+  <nav class="temas secciones-nav" id="secciones" aria-label="Secciones"></nav>
   <nav class="temas" id="temas" aria-label="Temas de hoy"></nav>
   <main id="contenido"></main>
 
@@ -296,6 +303,7 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
   <footer>Los titulares enlazan a la noticia original. Fuente: canales RSS públicos de cada periódico. <a href="metodologia.html">Cómo lo hacemos</a>.</footer>
 </div>
 
+<script src="temas.js"></script>
 <script>
 const SNAPSHOT = /*SNAPSHOT*/null;
 const SUPA = { url: "https://yzreenyaerjitbfxsiah.supabase.co", key: "sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF" };
@@ -409,15 +417,26 @@ function temasDe(H){
   }).filter(t => t.n >= 2).sort((x, y) => y.n - x.n).slice(0, 10);
 }
 let tema = null, temaEtiqueta = "";
+let seccion = new URLSearchParams(location.search).get("seccion");
+function pintarSecciones(H){
+  const nav = document.getElementById("secciones");
+  if (!window.SECCIONES) { nav.hidden = true; return; }
+  H.forEach(h => h.sec = window.seccionesDe(h));
+  nav.hidden = vista !== "portada";
+  nav.innerHTML = `<span class="eti">Secciones</span><button class="tema" aria-pressed="${!seccion}" data-s="">Todas</button>` +
+    window.SECCIONES.map(s => `<button class="tema" aria-pressed="${s.id === seccion}" data-s="${s.id}">${s.nombre}<span class="n">${H.filter(h => h.sec.includes(s.id)).length}</span></button>`).join("");
+  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { seccion = b.dataset.s || null; tema = null; render(); }));
+}
 function pintarTemas(H){
   const nav = document.getElementById("temas");
   const T = temasDe(H);
   nav.hidden = vista !== "portada" || !T.length;
   nav.innerHTML = `<span class="eti">Temas de hoy</span>` + T.map(t => `<button class="tema" aria-pressed="${t.clave === tema}" data-t="${esc(t.clave)}" data-e="${esc(t.etiqueta)}">${esc(t.etiqueta)}<span class="n">${t.n}</span></button>`).join("");
-  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { tema = tema === b.dataset.t ? null : b.dataset.t; temaEtiqueta = b.dataset.e; render(); }));
+  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { tema = tema === b.dataset.t ? null : b.dataset.t; temaEtiqueta = b.dataset.e; seccion = null; render(); }));
 }
 function render(){
   const H = DATA.historias || [];
+  pintarSecciones(H);
   pintarTemas(H);
   const ci = H.filter(h => h.ciego === "izquierda"), cd = H.filter(h => h.ciego === "derecha");
   document.getElementById("n-portada").textContent = H.length;
@@ -425,7 +444,15 @@ function render(){
   document.getElementById("n-derecha").textContent = cd.length;
   const c = document.getElementById("contenido");
   c.innerHTML = "";
-  if (vista === "portada" && tema) {
+  if (vista === "portada" && seccion) {
+    const s = window.SECCIONES.find(x => x.id === seccion);
+    const lista = H.filter(h => h.sec.includes(seccion));
+    c.insertAdjacentHTML("beforeend", cab(s.nombre, `Preocupa al ${String(s.cis).replace(".", ",")} % de los españoles (${s.cisNota}, CIS de septiembre de 2026). ${lista.length} historias hoy. <a href="elecciones.html#${s.id}">Qué proponen los partidos</a>`));
+    const rej = document.createElement("div"); rej.className = "rejilla";
+    if (!lista.length) rej.innerHTML = `<p class="vacia">Ahora mismo no hay historias de esta sección.</p>`;
+    lista.forEach(h => rej.appendChild(pieza(h)));
+    c.appendChild(rej);
+  } else if (vista === "portada" && tema) {
     const lista = H.filter(h => [h.t, ...h.a.map(a => a.t)].some(t => t.includes(tema)));
     c.insertAdjacentHTML("beforeend", cab(`Noticias sobre ${esc(temaEtiqueta || tema)}`, `${lista.length} historias. Pulsa de nuevo el tema para volver a la portada.`));
     const rej = document.createElement("div"); rej.className = "rejilla";
@@ -472,7 +499,7 @@ function render(){
   document.getElementById("estado").textContent = DATA.generado ? `Actualizado ${haceCuanto(DATA.generado)} · ${M.length} medios` : "Sin datos";
 }
 document.querySelectorAll(".nav [data-v]").forEach(t => t.addEventListener("click", () => {
-  vista = t.dataset.v; tema = null;
+  vista = t.dataset.v; tema = null; seccion = null;
   document.querySelectorAll(".nav [data-v]").forEach(x => x.setAttribute("aria-selected", x === t));
   render(); window.scrollTo({ top: 0 });
 }));

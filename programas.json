@@ -1,0 +1,20 @@
+{
+  "eleccion": "Elecciones generales del 29 de noviembre de 2026",
+  "fecha": "2026-11-29",
+  "actualizado": "2026-10-07",
+  "criterio": "Partidos con representación en el Congreso en la XV legislatura. Se añadirá cualquier otro partido que las encuestas sitúen con opciones de obtener escaño.",
+  "partidos": [
+    { "id": "psoe", "nombre": "PSOE", "web": "https://www.psoe.es", "programa": null, "propuestas": {} },
+    { "id": "pp", "nombre": "PP", "web": "https://www.pp.es", "programa": null, "propuestas": {} },
+    { "id": "vox", "nombre": "Vox", "web": "https://www.voxespana.es", "programa": null, "propuestas": {} },
+    { "id": "sumar", "nombre": "Sumar", "web": "https://movimientosumar.es", "programa": null, "propuestas": {} },
+    { "id": "erc", "nombre": "ERC", "web": "https://www.esquerra.cat", "programa": null, "propuestas": {} },
+    { "id": "junts", "nombre": "Junts", "web": "https://junts.cat", "programa": null, "propuestas": {} },
+    { "id": "bildu", "nombre": "EH Bildu", "web": "https://ehbildu.eus", "programa": null, "propuestas": {} },
+    { "id": "pnv", "nombre": "PNV", "web": "https://www.eaj-pnv.eus", "programa": null, "propuestas": {} },
+    { "id": "podemos", "nombre": "Podemos", "web": "https://podemos.info", "programa": null, "propuestas": {} },
+    { "id": "bng", "nombre": "BNG", "web": "https://www.bng.gal", "programa": null, "propuestas": {} },
+    { "id": "cc", "nombre": "Coalición Canaria", "web": "https://coalicioncanaria.org", "programa": null, "propuestas": {} },
+    { "id": "upn", "nombre": "UPN", "web": "https://www.upn.org", "programa": null, "propuestas": {} }
+  ]
+}
