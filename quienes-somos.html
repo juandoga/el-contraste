@@ -184,12 +184,12 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 @media (prefers-reduced-motion:reduce){.foto img{transition:none}article:hover .foto img,.hero:hover img{transform:none}}
 
 /* Resumen del día */
-.resumen-dia{margin-top:28px;display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:28px;align-items:start;padding:24px;background:var(--panel);border-radius:14px}
+.resumen-dia{margin-top:40px;display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:28px;align-items:start;padding:24px;background:var(--panel);border-radius:14px}
 @media (max-width:820px){.resumen-dia{grid-template-columns:1fr;gap:16px;padding:20px}}
 .resumen-dia h2{margin:4px 0 8px;font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.05;color:var(--tinta)}
 .resumen-dia .cifras{margin:0;color:var(--texto);font-size:var(--t-s);line-height:1.6}
 .resumen-dia .cifras b{color:var(--tinta);font-variant-numeric:tabular-nums}
-.resumen-dia ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;counter-reset:r}
+.resumen-dia ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;counter-reset:r 1}
 @media (max-width:1100px){.resumen-dia{grid-template-columns:1fr}}
 @media (max-width:820px){.resumen-dia ol{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.resumen-dia li{flex:0 0 62%;scroll-snap-align:start}}
 .resumen-dia li{counter-increment:r;min-width:0}
@@ -418,7 +418,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js"></script>
+<script src="comun.js?v=f3e33a8f"></script>
 
 </body>
 </html>

@@ -184,12 +184,12 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 @media (prefers-reduced-motion:reduce){.foto img{transition:none}article:hover .foto img,.hero:hover img{transform:none}}
 
 /* Resumen del día */
-.resumen-dia{margin-top:28px;display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:28px;align-items:start;padding:24px;background:var(--panel);border-radius:14px}
+.resumen-dia{margin-top:40px;display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:28px;align-items:start;padding:24px;background:var(--panel);border-radius:14px}
 @media (max-width:820px){.resumen-dia{grid-template-columns:1fr;gap:16px;padding:20px}}
 .resumen-dia h2{margin:4px 0 8px;font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.05;color:var(--tinta)}
 .resumen-dia .cifras{margin:0;color:var(--texto);font-size:var(--t-s);line-height:1.6}
 .resumen-dia .cifras b{color:var(--tinta);font-variant-numeric:tabular-nums}
-.resumen-dia ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;counter-reset:r}
+.resumen-dia ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;counter-reset:r 1}
 @media (max-width:1100px){.resumen-dia{grid-template-columns:1fr}}
 @media (max-width:820px){.resumen-dia ol{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.resumen-dia li{flex:0 0 62%;scroll-snap-align:start}}
 .resumen-dia li{counter-increment:r;min-width:0}
@@ -405,8 +405,8 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 
-<script src="temas.js"></script>
-<script src="comun.js"></script>
+<script src="temas.js?v=5df45ce8"></script>
+<script src="comun.js?v=f3e33a8f"></script>
 <script>
 const SNAPSHOT = /*SNAPSHOT*/null;
 const NIVELES = [[-2,"Izquierda","var(--izq)"],[-1,"Centroizquierda","var(--izq)"],[0,"Centro","var(--cen)"],[1,"Centroderecha","var(--der)"],[2,"Derecha","var(--der)"]];
@@ -424,30 +424,19 @@ function pieza(h){
   b.addEventListener("click", () => { d.hidden = !d.hidden; b.setAttribute("aria-expanded", !d.hidden); });
   return el;
 }
-// Resumen del día: las 5 historias que más voces reúnen en las últimas 24 horas.
-function resumenDia(H){
-  const hoy = H.filter(h => Date.now() - new Date(h.act) < 864e5);
-  const top = [...hoy].sort((a, b) => (b.voces || b.tot) - (a.voces || a.tot)).slice(0, 5);
-  if (top.length < 3) return "";
+// «Lo más contado hoy»: las historias que siguen a la principal, con las cifras de las cinco primeras.
+function resumenDia(top, tarjetas){
+  if (tarjetas.length < 2) return "";
   const titulares = top.reduce((s, h) => s + h.a.length, 0);
   const medios = new Set(top.flatMap(h => h.a.map(a => a.m))).size;
-  const ciegos = top.filter(h => h.ciego).length;
   return `<section class="resumen-dia" aria-labelledby="rd-t">
-    <div><span class="eti">Para ponerte al día</span><h2 id="rd-t">Resumen del día</h2>
-      <p class="cifras"><b>${top.length}</b> historias · <b>${titulares}</b> titulares de <b>${medios}</b> medios · <b>${top.length} min</b> de lectura${ciegos ? `<br><b>${ciegos}</b> ${ciegos === 1 ? "es un punto ciego" : "son puntos ciegos"}` : ""}</p><a class="al-correo" href="#boletin">Recíbelo cada mañana por correo →</a></div>
-    <ol>${top.map(h => `<li><a href="#h-${h.idx}" data-ir="h-${h.idx}">
+    <div><span class="eti">Para ponerte al día</span><h2 id="rd-t">Lo más contado hoy</h2>
+      <p class="cifras">Las <b>${top.length}</b> historias principales reúnen <b>${titulares}</b> titulares de <b>${medios}</b> medios.</p><a class="al-correo" href="#boletin">Recíbelas cada mañana por correo →</a></div>
+    <ol>${tarjetas.map(h => `<li><a href="${enlace(h)}">
       <span class="mini-foto">${h.f ? `<img src="${esc(h.f)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()">` : ""}</span>
       <span class="t">${esc(h.t)}</span>${barra(h)}<span class="m">${h.tot} medios${h.ciego ? ` · <b style="color:var(--aviso)">punto ciego</b>` : ""}</span></a></li>`).join("")}</ol>
   </section>`;
 }
-document.addEventListener("click", e => {
-  const a = e.target.closest("[data-ir]"); if (!a) return;
-  const destino = document.getElementById(a.dataset.ir); if (!destino) return;
-  e.preventDefault();
-  destino.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-  destino.classList.remove("destacar"); void destino.offsetWidth; destino.classList.add("destacar");
-  const v = destino.querySelector(".ver[aria-expanded='false']"); if (v) v.click();
-});
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 // Temas de hoy: nombres propios que se repiten en varias historias (p. ej. «Puigdemont», «Begoña Gómez»).
 const NO_TEMA = new Set("Así Qué Cómo Por Las Los Del Una Uno Este Esta Estos Estas Para Tras Sin Con Hoy Más Muere Ya España Gobierno Directo Vídeo Claves Estado Nacional Sobre Ante Desde".split(" "));
@@ -527,22 +516,26 @@ function render(){
     else {
       H.forEach((h, i) => h.idx = i);
       const [lead, ...resto] = H;
-      const ciegos = [...ci, ...cd].filter(h => h !== lead);
-      c.insertAdjacentHTML("beforeend", resumenDia(H));
+      // Cada historia aparece una sola vez: principal, lo más contado hoy, puntos ciegos y, después, el resto
+      const hoy = resto.filter(h => Date.now() - new Date(h.act) < 864e5).sort((a, b) => (b.voces || b.tot) - (a.voces || a.tot)).slice(0, 4);
+      const vistas = new Set([lead, ...hoy]);
+      const ciegos = [...ci, ...cd].filter(h => !vistas.has(h)).slice(0, 4);
+      ciegos.forEach(h => vistas.add(h));
       c.insertAdjacentHTML("beforeend", `
         <section class="principal" id="h-0">
           <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p><a class="ir-historia" href="${enlace(lead)}">Ver la historia completa →</a></div>
           <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}</div>
         </section>`);
+      c.insertAdjacentHTML("beforeend", resumenDia([lead, ...hoy], hoy));
       if (ciegos.length) {
         c.insertAdjacentHTML("beforeend", cab("Lo que un lado no cuenta", "Puntos ciegos de hoy: noticias que casi solo publica un bloque."));
         const grid = document.createElement("div"); grid.className = "ciegos";
-        grid.innerHTML = ciegos.slice(0, 4).map(h => `<article class="ciego">${foto(h)}<span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
+        grid.innerHTML = ciegos.map(h => `<article class="ciego">${foto(h)}<span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
         c.appendChild(grid);
       }
       c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas de más a menos medios que las cuentan."));
       const rej = document.createElement("div"); rej.className = "rejilla";
-      resto.forEach(h => rej.appendChild(pieza(h)));
+      resto.filter(h => !vistas.has(h)).forEach(h => rej.appendChild(pieza(h)));
       c.appendChild(rej);
     }
   } else {
