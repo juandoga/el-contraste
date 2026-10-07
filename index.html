@@ -113,6 +113,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .rejilla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 36px}
 @media (max-width:960px){.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){.rejilla{grid-template-columns:1fr;gap:32px}}
+.pieza,.principal{scroll-margin-top:90px}
 .pieza{display:flex;flex-direction:column;gap:12px;min-width:0;padding-top:20px;border-top:1px solid var(--linea)}
 .pieza h3{margin:0;font-family:var(--titular);font-weight:600;font-size:var(--t-l);line-height:1.2;letter-spacing:-.01em;color:var(--tinta);text-wrap:balance}
 .pieza .nota{margin:0;font-size:var(--t-s);color:var(--texto)}
@@ -163,6 +164,29 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
   @keyframes subir{from{transform:translateY(8px)}to{transform:none}}
 }
 @media (prefers-reduced-motion:reduce){.foto img{transition:none}article:hover .foto img,.hero:hover img{transform:none}}
+
+/* Resumen del día */
+.resumen-dia{margin-top:28px;display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:28px;align-items:start;padding:24px;background:var(--panel);border-radius:14px}
+@media (max-width:820px){.resumen-dia{grid-template-columns:1fr;gap:16px;padding:20px}}
+.resumen-dia h2{margin:4px 0 8px;font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.05;color:var(--tinta)}
+.resumen-dia .cifras{margin:0;color:var(--texto);font-size:var(--t-s);line-height:1.6}
+.resumen-dia .cifras b{color:var(--tinta);font-variant-numeric:tabular-nums}
+.resumen-dia ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;counter-reset:r}
+@media (max-width:1100px){.resumen-dia{grid-template-columns:1fr}}
+@media (max-width:820px){.resumen-dia ol{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.resumen-dia li{flex:0 0 62%;scroll-snap-align:start}}
+.resumen-dia li{counter-increment:r;min-width:0}
+.resumen-dia a{display:grid;gap:8px;text-decoration:none;color:var(--tinta)}
+.resumen-dia .mini-foto{position:relative;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--linea)}
+.resumen-dia .mini-foto img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s,transform .6s}
+.resumen-dia .mini-foto img.ok{opacity:1}
+.resumen-dia a:hover img{transform:scale(1.05)}
+.resumen-dia .mini-foto::before{content:counter(r);position:absolute;left:8px;top:8px;z-index:1;width:24px;height:24px;border-radius:50%;background:var(--tinta);color:var(--fondo);display:grid;place-items:center;font-size:var(--t-xs);font-weight:700}
+.resumen-dia .t{font-family:var(--titular);font-weight:600;font-size:1rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.resumen-dia a:hover .t{text-decoration:underline;text-underline-offset:3px}
+.resumen-dia .barra{height:6px}
+.resumen-dia .m{font-size:var(--t-xs);color:var(--gris)}
+.destacar{animation:destello 1.6s ease}
+@keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
 </style>
 </head>
 <body>
@@ -284,13 +308,37 @@ function foto(h, extra = ""){
 }
 function pieza(h){
   const el = document.createElement("article");
-  el.className = "pieza";
+  el.className = "pieza"; el.id = "h-" + (h.idx ?? "");
   el.innerHTML = `${foto(h)}${meta(h)}<h3>${esc(h.t)}</h3>${barra(h)}${pct(h)}<p class="nota">${lectura(h)}</p>
     <button class="ver" aria-expanded="false">Cómo la titula cada lado</button><div hidden>${bloques(h)}</div>`;
   const b = el.querySelector(".ver"), d = b.nextElementSibling;
   b.addEventListener("click", () => { d.hidden = !d.hidden; b.setAttribute("aria-expanded", !d.hidden); });
   return el;
 }
+// Resumen del día: las 5 historias que más voces reúnen en las últimas 24 horas.
+function resumenDia(H){
+  const hoy = H.filter(h => Date.now() - new Date(h.act) < 864e5);
+  const top = [...hoy].sort((a, b) => (b.voces || b.tot) - (a.voces || a.tot)).slice(0, 5);
+  if (top.length < 3) return "";
+  const titulares = top.reduce((s, h) => s + h.a.length, 0);
+  const medios = new Set(top.flatMap(h => h.a.map(a => a.m))).size;
+  const ciegos = top.filter(h => h.ciego).length;
+  return `<section class="resumen-dia" aria-labelledby="rd-t">
+    <div><span class="eti">Para ponerte al día</span><h2 id="rd-t">Resumen del día</h2>
+      <p class="cifras"><b>${top.length}</b> historias · <b>${titulares}</b> titulares de <b>${medios}</b> medios · <b>${top.length} min</b> de lectura${ciegos ? `<br><b>${ciegos}</b> ${ciegos === 1 ? "es un punto ciego" : "son puntos ciegos"}` : ""}</p></div>
+    <ol>${top.map(h => `<li><a href="#h-${h.idx}" data-ir="h-${h.idx}">
+      <span class="mini-foto">${h.f ? `<img src="${esc(h.f)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()">` : ""}</span>
+      <span class="t">${esc(h.t)}</span>${barra(h)}<span class="m">${h.tot} medios${h.ciego ? ` · <b style="color:var(--aviso)">punto ciego</b>` : ""}</span></a></li>`).join("")}</ol>
+  </section>`;
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-ir]"); if (!a) return;
+  const destino = document.getElementById(a.dataset.ir); if (!destino) return;
+  e.preventDefault();
+  destino.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  destino.classList.remove("destacar"); void destino.offsetWidth; destino.classList.add("destacar");
+  const v = destino.querySelector(".ver[aria-expanded='false']"); if (v) v.click();
+});
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 // Temas de hoy: nombres propios que se repiten en varias historias (p. ej. «Puigdemont», «Begoña Gómez»).
 const NO_TEMA = new Set("Así Qué Cómo Por Las Los Del Una Uno Este Esta Estos Estas Para Tras Sin Con Hoy Más Muere Ya España Gobierno Directo Vídeo Claves".split(" "));
@@ -335,10 +383,12 @@ function render(){
   } else if (vista === "portada") {
     if (!H.length) { c.innerHTML = `<p class="vacia">Todavía no hay noticias agrupadas. La recogida se hace cada hora.</p>`; }
     else {
+      H.forEach((h, i) => h.idx = i);
       const [lead, ...resto] = H;
       const ciegos = [...ci, ...cd].filter(h => h !== lead);
+      c.insertAdjacentHTML("beforeend", resumenDia(H));
       c.insertAdjacentHTML("beforeend", `
-        <section class="principal">
+        <section class="principal" id="h-0">
           <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1>${esc(lead.t)}</h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1>${esc(lead.t)}</h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p></div>
           <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}</div>
         </section>`);
