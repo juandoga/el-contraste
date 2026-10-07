@@ -187,6 +187,23 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .resumen-dia .m{font-size:var(--t-xs);color:var(--gris)}
 .destacar{animation:destello 1.6s ease}
 @keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
+
+/* Boletín */
+.boletin{scroll-margin-top:90px;margin-top:64px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;background:var(--tinta);color:var(--fondo);border-radius:16px;padding:clamp(24px,4vw,44px)}
+@media (max-width:820px){.boletin{grid-template-columns:1fr;gap:20px}}
+.boletin .eti{color:color-mix(in srgb,var(--fondo) 65%,transparent)}
+.boletin h2{margin:8px 0 10px;font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;line-height:1.1;color:var(--fondo);text-wrap:balance}
+.boletin p{margin:0;color:color-mix(in srgb,var(--fondo) 80%,transparent);max-width:46ch}
+.boletin form{display:grid;gap:8px;min-width:0}
+.boletin .fila{display:flex;gap:8px;flex-wrap:wrap}
+.boletin input{flex:1 1 220px;min-width:0;font:inherit;font-size:var(--t-m);padding:13px 16px;border-radius:999px;border:1px solid color-mix(in srgb,var(--fondo) 30%,transparent);background:color-mix(in srgb,var(--fondo) 8%,transparent);color:var(--fondo)}
+.boletin input::placeholder{color:color-mix(in srgb,var(--fondo) 50%,transparent)}
+.boletin input:focus-visible{outline:2px solid var(--fondo);outline-offset:2px}
+.boletin button{font-weight:700;font-size:var(--t-s);padding:13px 22px;border-radius:999px;border:0;background:var(--fondo);color:var(--tinta)}
+.boletin button:disabled{opacity:.6;cursor:wait}
+.boletin .aviso-bol{min-height:1.4em;font-weight:500;color:var(--fondo)}
+.boletin .legal{font-size:var(--t-xs);color:color-mix(in srgb,var(--fondo) 55%,transparent)}
+.resumen-dia .al-correo{display:inline-block;margin-top:12px;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
 </style>
 </head>
 <body>
@@ -251,6 +268,23 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 
   <nav class="temas" id="temas" aria-label="Temas de hoy"></nav>
   <main id="contenido"></main>
+
+  <section class="boletin" id="boletin" aria-labelledby="bol-t">
+    <div>
+      <span class="eti">Boletín gratuito</span>
+      <h2 id="bol-t">El resumen del día, cada mañana en tu correo</h2>
+      <p>A las 8:00, las cinco historias que más medios contaron, cómo las tituló cada lado y lo que un lado no contó. Dos minutos de lectura.</p>
+    </div>
+    <form id="formBoletin" novalidate>
+      <label for="correo" class="eti">Tu correo</label>
+      <div class="fila">
+        <input id="correo" name="correo" type="email" autocomplete="email" placeholder="nombre@ejemplo.com" required>
+        <button type="submit" id="btnBoletin">Suscribirme</button>
+      </div>
+      <p class="aviso-bol" id="msgBoletin" role="status" aria-live="polite"></p>
+      <p class="legal">Te enviaremos un correo para confirmar. Solo usamos tu dirección para el boletín y puedes darte de baja con un clic en cada envío.</p>
+    </form>
+  </section>
 
   <section class="medios" aria-labelledby="medios-t">
     <div class="cab-seccion" style="margin-top:0">
@@ -325,7 +359,7 @@ function resumenDia(H){
   const ciegos = top.filter(h => h.ciego).length;
   return `<section class="resumen-dia" aria-labelledby="rd-t">
     <div><span class="eti">Para ponerte al día</span><h2 id="rd-t">Resumen del día</h2>
-      <p class="cifras"><b>${top.length}</b> historias · <b>${titulares}</b> titulares de <b>${medios}</b> medios · <b>${top.length} min</b> de lectura${ciegos ? `<br><b>${ciegos}</b> ${ciegos === 1 ? "es un punto ciego" : "son puntos ciegos"}` : ""}</p></div>
+      <p class="cifras"><b>${top.length}</b> historias · <b>${titulares}</b> titulares de <b>${medios}</b> medios · <b>${top.length} min</b> de lectura${ciegos ? `<br><b>${ciegos}</b> ${ciegos === 1 ? "es un punto ciego" : "son puntos ciegos"}` : ""}</p><a class="al-correo" href="#boletin">Recíbelo cada mañana por correo →</a></div>
     <ol>${top.map(h => `<li><a href="#h-${h.idx}" data-ir="h-${h.idx}">
       <span class="mini-foto">${h.f ? `<img src="${esc(h.f)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()">` : ""}</span>
       <span class="t">${esc(h.t)}</span>${barra(h)}<span class="m">${h.tot} medios${h.ciego ? ` · <b style="color:var(--aviso)">punto ciego</b>` : ""}</span></a></li>`).join("")}</ol>
@@ -450,6 +484,30 @@ render();
     };
     render();
   } catch (e) { /* sin conexión: se queda la última edición guardada */ }
+})();
+
+// Boletín: alta y mensajes al volver de los enlaces del correo
+const BOLETIN = "https://yzreenyaerjitbfxsiah.supabase.co/functions/v1/boletin";
+(() => {
+  const f = document.getElementById("formBoletin"), msg = document.getElementById("msgBoletin"), btn = document.getElementById("btnBoletin");
+  const MENSAJES = { confirmado: "Suscripción confirmada. Mañana a las 8:00 recibirás tu primer resumen.", baja: "Te has dado de baja. No volverás a recibir el boletín.", error: "El enlace no es válido o ha caducado. Vuelve a suscribirte." };
+  const estado = new URLSearchParams(location.search).get("boletin");
+  if (estado && MENSAJES[estado]) { msg.textContent = MENSAJES[estado]; setTimeout(() => document.getElementById("boletin").scrollIntoView(), 300); }
+  f.addEventListener("submit", async e => {
+    e.preventDefault();
+    const correo = document.getElementById("correo").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) { msg.textContent = "Escribe un correo válido, por ejemplo nombre@ejemplo.com."; return; }
+    btn.disabled = true; msg.textContent = "Enviando…";
+    try {
+      const r = await fetch(`${BOLETIN}?accion=alta`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: correo }) });
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.error || "error");
+      msg.textContent = d.estado === "ya" ? "Ya estabas suscrito. ¡Gracias!" : "Revisa tu correo y pulsa «Confirmar suscripción». Si no lo ves, mira en spam.";
+      f.reset();
+    } catch (err) {
+      msg.textContent = "No hemos podido apuntarte ahora mismo. Inténtalo de nuevo en unos minutos.";
+    } finally { btn.disabled = false; }
+  });
 })();
 </script>
 
