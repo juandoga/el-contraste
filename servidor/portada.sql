@@ -37,10 +37,11 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
     when c.voces >= 4 and c.izq::numeric / c.voces < 0.10 and c.der::numeric / c.voces >= 0.5 then 'izquierda'
     when c.voces >= 4 and c.der::numeric / c.voces < 0.10 and c.izq::numeric / c.voces >= 0.5 then 'derecha'
   end as punto_ciego,
-  (select jsonb_agg(jsonb_build_object('medio', m.nombre, 'orientacion', m.orientacion, 'grupo', coalesce(m.grupo, m.nombre), 'titulo', a.titulo, 'url', a.url) order by m.orientacion, a.publicado)
+  (select jsonb_agg(jsonb_build_object('medio', m.nombre, 'orientacion', m.orientacion, 'grupo', coalesce(m.grupo, m.nombre), 'titulo', a.titulo, 'url', a.url, 'publicado', a.publicado) order by m.orientacion, a.publicado)
      from articulos a join medios m on m.id = a.medio_id where a.historia_id = h.id) as articulos,
   f.imagen, f.imagen_medio,
-  coalesce(t.ligera, false) as ligera
+  coalesce(t.ligera, false) as ligera,
+  e.entradilla, e.entradilla_medio
 from historias h
 join cuentas c on c.historia_id = h.id
 left join tipo t on t.historia_id = h.id
@@ -50,4 +51,24 @@ left join lateral (
   where a.historia_id = h.id and a.imagen is not null and a.imagen !~* '\.(mp4|m3u8|mp3|webm|mov)(\?|$)'
   order by abs(m.orientacion), a.publicado limit 1
 ) f on true
+left join lateral (
+  -- Entradilla: el resumen que publica el medio más cercano al centro (con al menos 80 caracteres)
+  select a.resumen as entradilla, m.nombre as entradilla_medio from articulos a join medios m on m.id = a.medio_id
+  where a.historia_id = h.id and char_length(a.resumen) >= 80
+  order by abs(m.orientacion), a.publicado limit 1
+) e on true
 where c.total >= 3;
+
+-- Avisos de error de los lectores: cualquiera puede enviar uno, nadie puede leerlos desde la web.
+create table if not exists reportes (
+  id bigint generated always as identity primary key,
+  historia_id bigint not null,
+  motivo text not null check (motivo in ('titular_no_encaja','historia_duplicada','etiqueta_medio','otro')),
+  detalle text check (char_length(detalle) <= 1000),
+  creado timestamptz not null default now(),
+  revisado boolean not null default false
+);
+alter table reportes enable row level security;
+create policy "cualquiera puede avisar" on reportes for insert to anon, authenticated with check (revisado = false and historia_id > 0);
+revoke all on reportes from anon, authenticated;
+grant insert (historia_id, motivo, detalle) on reportes to anon, authenticated;

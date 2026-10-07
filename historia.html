@@ -345,6 +345,44 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .c-ok{font-size:var(--t-s);color:var(--gris);word-break:break-all}
 .hist-vacia{max-width:640px;margin:48px 0 40px}
 .hist-vacia p{margin:0 0 24px}
+.hist-que{margin:0 0 32px}
+.hist-que h2,.hist-crono h2,.hist-rel h2{margin:0 0 14px;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;color:var(--tinta)}
+.hist-que blockquote{margin:0 0 10px;padding:4px 0 4px 18px;border-left:3px solid var(--tinta);font-family:var(--titular);font-size:1.2rem;line-height:1.45;color:var(--tinta)}
+.hist-que .aparte a{color:var(--tinta);text-underline-offset:3px}
+.hist-crono{margin-top:32px;padding-top:24px;border-top:1px solid var(--linea)}
+.hist-crono .primero{margin:0 0 12px;font-size:1.02rem}
+.hist-crono .primero b{color:var(--tinta)}
+.crono-lados{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px;font-size:.95rem}
+.crono-lados li,.crono-todo li{display:flex;gap:10px;align-items:baseline}
+.crono-lados i,.crono-todo i{flex:none;width:10px;height:10px;border-radius:50%;transform:translateY(1px)}
+.crono-lados b{color:var(--tinta)}
+.crono-todo summary{cursor:pointer;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.crono-todo ol{list-style:none;margin:12px 0;padding:0 0 0 2px;display:grid;gap:6px;font-size:var(--t-s);border-left:2px solid var(--linea)}
+.crono-todo li{padding-left:12px}
+.crono-todo time{font-family:var(--num);color:var(--gris);min-width:3.2em}
+.hist-asi .ficha{display:block;font-weight:400;color:var(--gris);margin-top:1px}
+.avisar{margin-top:28px;padding-top:20px;border-top:1px solid var(--linea)}
+.avisar summary{cursor:pointer;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.avisar form{display:grid;gap:10px;margin-top:14px}
+.avisar fieldset{border:0;margin:0;padding:0;display:grid;gap:8px;font-size:.95rem}
+.avisar legend{margin-bottom:6px}
+.avisar label{display:flex;gap:8px;align-items:baseline}
+.avisar textarea{font:inherit;font-size:.95rem;padding:10px 12px;border-radius:10px;border:1px solid var(--linea);background:var(--fondo);color:var(--tinta);resize:vertical}
+.avisar .boton{justify-self:start;border:0;cursor:pointer}
+.avisar .gracias{margin:12px 0 0}
+.hist-rel{margin-top:56px;padding-top:28px;border-top:3px solid var(--tinta)}
+.rel-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+@media (max-width:900px){.rel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.rel-grid{grid-template-columns:1fr}}
+.rel{display:grid;gap:8px;align-content:start;text-decoration:none;color:var(--tinta);min-width:0}
+.rel-foto{position:relative;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--panel)}
+.rel-foto img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.rel-foto img.ok{opacity:1}
+.rel-t{font-family:var(--titular);font-weight:600;font-size:1.05rem;line-height:1.25}
+.rel:hover .rel-t{text-decoration:underline;text-underline-offset:3px}
+.rel .barra{height:6px}
+.rel-m{font-size:var(--t-xs);color:var(--gris)}
+.rel-m b{color:var(--aviso)}
 </style>
 </head>
 <body>
@@ -390,6 +428,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 <div class="wrap historia">
   <div class="subtop"><a href="./" class="volver">← Volver a la portada</a><span id="estado"></span></div>
   <article id="art" aria-live="polite"><p class="vacia">Cargando la historia…</p></article>
+  <section id="relacionadas" class="hist-rel" hidden aria-labelledby="rel-t"></section>
 </div>
 
 <footer class="pie">
@@ -408,6 +447,15 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 const id = Number(new URLSearchParams(location.search).get("id"));
 const art = document.getElementById("art");
 const direccion = () => `${location.origin}${location.pathname}?id=${id}`;
+const COLOR = { izq: "var(--izq)", cen: "var(--cen)", der: "var(--der)" };
+const LADO = { izq: "izquierda", cen: "centro", der: "derecha" };
+const hora = iso => new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+const diaHora = iso => {
+  const d = new Date(iso), hoy = new Date(), ayer = new Date(Date.now() - 864e5);
+  const dia = d.toDateString() === hoy.toDateString() ? "hoy" : d.toDateString() === ayer.toDateString() ? "ayer"
+    : d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
+  return `${dia} a las ${hora(iso)}`;
+};
 
 function noEncontrada(){
   art.innerHTML = `<div class="hist-vacia"><span class="eti">Historia no disponible</span>
@@ -431,11 +479,64 @@ function compartir(h){
   </div>`;
 }
 
+// Un titular por medio: el primero que publicó
+function porMedio(h){
+  const vistos = new Map();
+  for (const a of [...h.a].sort((x, y) => new Date(x.p || 0) - new Date(y.p || 0))) if (!vistos.has(a.m)) vistos.set(a.m, a);
+  return [...vistos.values()];
+}
+
+// «Quién la contó primero» y el orden en que llegó cada medio
+function cronologia(h){
+  const lista = porMedio(h).filter(a => a.p);
+  if (lista.length < 2) return "";
+  const primero = lista[0];
+  const primeroDe = k => lista.find(a => lado(a.o) === k);
+  const resumen = ["izq", "cen", "der"].map(k => {
+    const a = primeroDe(k);
+    return `<li><i style="background:${COLOR[k]}"></i><span><b>${k === "cen" ? "Centro" : LADO[k][0].toUpperCase() + LADO[k].slice(1)}:</b> ${a ? `${esc(a.m)}, ${diaHora(a.p)}` : "ningún medio la ha publicado"}</span></li>`;
+  }).join("");
+  const filas = lista.map(a => `<li><time datetime="${a.p}">${hora(a.p)}</time><i style="background:${COLOR[lado(a.o)]}"></i><span>${esc(a.m)}</span></li>`).join("");
+  return `<section class="hist-crono" aria-labelledby="cro-t">
+    <h2 id="cro-t">Quién la contó primero</h2>
+    <p class="primero">La publicó primero <b>${esc(primero.m)}</b> (${ETIQUETA[primero.o].toLowerCase()}), ${diaHora(primero.p)}.</p>
+    <ul class="crono-lados">${resumen}</ul>
+    <details class="crono-todo"><summary>Ver el orden de todos los medios (${lista.length})</summary><ol>${filas}</ol>
+      <p class="aparte">Hora de publicación que indica cada medio. En los medios sin canal de noticias propio es la hora a la que la detectamos.</p></details>
+  </section>`;
+}
+
+// Titulares por lado, con la etiqueta y el grupo propietario de cada medio
+function fuentes(h){
+  const g = { izq: [], cen: [], der: [] };
+  for (const a of porMedio(h)) g[lado(a.o)].push(a);
+  const col = k => `<div class="bloque"><div class="lado eti"><i style="background:${COLOR[k]}"></i>${k === "cen" ? "Centro" : LADO[k][0].toUpperCase() + LADO[k].slice(1)} · ${g[k].length}</div>
+    ${g[k].length ? `<ul>${g[k].map(a => `<li><span class="medio">${esc(a.m)} <span class="ficha">${ETIQUETA[a.o]}${a.g && a.g !== a.m ? ` · Grupo ${esc(a.g)}` : ""}${a.p ? ` · ${hora(a.p)}` : ""}</span></span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`).join("")}</ul>`
+      : `<p class="vacio">Ningún medio de este lado la ha publicado.</p>`}</div>`;
+  return col("izq") + col("cen") + col("der");
+}
+
+function avisar(){
+  return `<details class="avisar" id="avisar"><summary>¿Algo no encaja en esta historia?</summary>
+    <form id="fAviso">
+      <fieldset><legend class="eti">Qué ocurre</legend>
+        <label><input type="radio" name="motivo" value="titular_no_encaja" checked> Hay un titular que habla de otra cosa</label>
+        <label><input type="radio" name="motivo" value="historia_duplicada"> Esta historia está repetida en la portada</label>
+        <label><input type="radio" name="motivo" value="etiqueta_medio"> No estoy de acuerdo con la etiqueta de un medio</label>
+        <label><input type="radio" name="motivo" value="otro"> Otra cosa</label>
+      </fieldset>
+      <label class="eti" for="aDet">Detalles (opcional)</label>
+      <textarea id="aDet" maxlength="1000" rows="3" placeholder="Por ejemplo: el titular de El Debate habla de otra noticia"></textarea>
+      <button class="boton" type="submit">Enviar aviso</button>
+      <p class="aparte" id="aOk" role="status">No guardamos tu nombre ni tu correo. Revisamos cada aviso a mano.</p>
+    </form></details>`;
+}
+
 function pintar(h){
-  const porLado = { izq: new Set(), cen: new Set(), der: new Set() };
-  h.a.forEach(a => porLado[lado(a.o)].add(a.m));
-  const n = k => porLado[k].size;
   const secciones = (window.seccionesDe ? window.seccionesDe(h) : []).map(s => window.SECCIONES.find(x => x.id === s)).filter(Boolean);
+  const voces = porMedio(h);
+  const n = k => voces.filter(a => lado(a.o) === k).length;
+  const ent = h.ent ? voces.find(a => a.m === h.entm) : null;
   document.title = `${h.t} · Vista Plena`;
   art.innerHTML = `
     <header class="hist-cab">
@@ -446,6 +547,9 @@ function pintar(h){
     <div class="hist-cuerpo">
       <div class="hist-izq">
         ${foto(h, "hist-foto")}
+        ${h.ent ? `<section class="hist-que" aria-labelledby="que-t"><h2 id="que-t">Qué ha pasado</h2>
+          <blockquote>${esc(h.ent)}${h.ent.length >= 395 ? "…" : ""}</blockquote>
+          <p class="aparte">Entradilla de ${esc(h.entm)}, el medio más cercano al centro que la publica.${ent ? ` <a href="${esc(ent.u)}" target="_blank" rel="noopener">Leer la noticia completa</a>` : ""}</p></section>` : ""}
         <section class="hist-cob" aria-labelledby="cob-t">
           <h2 id="cob-t">Quién la cuenta</h2>
           ${barra(h, true)}
@@ -454,12 +558,14 @@ function pintar(h){
           <p class="cuenta">La publican <b>${h.tot} medios</b>: ${n("izq")} de izquierda o centroizquierda, ${n("cen")} de centro y ${n("der")} de derecha o centroderecha.${h.voces && h.voces < h.tot ? ` Los medios de un mismo grupo y del mismo lado cuentan como una sola voz, por eso el porcentaje se calcula sobre ${h.voces} voces.` : ""}</p>
           <p class="aparte">La barra no dice si la noticia es verdad ni a quién beneficia: solo quién la está contando. <a href="metodologia.html#etiquetas">Cómo etiquetamos a cada medio</a>.</p>
         </section>
+        ${cronologia(h)}
         ${compartir(h)}
       </div>
       <section class="hist-asi" aria-labelledby="asi-t">
         <h2 id="asi-t">Así la titula cada lado</h2>
-        <p class="aparte">Cada titular enlaza a la noticia original en la web del medio.</p>
-        ${bloques(h)}
+        <p class="aparte">Cada titular enlaza a la noticia original. Junto al medio, su etiqueta, su grupo propietario y la hora de publicación.</p>
+        ${fuentes(h)}
+        ${avisar()}
       </section>
     </div>`;
   const nativo = document.getElementById("cNativo");
@@ -469,6 +575,39 @@ function pintar(h){
     try { await navigator.clipboard.writeText(direccion()); ok.textContent = "Enlace copiado"; }
     catch (e) { ok.textContent = direccion(); }
   });
+  document.getElementById("fAviso").addEventListener("submit", async e => {
+    e.preventDefault();
+    const f = e.target, ok = document.getElementById("aOk"), b = f.querySelector("button");
+    b.disabled = true; ok.textContent = "Enviando…";
+    try {
+      const r = await fetch(`${SUPA.url}/rest/v1/reportes`, { method: "POST",
+        headers: { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ historia_id: id, motivo: f.motivo.value, detalle: document.getElementById("aDet").value.trim() || null }) });
+      if (!r.ok) throw new Error(r.status);
+      f.innerHTML = `<p class="gracias"><b>Gracias.</b> Lo revisaremos y, si hay un error, lo corregiremos y lo anotaremos en la página de correcciones.</p>`;
+    } catch (err) { ok.textContent = "No se ha podido enviar. Inténtalo de nuevo en unos minutos."; b.disabled = false; }
+  });
+}
+
+// Historias relacionadas: las que comparten más palabras clave con esta
+const VACIAS_R = new Set("para sobre desde contra entre hasta tras como pero porque cuando donde según este esta estos estas tiene tienen será después antes ahora todos todas otro otra otros nuevo nueva españa gobierno".split(" "));
+const claves = t => new Set(t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(w => w.length >= 5 && !VACIAS_R.has(w)));
+async function relacionadas(h){
+  try {
+    const otras = (await pedir(`portada_v2?select=id,titulo,total,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,imagen,imagen_medio&order=total.desc&limit=120`))
+      .filter(x => x.id !== h.id);
+    const mias = new Set([...claves(h.t), ...h.a.flatMap(a => [...claves(a.t)])]);
+    const lista = otras.map(x => ({ x, n: [...claves(x.titulo)].filter(w => mias.has(w)).length })).filter(o => o.n >= 2)
+      .sort((a, b) => b.n - a.n || b.x.total - a.x.total).slice(0, 4).map(o => o.x);
+    if (!lista.length) return;
+    const s = document.getElementById("relacionadas");
+    s.innerHTML = `<h2 id="rel-t">Historias relacionadas</h2><div class="rel-grid">${lista.map(x => {
+      const r = { pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der };
+      return `<a class="rel" href="historia.html?id=${x.id}">${x.imagen ? `<span class="rel-foto"><img src="${esc(x.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()"></span>` : ""}
+        <span class="rel-t">${esc(x.titulo)}</span>${barra(r)}<span class="rel-m">${x.total} medios${x.punto_ciego ? ` · <b>punto ciego</b>` : ""}</span></a>`;
+    }).join("")}</div>`;
+    s.hidden = false;
+  } catch (e) {}
 }
 
 (async () => {
@@ -476,8 +615,10 @@ function pintar(h){
   try {
     const filas = await pedir(`portada_v2?id=eq.${id}&select=${CAMPOS}`);
     if (!filas.length) return noEncontrada();
-    pintar(mapear(filas[0]));
+    const h = mapear(filas[0]);
+    pintar(h);
     document.getElementById("estado").textContent = `Actualizada ${haceCuanto(filas[0].actualizada)}`;
+    relacionadas(h);
   } catch (e) {
     art.innerHTML = `<p class="vacia">No hemos podido cargar la historia. Comprueba tu conexión y vuelve a intentarlo.</p>`;
   }
