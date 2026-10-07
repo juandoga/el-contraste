@@ -375,29 +375,46 @@ document.addEventListener("click", e => {
 });
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 // Temas de hoy: nombres propios que se repiten en varias historias (p. ej. «Puigdemont», «Begoña Gómez»).
-const NO_TEMA = new Set("Así Qué Cómo Por Las Los Del Una Uno Este Esta Estos Estas Para Tras Sin Con Hoy Más Muere Ya España Gobierno Directo Vídeo Claves".split(" "));
+const NO_TEMA = new Set("Así Qué Cómo Por Las Los Del Una Uno Este Esta Estos Estas Para Tras Sin Con Hoy Más Muere Ya España Gobierno Directo Vídeo Claves Estado Nacional Sobre Ante Desde".split(" "));
+// Instituciones o lugares cuyo nombre compuesto no debe fundirse con su última palabra (Real Madrid ≠ Madrid)
+const NO_FUNDIR = new Set("Real Comunidad Ayuntamiento Tribunal Audiencia Gobierno Junta Consejo Partido Universidad Banco Atlético Club Ciudad Puerto Plaza Estado Fiscalía Diputación Casa Palacio Congreso Senado".split(" "));
 function temasDe(H){
-  const cuenta = new Map();
-  for (const h of H) {
-    const vistos = new Set();
+  const historias = new Map(); // tema → conjunto de historias en las que aparece
+  H.forEach((h, idx) => {
     for (const t of [h.t, ...h.a.map(a => a.t)]) {
       const sinPrimera = t.replace(/^\S+\s*/, "");
       for (const m of sinPrimera.matchAll(/\b[A-ZÁÉÍÓÚÑ][a-záéíóúñü]{2,}(?:\s(?:de\s)?[A-ZÁÉÍÓÚÑ][a-záéíóúñü]{2,}){0,2}/g)) {
         const k = m[0]; if (NO_TEMA.has(k) || k.length < 4) continue;
-        vistos.add(k);
+        if (!historias.has(k)) historias.set(k, new Set());
+        historias.get(k).add(idx);
       }
     }
-    for (const k of vistos) cuenta.set(k, (cuenta.get(k) ?? 0) + 1);
+  });
+  // Fundir nombres de persona con su apellido: «Pedro Sánchez» y «Sánchez» son el mismo tema
+  const formas = new Map(); // clave (apellido) → formas encontradas
+  for (const k of [...historias.keys()]) {
+    const p = k.split(" ");
+    if (p.length < 2 || p.includes("de") || NO_FUNDIR.has(p[0])) continue;
+    const apellido = p[p.length - 1];
+    if (!historias.has(apellido)) continue;
+    for (const i of historias.get(k)) historias.get(apellido).add(i);
+    if (!formas.has(apellido)) formas.set(apellido, []);
+    formas.get(apellido).push([k, historias.get(k).size]);
+    historias.delete(k);
   }
-  return [...cuenta].filter(([, n]) => n >= 2).sort((x, y) => y[1] - x[1]).slice(0, 10);
+  return [...historias].map(([clave, set]) => {
+    // Etiqueta: el nombre completo más usado si aparece en 2 historias o más; si no, el apellido
+    const larga = (formas.get(clave) ?? []).sort((a, b) => b[1] - a[1])[0];
+    return { clave, etiqueta: larga && larga[1] >= 2 ? larga[0] : clave, n: set.size };
+  }).filter(t => t.n >= 2).sort((x, y) => y.n - x.n).slice(0, 10);
 }
-let tema = null;
+let tema = null, temaEtiqueta = "";
 function pintarTemas(H){
   const nav = document.getElementById("temas");
   const T = temasDe(H);
   nav.hidden = vista !== "portada" || !T.length;
-  nav.innerHTML = `<span class="eti">Temas de hoy</span>` + T.map(([k, n]) => `<button class="tema" aria-pressed="${k === tema}" data-t="${esc(k)}">${esc(k)}<span class="n">${n}</span></button>`).join("");
-  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { tema = tema === b.dataset.t ? null : b.dataset.t; render(); }));
+  nav.innerHTML = `<span class="eti">Temas de hoy</span>` + T.map(t => `<button class="tema" aria-pressed="${t.clave === tema}" data-t="${esc(t.clave)}" data-e="${esc(t.etiqueta)}">${esc(t.etiqueta)}<span class="n">${t.n}</span></button>`).join("");
+  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { tema = tema === b.dataset.t ? null : b.dataset.t; temaEtiqueta = b.dataset.e; render(); }));
 }
 function render(){
   const H = DATA.historias || [];
@@ -410,7 +427,7 @@ function render(){
   c.innerHTML = "";
   if (vista === "portada" && tema) {
     const lista = H.filter(h => [h.t, ...h.a.map(a => a.t)].some(t => t.includes(tema)));
-    c.insertAdjacentHTML("beforeend", cab(`Noticias sobre ${esc(tema)}`, `${lista.length} historias. Pulsa de nuevo el tema para volver a la portada.`));
+    c.insertAdjacentHTML("beforeend", cab(`Noticias sobre ${esc(temaEtiqueta || tema)}`, `${lista.length} historias. Pulsa de nuevo el tema para volver a la portada.`));
     const rej = document.createElement("div"); rej.className = "rejilla";
     lista.forEach(h => rej.appendChild(pieza(h)));
     c.appendChild(rej);
