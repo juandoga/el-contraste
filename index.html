@@ -573,11 +573,15 @@ render();
 // Datos en directo desde Supabase (funciona cuando la página está en una web propia, como GitHub Pages)
 (async () => {
   try {
-    const [hist, med] = await Promise.all([
+    // Los puntos ciegos se piden aparte: por definición los cuentan pocos medios y no entrarían entre las 40 más contadas
+    const [hist, ciegos, med] = await Promise.all([
       pedir(`portada_v2?select=${CAMPOS}&order=total.desc,actualizada.desc&limit=40`),
+      pedir(`portada_v2?select=${CAMPOS}&punto_ciego=not.is.null&order=voces.desc,actualizada.desc&limit=30`),
       pedir("medios?select=nombre,orientacion&activo=eq.true&order=orientacion,nombre")
     ]);
-    DATA = { generado: new Date().toISOString(), medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: hist.map(mapear) };
+    const ids = new Set(hist.map(x => x.id));
+    const todas = [...hist, ...ciegos.filter(x => !ids.has(x.id))];
+    DATA = { generado: new Date().toISOString(), medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: todas.map(mapear) };
     render();
   } catch (e) { /* sin conexión: se queda la última edición guardada */ }
 })();
