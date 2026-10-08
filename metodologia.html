@@ -179,6 +179,13 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .ciego .foto{border-radius:8px;margin-bottom:2px}
 .temas{display:flex;gap:8px;overflow-x:auto;padding:16px 0 4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent)}
 .temas::-webkit-scrollbar{display:none}
+a.tema{text-decoration:none;display:inline-flex;align-items:center}
+a.tema:hover{border-color:var(--tinta)}
+/* Punto: el tema tiene novedades desde tu última visita */
+.tema.nuevo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--aviso);margin-right:7px;flex:none}
+.mas-tema{display:inline-flex;gap:6px;align-items:baseline;margin-top:10px;font-size:var(--t-s);color:var(--gris);text-decoration:none}
+.mas-tema b{color:var(--tinta);font-weight:600}
+.mas-tema:hover b{text-decoration:underline;text-underline-offset:3px}
 .temas .eti{align-self:center;white-space:nowrap;margin-right:4px}
 .tema{flex:none;border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:7px 14px;font-size:var(--t-s);font-weight:500;color:var(--tinta);white-space:nowrap}
 .tema:hover{border-color:var(--tinta)}
@@ -459,7 +466,21 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <section id="agrupar">
     <h2>Cómo agrupamos las noticias</h2>
     <p>Cada hora leemos los canales RSS públicos de cada medio. Juntamos los titulares que hablan del mismo hecho comparando sus palabras clave. Las palabras poco habituales, como nombres propios o lugares, pesan más que las comunes. Una historia aparece en portada cuando la han publicado al menos 3 medios.</p>
+    <p>Una historia es <strong>un solo hecho</strong>. Comparamos solo los titulares, y una historia deja de admitir titulares si pasan 12 horas sin novedades. Si, pasadas 6 horas, llegan titulares de dos o más medios con nombres o datos que la historia no tenía («Anne Carson gana el Nobel» frente a «los favoritos al Nobel»), es un hecho nuevo: abre su propia historia, enlazada a la anterior. Así cada comparación de titulares habla de lo mismo.</p>
     <p>El sistema es automático y a veces se equivoca: puede juntar dos noticias parecidas o separar una en dos. Si ves un error, también puedes avisarnos.</p>
+  </section>
+
+  <section id="temas">
+    <h2>Qué es un tema</h2>
+    <p>Un tema reúne las historias de un mismo asunto concreto durante varios días, en orden: por ejemplo, la muerte de una persona y todo lo que vino después. No es una sección como «Política», sino un asunto con nombre propio.</p>
+    <ul class="lista">
+      <li>Dos historias van al mismo tema si comparten un nombre propio poco habitual (una persona, un lugar, una organización) y se parecen en sus palabras clave.</li>
+      <li>Los nombres que salen en casi todo, como «Sánchez», «PSOE» o «Gobierno», no bastan por sí solos para unir dos historias.</li>
+      <li>Una historia nueva tiene que parecerse a las últimas historias del tema, no solo a una. Así un tema no se va estirando hasta tragarse todo.</li>
+      <li>Un tema se apaga si pasan 3 días sin historias nuevas, y tiene como mucho 30 historias.</li>
+      <li>Cada historia está, como mucho, en un tema. En la portada, cada tema aparece una sola vez.</li>
+    </ul>
+    <p>El nombre del tema es el nombre propio más repetido en sus titulares. Se recalcula cada hora.</p>
   </section>
 
   <section id="ciegos">
@@ -527,7 +548,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js?v=3c520bbc"></script>
+<script src="comun.js?v=eec473de"></script>
 <script>
 const ETI = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
 const COL = { "-2": "var(--izq)", "-1": "var(--izq)", "0": "var(--cen)", "1": "var(--der)", "2": "var(--der)" };

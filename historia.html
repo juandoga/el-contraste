@@ -179,6 +179,13 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .ciego .foto{border-radius:8px;margin-bottom:2px}
 .temas{display:flex;gap:8px;overflow-x:auto;padding:16px 0 4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent)}
 .temas::-webkit-scrollbar{display:none}
+a.tema{text-decoration:none;display:inline-flex;align-items:center}
+a.tema:hover{border-color:var(--tinta)}
+/* Punto: el tema tiene novedades desde tu última visita */
+.tema.nuevo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--aviso);margin-right:7px;flex:none}
+.mas-tema{display:inline-flex;gap:6px;align-items:baseline;margin-top:10px;font-size:var(--t-s);color:var(--gris);text-decoration:none}
+.mas-tema b{color:var(--tinta);font-weight:600}
+.mas-tema:hover b{text-decoration:underline;text-underline-offset:3px}
 .temas .eti{align-self:center;white-space:nowrap;margin-right:4px}
 .tema{flex:none;border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:7px 14px;font-size:var(--t-s);font-weight:500;color:var(--tinta);white-space:nowrap}
 .tema:hover{border-color:var(--tinta)}
@@ -348,6 +355,16 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .volver:hover{color:var(--tinta)}
 .hist-cab{margin:28px 0 32px;max-width:920px}
 .hilo{margin:14px 0 0;display:grid;gap:6px;font-size:var(--t-s);color:var(--gris);line-height:1.45}
+.en-tema{margin:18px 0 0;padding:14px 16px;border:1px solid var(--linea);border-radius:10px;display:grid;gap:6px;font-size:var(--t-s);line-height:1.4;max-width:720px}
+.en-tema .et{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--gris);font-weight:600}
+.en-tema .nombre{font-weight:800;font-size:var(--t-m);color:var(--tinta);text-decoration:none}
+.en-tema .nombre:hover,.en-tema .todo:hover{text-decoration:underline;text-underline-offset:3px}
+.en-tema ul{list-style:none;margin:4px 0;padding:0;display:grid;gap:6px}
+.en-tema li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px}
+.en-tema time{color:var(--gris);font-family:var(--num);font-size:var(--t-xs);padding-top:2px}
+.en-tema li a{color:var(--tinta);text-decoration:none}
+.en-tema li a:hover{text-decoration:underline}
+.en-tema .todo{font-weight:600;color:var(--tinta);text-decoration:none}
 .hilo b{color:var(--tinta);font-weight:600}
 .hilo a{color:var(--tinta)}
 .hist-etis{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
@@ -469,7 +486,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=3c520bbc"></script>
+<script src="comun.js?v=eec473de"></script>
 <script>
 const id = Number(new URLSearchParams(location.search).get("id"));
 const art = document.getElementById("art");
@@ -631,6 +648,24 @@ async function hilo(h){
   } catch (e) {}
 }
 
+// Tema: el asunto de varios días al que pertenece esta historia, con las otras noticias del tema en orden
+async function enTema(h){
+  try {
+    const [t, otras] = await Promise.all([
+      pedir(`temas?select=id,nombre,historias,activo&id=eq.${h.tema}`).then(r => r[0]),
+      pedir(`portada_v2?select=id,titulo,creada,total&tema_id=eq.${h.tema}&order=creada.desc&limit=8`)]);
+    if (!t) return hilo(h);
+    const lista = otras.filter(x => x.id !== h.id).slice(0, 3);
+    const dia = x => new Date(x.creada).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+    const p = document.getElementById("hilo");
+    p.className = "en-tema";
+    p.innerHTML = `<span class="et">Tema${t.activo ? " · en desarrollo" : ""}</span><a class="nombre" href="tema.html?id=${t.id}">${esc(t.nombre)}</a>
+      ${lista.length ? `<ul>${lista.map(x => `<li><time>${dia(x)}</time><a href="historia.html?id=${x.id}">${esc(x.titulo)}</a></li>`).join("")}</ul>` : ""}
+      <a class="todo" href="tema.html?id=${t.id}">Ver la cronología completa (${t.historias} noticias) →</a>`;
+    p.hidden = false;
+  } catch (e) { hilo(h); }
+}
+
 // Historias relacionadas: las que comparten más palabras clave con esta
 const VACIAS_R = new Set("para sobre desde contra entre hasta tras como pero porque cuando donde según este esta estos estas tiene tienen será después antes ahora todos todas otro otra otros nuevo nueva españa gobierno".split(" "));
 const claves = t => new Set(t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(w => w.length >= 5 && !VACIAS_R.has(w)));
@@ -660,7 +695,7 @@ async function relacionadas(h){
     const h = mapear(filas[0]);
     pintar(h);
     document.getElementById("estado").textContent = `Actualizada ${haceCuanto(filas[0].actualizada)}`;
-    relacionadas(h); hilo(h);
+    relacionadas(h); if (h.tema) enTema(h); else hilo(h);
   } catch (e) {
     art.innerHTML = `<p class="vacia">No hemos podido cargar la historia. Comprueba tu conexión y vuelve a intentarlo.</p>`;
   }

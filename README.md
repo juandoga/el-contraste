@@ -43,12 +43,14 @@ La clave que aparece en estas direcciones es pública y solo permite leer.
 |---|---|
 | `index.html` | Portada |
 | `historia.html` | Página de cada historia |
+| `tema.html` | Página de cada tema: las historias de un mismo asunto, en orden |
 | `metodologia.html` | Cómo lo hacemos, con la tabla de medios en directo |
 | `elecciones.html` · `programas.json` | Guía de las elecciones del 29N |
 | `quienes-somos.html` · `aviso-legal.html` · `privacidad.html` | Información del proyecto y legal |
 | `comun.js` | Menú y funciones compartidas por todas las páginas |
 | `temas.js` | Secciones por tema (vivienda, economía…) y las palabras que las definen |
 | `servidor/recoger/` | Programa que lee los medios y agrupa los titulares (se ejecuta cada hora) |
+| `servidor/temas/` | Programa que agrupa las historias de la semana en temas (se ejecuta cada hora) |
 | `servidor/boletin/` | Programa del boletín diario por correo |
 | `servidor/portada.sql` | Cálculo de la cobertura y de los puntos ciegos |
 

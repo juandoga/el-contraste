@@ -179,6 +179,13 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .ciego .foto{border-radius:8px;margin-bottom:2px}
 .temas{display:flex;gap:8px;overflow-x:auto;padding:16px 0 4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent)}
 .temas::-webkit-scrollbar{display:none}
+a.tema{text-decoration:none;display:inline-flex;align-items:center}
+a.tema:hover{border-color:var(--tinta)}
+/* Punto: el tema tiene novedades desde tu última visita */
+.tema.nuevo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--aviso);margin-right:7px;flex:none}
+.mas-tema{display:inline-flex;gap:6px;align-items:baseline;margin-top:10px;font-size:var(--t-s);color:var(--gris);text-decoration:none}
+.mas-tema b{color:var(--tinta);font-weight:600}
+.mas-tema:hover b{text-decoration:underline;text-underline-offset:3px}
 .temas .eti{align-self:center;white-space:nowrap;margin-right:4px}
 .tema{flex:none;border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:7px 14px;font-size:var(--t-s);font-weight:500;color:var(--tinta);white-space:nowrap}
 .tema:hover{border-color:var(--tinta)}
@@ -442,7 +449,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js?v=3c520bbc"></script>
+<script src="comun.js?v=eec473de"></script>
 
 </body>
 </html>

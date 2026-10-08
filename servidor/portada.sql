@@ -47,7 +47,9 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
   -- Orden de la portada: medios que han contado la historia en las últimas 12 horas
   (select count(distinct a.medio_id) from articulos a where a.historia_id = h.id and a.publicado > now() - interval '12 hours') as medios_12h,
   -- Historia anterior de la que esta se separó porque trae un hecho nuevo (p. ej. «los favoritos al Nobel» → «Anne Carson gana el Nobel»)
-  h.anterior
+  h.anterior,
+  -- Tema al que pertenece (asunto de varios días que reúne varias historias; ver servidor/temas)
+  h.tema_id
 from historias h
 join cuentas c on c.historia_id = h.id
 left join tipo t on t.historia_id = h.id
@@ -88,3 +90,10 @@ create table if not exists archivo (
 );
 -- archivar(): copia cada hora (minuto 20) las historias visibles de portada_v2 y marca como «fusionada»
 -- la historia reciente que desaparece al unirse con otra. Lectura pública; solo el servidor escribe.
+
+-- Temas: asuntos concretos de varios días («Caso Leire», «Nobel de Literatura») que reúnen varias historias en orden.
+-- Los calcula cada hora la función servidor/temas. Para la portada: los activos, con cuántas historias nuevas tienen en 48 horas.
+create or replace view temas_v with (security_invoker = true) as
+select t.id, t.nombre, t.inicio, t.actualizado, t.historias, t.activo,
+  (select count(*) from historias h where h.tema_id = t.id and h.creada > now() - interval '48 hours') as nuevas_48h
+from temas t;

@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacidad · Vista Plena</title>
-<meta name="description" content="Qué datos tratamos en Vista Plena y cómo ejercer tus derechos.">
+<title>Tema · Vista Plena</title>
+<meta name="description" content="Todas las noticias de un mismo asunto, en orden, con quién cuenta cada una.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fuentes/roboto-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="theme-color" content="#111213">
 <meta property="og:site_name" content="Vista Plena">
 <meta property="og:locale" content="es_ES">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacidad · Vista Plena">
-<meta property="og:description" content="Qué datos tratamos en Vista Plena y cómo ejercer tus derechos.">
-<meta property="og:url" content="https://vistaplena.es/privacidad.html">
+<meta property="og:title" content="Tema · Vista Plena">
+<meta property="og:description" content="Todas las noticias de un mismo asunto, en orden, con quién cuenta cada una.">
+<meta property="og:url" content="https://vistaplena.es/tema.html">
 <meta property="og:image" content="https://vistaplena.es/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -350,6 +350,109 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .gris{color:var(--gris)}
 .boton{display:inline-block;background:var(--tinta);color:var(--fondo)!important;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:700;font-size:var(--t-s)}
 .aparte{color:var(--gris);font-size:var(--t-s)}
+
+.volver{color:var(--gris);text-decoration:none;font-weight:500}
+.volver:hover{color:var(--tinta)}
+.hist-cab{margin:28px 0 32px;max-width:920px}
+.hilo{margin:14px 0 0;display:grid;gap:6px;font-size:var(--t-s);color:var(--gris);line-height:1.45}
+.en-tema{margin:18px 0 0;padding:14px 16px;border:1px solid var(--linea);border-radius:10px;display:grid;gap:6px;font-size:var(--t-s);line-height:1.4;max-width:720px}
+.en-tema .et{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.08em;color:var(--gris);font-weight:600}
+.en-tema .nombre{font-weight:800;font-size:var(--t-m);color:var(--tinta);text-decoration:none}
+.en-tema .nombre:hover,.en-tema .todo:hover{text-decoration:underline;text-underline-offset:3px}
+.en-tema ul{list-style:none;margin:4px 0;padding:0;display:grid;gap:6px}
+.en-tema li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:8px}
+.en-tema time{color:var(--gris);font-family:var(--num);font-size:var(--t-xs);padding-top:2px}
+.en-tema li a{color:var(--tinta);text-decoration:none}
+.en-tema li a:hover{text-decoration:underline}
+.en-tema .todo{font-weight:600;color:var(--tinta);text-decoration:none}
+.hilo b{color:var(--tinta);font-weight:600}
+.hilo a{color:var(--tinta)}
+.hist-etis{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.hist-etis .tema{text-decoration:none;padding:5px 12px}
+.hist-cab h1,.hist-vacia h1{margin:0 0 16px;font-family:var(--titular);font-weight:600;font-size:var(--t-xxl);line-height:1.06;letter-spacing:-.02em;color:var(--tinta);text-wrap:balance}
+.hist-cuerpo{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:56px;align-items:start}
+@media (max-width:880px){.hist-cuerpo{grid-template-columns:1fr;gap:40px}}
+.hist-izq{min-width:0}
+.hist-foto{margin-bottom:28px}
+.hist-cob h2,.hist-asi h2{margin:0 0 14px;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;color:var(--tinta)}
+.hist-cob .resumen{margin:18px 0 10px;font-size:var(--t-l);line-height:1.4}
+.hist-cob .resumen strong{color:var(--tinta)}
+.hist-cob .cuenta{margin:0 0 10px;font-size:.95rem;max-width:60ch}
+.hist-cob .aparte,.hist-asi .aparte{margin:0 0 16px;font-size:var(--t-s);color:var(--gris)}
+.hist-cob .aparte a{color:var(--tinta);text-underline-offset:3px}
+.hist-asi{min-width:0}
+.hist-asi .bloque li a{font-size:1.08rem}
+.compartir{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:28px;padding-top:22px;border-top:1px solid var(--linea)}
+.compartir .eti{margin-right:6px;width:100%}
+.c-btn{border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:8px 15px;font-size:var(--t-s);font-weight:500;color:var(--tinta);text-decoration:none}
+.c-btn:hover{border-color:var(--tinta)}
+.c-ok{font-size:var(--t-s);color:var(--gris);word-break:break-all}
+.hist-vacia{max-width:640px;margin:48px 0 40px}
+.hist-vacia p{margin:0 0 24px}
+.hist-que{margin:0 0 32px}
+.hist-que h2,.hist-crono h2,.hist-rel h2{margin:0 0 14px;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;color:var(--tinta)}
+.hist-que blockquote{margin:0 0 10px;padding:4px 0 4px 18px;border-left:3px solid var(--tinta);font-family:var(--titular);font-size:1.2rem;line-height:1.45;color:var(--tinta)}
+.hist-que .aparte a{color:var(--tinta);text-underline-offset:3px}
+.hist-crono{margin-top:32px;padding-top:24px;border-top:1px solid var(--linea)}
+.hist-crono .primero{margin:0 0 12px;font-size:1.02rem}
+.hist-crono .primero b{color:var(--tinta)}
+.crono-lados{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px;font-size:.95rem}
+.crono-lados li,.crono-todo li{display:flex;gap:10px;align-items:baseline}
+.crono-lados i,.crono-todo i{flex:none;width:10px;height:10px;border-radius:50%;transform:translateY(1px)}
+.crono-lados b{color:var(--tinta)}
+.crono-todo summary{cursor:pointer;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.crono-todo ol{list-style:none;margin:12px 0;padding:0 0 0 2px;display:grid;gap:6px;font-size:var(--t-s);border-left:2px solid var(--linea)}
+.crono-todo li{padding-left:12px}
+.crono-todo time{font-family:var(--num);color:var(--gris);min-width:3.2em}
+.hist-asi .ficha{display:block;font-weight:400;color:var(--gris);margin-top:1px}
+.avisar{margin-top:28px;padding-top:20px;border-top:1px solid var(--linea)}
+.avisar summary{cursor:pointer;font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.avisar form{display:grid;gap:10px;margin-top:14px}
+.avisar fieldset{border:0;margin:0;padding:0;display:grid;gap:8px;font-size:.95rem}
+.avisar legend{margin-bottom:6px}
+.avisar label{display:flex;gap:8px;align-items:baseline}
+.avisar textarea{font:inherit;font-size:.95rem;padding:10px 12px;border-radius:10px;border:1px solid var(--linea);background:var(--fondo);color:var(--tinta);resize:vertical}
+.avisar .boton{justify-self:start;border:0;cursor:pointer}
+.avisar .gracias{margin:12px 0 0}
+.hist-rel{margin-top:56px;padding-top:28px;border-top:3px solid var(--tinta)}
+.rel-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+@media (max-width:900px){.rel-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.rel-grid{grid-template-columns:1fr}}
+.rel{display:grid;gap:8px;align-content:start;text-decoration:none;color:var(--tinta);min-width:0}
+.rel-foto{position:relative;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--panel)}
+.rel-foto img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .4s}
+.rel-foto img.ok{opacity:1}
+.rel-t{font-family:var(--titular);font-weight:600;font-size:1.05rem;line-height:1.25}
+.rel:hover .rel-t{text-decoration:underline;text-underline-offset:3px}
+.rel .barra{height:6px}
+.rel-m{font-size:var(--t-xs);color:var(--gris)}
+.rel-m b{color:var(--aviso)}
+
+.tema-eti{font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--gris);align-self:center}
+.chip.vivo{background:var(--tinta);color:var(--fondo)}
+.tema-sub{margin:0;color:var(--gris);font-size:var(--t-s)}
+.tema-cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:start}
+@media (max-width:880px){.tema-cuerpo{grid-template-columns:1fr;gap:32px}}
+.tema-ultimo{display:grid;gap:12px;padding-bottom:32px;border-bottom:1px solid var(--linea)}
+.tema-ultimo h2,.tema-lado h2{margin:0}
+.tema-lead{display:grid;gap:12px;text-decoration:none;color:var(--tinta)}
+.tema-lead .t{font-family:var(--titular);font-weight:600;font-size:var(--t-xl);line-height:1.12;letter-spacing:-.01em;text-wrap:balance}
+.tema-lead:hover .t{text-decoration:underline;text-underline-offset:4px}
+.tema-crono{margin-top:28px}
+.tema-crono > h2{margin:0 0 8px;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em}
+.tc-dia h3{margin:20px 0 8px;font-size:var(--t-s);text-transform:uppercase;letter-spacing:.06em;color:var(--gris)}
+.tc-dia ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--linea)}
+.tc-dia li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;padding:12px 0 12px 16px;position:relative}
+.tc-dia li::before{content:"";position:absolute;left:-6px;top:18px;width:10px;height:10px;border-radius:50%;background:var(--fondo);border:2px solid var(--tinta)}
+.tc-dia time{font-family:var(--num);font-size:var(--t-xs);color:var(--gris);padding-top:4px}
+.tc-dia li > div{display:grid;gap:6px}
+.tc-dia li a{font-family:var(--titular);font-weight:500;font-size:1.12rem;line-height:1.3;color:var(--tinta);text-decoration:none}
+.tc-dia li a:hover{text-decoration:underline;text-underline-offset:3px}
+.tc-dia .barra{height:6px;max-width:280px}
+.tc-dia .m{font-size:var(--t-xs);color:var(--gris)}
+.tema-lado{position:sticky;top:88px;display:grid;gap:12px;padding:20px;border:1px solid var(--linea);border-radius:12px}
+.tema-lado p{margin:0;font-size:var(--t-s);line-height:1.5}
+@media (max-width:880px){.tema-lado{position:static}}
 </style>
 </head>
 <body>
@@ -392,67 +495,9 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
 </header>
 
-<div class="wrap metodo legal-pag">
-  <div class="subtop"><span>Información legal</span><span>Última actualización: 7 de octubre de 2026</span></div>
-  <header class="metodo-cab">
-    <span class="eti">Privacidad</span>
-    <h1>Política de privacidad</h1>
-    <p class="resumen">Para leer Vista Plena no tienes que darnos ningún dato. Solo guardamos tu correo si te suscribes al boletín.</p>
-  </header>
-
-  <section>
-    <h2>En resumen</h2>
-    <ul class="lista">
-      <li>No usamos cookies, ni publicidad, ni herramientas que sigan lo que haces.</li>
-      <li>Solo tratamos tu correo, y solo si te suscribes al boletín.</li>
-      <li>No vendemos ni cedemos tu correo a nadie.</li>
-      <li>Puedes darte de baja con un clic en cualquier envío.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Responsable</h2>
-    <p><mark class="pendiente">[nombre del titular]</mark>. Correo de contacto: <mark class="pendiente">[correo de contacto]</mark>.</p>
-  </section>
-
-  <section>
-    <h2>Boletín por correo</h2>
-    <h3>Qué datos guardamos</h3>
-    <p>Tu dirección de correo, la fecha en que te suscribiste y confirmaste, la fecha de baja si te das de baja, y un código aleatorio que sirve para confirmar la suscripción y darte de baja sin contraseña.</p>
-    <h3>Para qué</h3>
-    <p>Solo para enviarte el resumen diario. No lo usamos para nada más.</p>
-    <h3>Por qué podemos hacerlo</h3>
-    <p>Porque nos das tu consentimiento al suscribirte y confirmarlo desde tu correo (artículo 6.1.a del Reglamento General de Protección de Datos). Puedes retirarlo cuando quieras dándote de baja.</p>
-    <h3>Cuánto tiempo</h3>
-    <p>Mientras sigas suscrito. Al darte de baja dejamos de escribirte. Si además quieres que borremos tu dirección de nuestra base de datos, escríbenos y la eliminamos.</p>
-    <h3>Quién nos ayuda a tratarlos</h3>
-    <ul class="lista">
-      <li><strong>Supabase</strong>, que aloja nuestra base de datos en servidores de la Unión Europea (París).</li>
-      <li><strong>Resend</strong>, que envía los correos. Es una empresa de Estados Unidos, por lo que tu dirección puede tratarse fuera de la Unión Europea, con las garantías que exige el RGPD para estas transferencias.</li>
-    </ul>
-    <p>Ambos actúan como encargados del tratamiento: solo pueden usar los datos para prestarnos su servicio.</p>
-  </section>
-
-  <section>
-    <h2>Cuando visitas la web</h2>
-    <ul class="lista">
-      <li><strong>Alojamiento.</strong> La web está alojada en GitHub Pages (GitHub, Inc.), que registra datos técnicos de las visitas, como la dirección IP, por motivos de seguridad.</li>
-      <li><strong>Fotografías.</strong> Las fotos de las noticias se cargan directamente desde la web de cada medio, que recibe tu dirección IP como al visitar cualquier página. No les enviamos desde qué página vienes.</li>
-      <li><strong>Tipografías.</strong> Están alojadas en nuestra propia web; no se descargan de servicios de terceros.</li>
-      <li><strong>Tu navegador.</strong> Si cierras la guía «Cómo leer Vista Plena», guardamos esa preferencia en tu navegador para no volver a mostrártela. No sale de tu dispositivo y no es una cookie.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Tus derechos</h2>
-    <p>Puedes pedirnos acceder a tus datos, corregirlos, borrarlos, limitar su uso, oponerte a él o recibirlos en un formato reutilizable. Escríbenos a <mark class="pendiente">[correo de contacto]</mark> indicando qué necesitas.</p>
-    <p>Si crees que no hemos tratado bien tus datos, puedes reclamar ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos</a>.</p>
-  </section>
-
-  <section>
-    <h2>Cambios</h2>
-    <p>Si cambiamos esta política, actualizaremos la fecha de arriba. Si el cambio afecta al boletín, te avisaremos por correo antes de aplicarlo.</p>
-  </section>
+<div class="wrap historia">
+  <div class="subtop"><a href="./" class="volver">← Volver a la portada</a><span id="estado"></span></div>
+  <article id="art" aria-live="polite"><p class="vacia">Cargando el tema…</p></article>
 </div>
 
 <footer class="pie">
@@ -466,6 +511,86 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 <script src="comun.js?v=eec473de"></script>
+<script>
+// Página de un tema: un asunto de varios días que reúne varias historias (cada historia es un hecho distinto, con su cobertura)
+const id = Number(new URLSearchParams(location.search).get("id"));
+const art = document.getElementById("art");
+const hora = iso => new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+const dia = iso => {
+  const d = new Date(iso), hoy = new Date(), ayer = new Date(Date.now() - 864e5);
+  if (d.toDateString() === hoy.toDateString()) return "Hoy";
+  if (d.toDateString() === ayer.toDateString()) return "Ayer";
+  const t = d.toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
+  return t.charAt(0).toUpperCase() + t.slice(1);
+};
+const inicio = h => h.a.reduce((m, a) => a.p && (!m || a.p < m) ? a.p : m, null) || h.cr;
+
+function noEncontrado(){
+  art.innerHTML = `<div class="hist-vacia"><h1>No encontramos este tema</h1><p>Puede que ya no esté activo o que el enlace no sea correcto. Los temas se recalculan cada hora.</p><p><a href="./">Ir a la portada</a></p></div>`;
+}
+
+function pintar(t, H){
+  document.title = `${t.nombre} · Vista Plena`;
+  // Cobertura acumulada: voces de cada lado sumando todas las historias del tema
+  const s = H.reduce((o, x) => ({ i: o.i + (x.izq || 0), c: o.c + (x.cen || 0), d: o.d + (x.der || 0) }), { i: 0, c: 0, d: 0 });
+  const tot = s.i + s.c + s.d || 1;
+  const pi = Math.round(100 * s.i / tot), pd = Math.round(100 * s.d / tot);
+  const acum = { pi, pd, pc: 100 - pi - pd };
+  const ciegas = H.filter(h => h.ciego).length;
+  const ultima = H[0];
+  // Cronología agrupada por día, lo más reciente arriba
+  const dias = [];
+  for (const h of H) {
+    const d = dia(inicio(h));
+    if (!dias.length || dias[dias.length - 1].d !== d) dias.push({ d, hs: [] });
+    dias[dias.length - 1].hs.push(h);
+  }
+  art.innerHTML = `
+    <header class="hist-cab">
+      <div class="hist-etis"><span class="tema-eti">Tema</span>${t.activo ? `<span class="chip vivo">En desarrollo</span>` : `<span class="chip">Cerrado</span>`}</div>
+      <h1>${esc(t.nombre)}</h1>
+      <p class="tema-sub">${H.length} noticias desde ${dia(t.inicio).toLowerCase()} · última novedad ${haceCuanto(t.actualizado)}</p>
+    </header>
+    <div class="tema-cuerpo">
+      <div>
+        <section class="tema-ultimo" aria-labelledby="ul-t">
+          <h2 id="ul-t" class="eti">Lo último</h2>
+          <a class="tema-lead" href="${enlace(ultima)}">${foto(ultima)}<span class="t">${esc(ultima.t)}</span></a>
+          ${barra(ultima)}${pct(ultima)}
+          <p class="aparte">${ultima.tot} medios · empezó ${haceCuanto(inicio(ultima))}${ultima.ciego ? ` · <b>punto ciego de la ${ultima.ciego}</b>` : ""}</p>
+        </section>
+        <section class="tema-crono" aria-labelledby="cr-t">
+          <h2 id="cr-t">Cronología</h2>
+          ${dias.map(g => `<div class="tc-dia"><h3>${g.d}</h3><ol>${g.hs.map(h => `<li>
+            <time datetime="${inicio(h)}">${hora(inicio(h))}</time>
+            <div><a href="${enlace(h)}">${esc(h.t)}</a>${barra(h)}<span class="m">${h.tot} medios${h.ciego ? ` · <b>punto ciego de la ${h.ciego}</b>` : ""}</span></div>
+          </li>`).join("")}</ol></div>`).join("")}
+        </section>
+      </div>
+      <aside class="tema-lado">
+        <h2 class="eti">Cobertura de todo el tema</h2>
+        ${barra(acum, true)}${pct(acum)}
+        <p>Suma de las voces de las ${H.length} noticias.${ciegas ? ` ${ciegas === 1 ? "Una de ellas es" : `${ciegas} de ellas son`} punto ciego.` : ""}</p>
+        <p class="aparte">Un tema reúne varias noticias sobre el mismo asunto. Cada noticia es un hecho distinto, con su propia cobertura y sus propios titulares. <a href="metodologia.html#temas">Cómo formamos los temas</a>.</p>
+      </aside>
+    </div>`;
+}
+
+(async () => {
+  if (!id) return noEncontrado();
+  try {
+    const [temas, filas] = await Promise.all([
+      pedir(`temas?select=id,nombre,inicio,actualizado,historias,activo&id=eq.${id}`),
+      pedir(`portada_v2?select=${CAMPOS},izq,cen,der&tema_id=eq.${id}&order=creada.desc`)]);
+    if (!temas.length || !filas.length) return noEncontrado();
+    const H = filas.map(x => ({ ...mapear(x), izq: x.izq, cen: x.cen, der: x.der })).sort((a, b) => new Date(inicio(b)) - new Date(inicio(a)));
+    pintar(temas[0], H);
+    document.getElementById("estado").textContent = `Actualizado ${haceCuanto(temas[0].actualizado)}`;
+  } catch (e) {
+    art.innerHTML = `<p class="vacia">No hemos podido cargar el tema. Comprueba tu conexión y vuelve a intentarlo.</p>`;
+  }
+})();
+</script>
 
 </body>
 </html>

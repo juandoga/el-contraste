@@ -179,6 +179,13 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .ciego .foto{border-radius:8px;margin-bottom:2px}
 .temas{display:flex;gap:8px;overflow-x:auto;padding:16px 0 4px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent)}
 .temas::-webkit-scrollbar{display:none}
+a.tema{text-decoration:none;display:inline-flex;align-items:center}
+a.tema:hover{border-color:var(--tinta)}
+/* Punto: el tema tiene novedades desde tu última visita */
+.tema.nuevo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--aviso);margin-right:7px;flex:none}
+.mas-tema{display:inline-flex;gap:6px;align-items:baseline;margin-top:10px;font-size:var(--t-s);color:var(--gris);text-decoration:none}
+.mas-tema b{color:var(--tinta);font-weight:600}
+.mas-tema:hover b{text-decoration:underline;text-underline-offset:3px}
 .temas .eti{align-self:center;white-space:nowrap;margin-right:4px}
 .tema{flex:none;border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:7px 14px;font-size:var(--t-s);font-weight:500;color:var(--tinta);white-space:nowrap}
 .tema:hover{border-color:var(--tinta)}
@@ -390,7 +397,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </section>
 
   <nav class="temas secciones-nav" id="secciones" aria-label="Secciones"></nav>
-  <nav class="temas" id="temas" aria-label="Temas de hoy"></nav>
+  <nav class="temas" id="temas" aria-label="Temas del momento"></nav>
   <main id="contenido"></main>
 
   <section class="boletin" id="boletin" aria-labelledby="bol-t">
@@ -430,7 +437,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 </footer>
 
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=3c520bbc"></script>
+<script src="comun.js?v=eec473de"></script>
 <script>
 const SNAPSHOT = /*SNAPSHOT*/null;
 const NIVELES = [[-2,"Izquierda","var(--izq)"],[-1,"Centroizquierda","var(--izq)"],[0,"Centro","var(--cen)"],[1,"Centroderecha","var(--der)"],[2,"Derecha","var(--der)"]];
@@ -442,7 +449,7 @@ document.getElementById("fechaHoy").textContent = fh.charAt(0).toUpperCase() + f
 function pieza(h){
   const el = document.createElement("article");
   el.className = "pieza"; el.id = "h-" + (h.idx ?? "");
-  el.innerHTML = `${foto(h)}${meta(h)}<h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}${pct(h)}<p class="nota">${lectura(h)}</p>
+  el.innerHTML = `${foto(h)}${meta(h)}<h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}${pct(h)}<p class="nota">${lectura(h)}</p>${masTema(h)}
     <button class="ver" aria-expanded="false">Cómo la titula cada lado</button><div hidden>${bloques(h)}</div>`;
   const b = el.querySelector(".ver"), d = b.nextElementSibling;
   b.addEventListener("click", () => { d.hidden = !d.hidden; b.setAttribute("aria-expanded", !d.hidden); });
@@ -473,90 +480,68 @@ function ultimoBloque(lista){
   </section>`;
 }
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
-// Temas de hoy: nombres propios que se repiten en varias historias (p. ej. «Puigdemont», «Begoña Gómez»).
-const NO_TEMA = new Set("Así Qué Cómo Por Las Los Del Una Uno Este Esta Estos Estas Para Tras Sin Con Hoy Más Muere Ya España Gobierno Directo Vídeo Claves Estado Nacional Sobre Ante Desde".split(" "));
-// Instituciones o lugares cuyo nombre compuesto no debe fundirse con su última palabra (Real Madrid ≠ Madrid)
-const NO_FUNDIR = new Set("Real Comunidad Ayuntamiento Tribunal Audiencia Gobierno Junta Consejo Partido Universidad Banco Atlético Club Ciudad Puerto Plaza Estado Fiscalía Diputación Casa Palacio Congreso Senado".split(" "));
-function temasDe(H){
-  const historias = new Map(); // tema → conjunto de historias en las que aparece
-  H.forEach((h, idx) => {
-    for (const t of [h.t, ...h.a.map(a => a.t)]) {
-      const sinPrimera = t.replace(/^\S+\s*/, "");
-      for (const m of sinPrimera.matchAll(/\b[A-ZÁÉÍÓÚÑ][a-záéíóúñü]{2,}(?:\s(?:de\s)?[A-ZÁÉÍÓÚÑ][a-záéíóúñü]{2,}){0,2}/g)) {
-        const k = m[0]; if (NO_TEMA.has(k) || k.length < 4) continue;
-        if (!historias.has(k)) historias.set(k, new Set());
-        historias.get(k).add(idx);
-      }
-    }
-  });
-  // Fundir nombres de persona con su apellido: «Pedro Sánchez» y «Sánchez» son el mismo tema
-  const formas = new Map(); // clave (apellido) → formas encontradas
-  for (const k of [...historias.keys()]) {
-    const p = k.split(" ");
-    if (p.length < 2 || p.includes("de") || NO_FUNDIR.has(p[0])) continue;
-    const apellido = p[p.length - 1];
-    if (!historias.has(apellido)) continue;
-    for (const i of historias.get(k)) historias.get(apellido).add(i);
-    if (!formas.has(apellido)) formas.set(apellido, []);
-    formas.get(apellido).push([k, historias.get(k).size]);
-    historias.delete(k);
-  }
-  return [...historias].map(([clave, set]) => {
-    // Etiqueta: el nombre completo más usado si aparece en 2 historias o más; si no, el apellido
-    const larga = (formas.get(clave) ?? []).sort((a, b) => b[1] - a[1])[0];
-    return { clave, etiqueta: larga && larga[1] >= 2 ? larga[0] : clave, n: set.size };
-  }).filter(t => t.n >= 2).sort((x, y) => y.n - x.n).slice(0, 10);
-}
-let tema = null, temaEtiqueta = "";
+// Temas: asuntos de varios días que reúnen varias historias (los calcula el servidor cada hora; ver tema.html)
+let TEMAS = new Map();
 let seccion = new URLSearchParams(location.search).get("seccion");
+// Última visita: los temas con novedades desde entonces llevan un punto
+let VISITA_PREVIA = null;
+try {
+  VISITA_PREVIA = sessionStorage.getItem("vp-previa");
+  if (VISITA_PREVIA === null) { VISITA_PREVIA = localStorage.getItem("vp-visita") || ""; sessionStorage.setItem("vp-previa", VISITA_PREVIA); }
+  localStorage.setItem("vp-visita", new Date().toISOString());
+} catch (e) {}
+const temaNuevo = t => VISITA_PREVIA && new Date(t.actualizado) > new Date(VISITA_PREVIA);
+// Enlace al tema de una historia, con cuántas noticias más tiene
+function masTema(h){
+  const t = h.tema && TEMAS.get(h.tema);
+  if (!t) return "";
+  const mas = t.historias - 1;
+  return `<a class="mas-tema" href="tema.html?id=${t.id}">Tema: <b>${esc(t.nombre)}</b>${mas > 0 ? ` · ${mas} noticia${mas > 1 ? "s" : ""} más` : ""} →</a>`;
+}
+// En la portada, cada tema sale una sola vez: con su historia más contada (los puntos ciegos se muestran siempre)
+function unaPorTema(H){
+  const vistos = new Set();
+  return H.filter(h => { if (!h.tema || h.ciego) return true; if (vistos.has(h.tema)) return false; vistos.add(h.tema); return true; });
+}
 function pintarSecciones(H){
   const nav = document.getElementById("secciones");
-  if (!window.SECCIONES) { nav.hidden = true; return; }
-  H.forEach(h => h.sec = window.seccionesDe(h));
-  nav.hidden = vista !== "portada";
-  nav.innerHTML = `<span class="eti">Secciones</span><button class="tema" aria-pressed="${!seccion}" data-s="">Todas</button>` +
-    window.SECCIONES.map(s => `<button class="tema" aria-pressed="${s.id === seccion}" data-s="${s.id}">${s.nombre}<span class="n">${H.filter(h => h.sec.includes(s.id)).length}</span></button>`).join("");
-  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { seccion = b.dataset.s || null; tema = null; render(); }));
+  nav.hidden = true; // las secciones están en el menú
+  if (window.SECCIONES) H.forEach(h => h.sec = window.seccionesDe(h));
 }
-function pintarTemas(H){
+function pintarTemas(){
   const nav = document.getElementById("temas");
-  const T = temasDe(H);
-  nav.hidden = vista !== "portada" || !T.length;
-  nav.innerHTML = `<span class="eti">Temas de hoy</span>` + T.map(t => `<button class="tema" aria-pressed="${t.clave === tema}" data-t="${esc(t.clave)}" data-e="${esc(t.etiqueta)}">${esc(t.etiqueta)}<span class="n">${t.n}</span></button>`).join("");
-  nav.querySelectorAll(".tema").forEach(b => b.addEventListener("click", () => { tema = tema === b.dataset.t ? null : b.dataset.t; temaEtiqueta = b.dataset.e; seccion = null; render(); }));
+  const T = [...TEMAS.values()].filter(t => t.nuevas_48h > 0)
+    .sort((a, b) => b.nuevas_48h - a.nuevas_48h || new Date(b.actualizado) - new Date(a.actualizado)).slice(0, 8);
+  nav.hidden = vista !== "portada" || !!seccion || !T.length;
+  nav.innerHTML = `<span class="eti">Temas</span>` + T.map(t => `<a class="tema${temaNuevo(t) ? " nuevo" : ""}" href="tema.html?id=${t.id}"${temaNuevo(t) ? ' title="Novedades desde tu última visita"' : ""}>${esc(t.nombre)}<span class="n">${t.historias}</span></a>`).join("");
 }
 function render(){
   const H = DATA.historias || [];
   pintarSecciones(H);
-  pintarTemas(H);
+  pintarTemas();
   const ci = H.filter(h => h.ciego === "izquierda"), cd = H.filter(h => h.ciego === "derecha");
   const c = document.getElementById("contenido");
   c.innerHTML = "";
   if (vista === "portada" && seccion) {
     const s = window.SECCIONES.find(x => x.id === seccion);
     const lista = H.filter(h => h.sec.includes(seccion));
-    c.insertAdjacentHTML("beforeend", cab(s.nombre, `Preocupa al ${String(s.cis).replace(".", ",")} % de los españoles (${s.cisNota}, CIS de septiembre de 2026). ${lista.length} historias hoy. <a href="elecciones.html#${s.id}">Qué proponen los partidos</a>`));
+    c.insertAdjacentHTML("beforeend", cab(s.nombre, `Preocupa al ${String(s.cis).replace(".", ",")} % de los españoles (${s.cisNota}, CIS de septiembre de 2026). ${lista.length} historias hoy. <a href="elecciones.html#${s.id}">Qué proponen los partidos</a> · <a href="./">Volver a la portada</a>`));
     const rej = document.createElement("div"); rej.className = "rejilla";
     if (!lista.length) rej.innerHTML = `<p class="vacia">Ahora mismo no hay historias de esta sección.</p>`;
-    lista.forEach(h => rej.appendChild(pieza(h)));
-    c.appendChild(rej);
-  } else if (vista === "portada" && tema) {
-    const lista = H.filter(h => [h.t, ...h.a.map(a => a.t)].some(t => t.includes(tema)));
-    c.insertAdjacentHTML("beforeend", cab(`Noticias sobre ${esc(temaEtiqueta || tema)}`, `${lista.length} historias. Pulsa de nuevo el tema para volver a la portada.`));
-    const rej = document.createElement("div"); rej.className = "rejilla";
     lista.forEach(h => rej.appendChild(pieza(h)));
     c.appendChild(rej);
   } else if (vista === "portada") {
     if (!H.length) { c.innerHTML = `<p class="vacia">Todavía no hay noticias agrupadas. La recogida se hace cada hora.</p>`; }
     else {
-      H.forEach((h, i) => h.idx = i);
-      const [lead, ...resto] = H;
+      const P = unaPorTema(H);
+      P.forEach((h, i) => h.idx = i);
+      const [lead, ...resto] = P;
       // Cada historia aparece una sola vez: principal, lo más contado hoy, puntos ciegos y, después, el resto
       const hoy = resto.filter(h => Date.now() - new Date(h.act) < 864e5).slice(0, 4);
       const vistas = new Set([lead, ...hoy]);
             c.insertAdjacentHTML("beforeend", `
         <section class="principal" id="h-0">
-          <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p><a class="ir-historia" href="${enlace(lead)}">Ver la historia completa →</a></div>
+          <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p><a class="ir-historia" href="${enlace(lead)}">Ver la historia completa →</a>${masTema(lead)}</div>
           <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}<a class="ver-todos" href="${enlace(lead)}">Ver los ${lead.tot} titulares →</a></div>
         </section>`);
       c.insertAdjacentHTML("beforeend", resumenDia([lead, ...hoy], hoy));
@@ -612,14 +597,17 @@ render();
 (async () => {
   try {
     // Los puntos ciegos se piden aparte: por definición los cuentan pocos medios y no entrarían entre las 40 más contadas
-    const [hist, ciegos, ultimas, med] = await Promise.all([
+    const [hist, ciegos, ultimas, med, temas] = await Promise.all([
       // Orden de la portada: medios que han contado la historia en las últimas 12 horas (lo que está pasando ahora)
       pedir(`portada_v2?select=${CAMPOS}&order=medios_12h.desc,voces.desc,actualizada.desc&limit=40`),
       pedir(`portada_v2?select=${CAMPOS}&punto_ciego=not.is.null&order=voces.desc,actualizada.desc&limit=30`),
       // «Lo último»: las historias más recientes, aunque aún las cuenten pocos medios
       pedir(`portada_v2?select=${CAMPOS}&order=creada.desc&limit=14`),
-      pedir("medios?select=nombre,orientacion,ultima_lectura&activo=eq.true&order=orientacion,nombre")
+      pedir("medios?select=nombre,orientacion,ultima_lectura&activo=eq.true&order=orientacion,nombre"),
+      // Temas activos (asuntos de varios días); si fallan, la portada funciona igual
+      pedir("temas_v?select=id,nombre,actualizado,historias,nuevas_48h&activo=eq.true").catch(() => [])
     ]);
+    TEMAS = new Map(temas.map(t => [t.id, t]));
     const ids = new Set(hist.map(x => x.id));
     const todas = [...hist, ...ciegos.filter(x => !ids.has(x.id))];
     // Hora real de la última lectura de los medios (no la hora a la que se abrió la página)
