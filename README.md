@@ -5,7 +5,7 @@
 
 Vista Plena reúne los titulares de más de 30 medios españoles, junta los que hablan del mismo hecho y muestra cuántos medios de izquierda, de centro y de derecha cuentan cada noticia. Así se ve qué historias cuenta todo el mundo, cuáles cuenta sobre todo un lado y cuáles apenas llegan a los lectores de un lado (los **puntos ciegos**).
 
-No escribe noticias ni opina sobre ellas. No hay algoritmo: la portada es la misma para todo el mundo y se ordena por el número de medios que cuentan cada historia.
+No escribe noticias ni opina sobre ellas. No hay algoritmo: la portada es la misma para todo el mundo y se ordena por el número de medios que han contado cada historia en las últimas 12 horas.
 
 ## Cómo funciona
 

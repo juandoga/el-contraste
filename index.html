@@ -518,7 +518,7 @@ function render(){
       H.forEach((h, i) => h.idx = i);
       const [lead, ...resto] = H;
       // Cada historia aparece una sola vez: principal, lo más contado hoy, puntos ciegos y, después, el resto
-      const hoy = resto.filter(h => Date.now() - new Date(h.act) < 864e5).sort((a, b) => (b.voces || b.tot) - (a.voces || a.tot)).slice(0, 4);
+      const hoy = resto.filter(h => Date.now() - new Date(h.act) < 864e5).slice(0, 4);
       const vistas = new Set([lead, ...hoy]);
       const ciegos = [...ci, ...cd].filter(h => !vistas.has(h)).slice(0, 4);
       ciegos.forEach(h => vistas.add(h));
@@ -534,7 +534,7 @@ function render(){
         grid.innerHTML = ciegos.map(h => `<article class="ciego">${foto(h)}<span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
         c.appendChild(grid);
       }
-      c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas de más a menos medios que las cuentan."));
+      c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas por cuántos medios las han contado en las últimas 12 horas."));
       const rej = document.createElement("div"); rej.className = "rejilla";
       resto.filter(h => !vistas.has(h)).forEach(h => rej.appendChild(pieza(h)));
       c.appendChild(rej);
@@ -575,13 +575,16 @@ render();
   try {
     // Los puntos ciegos se piden aparte: por definición los cuentan pocos medios y no entrarían entre las 40 más contadas
     const [hist, ciegos, med] = await Promise.all([
-      pedir(`portada_v2?select=${CAMPOS}&order=total.desc,actualizada.desc&limit=40`),
+      // Orden de la portada: medios que han contado la historia en las últimas 12 horas (lo que está pasando ahora)
+      pedir(`portada_v2?select=${CAMPOS}&order=medios_12h.desc,voces.desc,actualizada.desc&limit=40`),
       pedir(`portada_v2?select=${CAMPOS}&punto_ciego=not.is.null&order=voces.desc,actualizada.desc&limit=30`),
-      pedir("medios?select=nombre,orientacion&activo=eq.true&order=orientacion,nombre")
+      pedir("medios?select=nombre,orientacion,ultima_lectura&activo=eq.true&order=orientacion,nombre")
     ]);
     const ids = new Set(hist.map(x => x.id));
     const todas = [...hist, ...ciegos.filter(x => !ids.has(x.id))];
-    DATA = { generado: new Date().toISOString(), medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: todas.map(mapear) };
+    // Hora real de la última lectura de los medios (no la hora a la que se abrió la página)
+    const ultima = med.map(m => m.ultima_lectura).filter(Boolean).sort().pop() || null;
+    DATA = { generado: ultima, medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: todas.map(mapear) };
     render();
   } catch (e) { /* sin conexión: se queda la última edición guardada */ }
 })();
