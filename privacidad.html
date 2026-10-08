@@ -158,11 +158,13 @@ footer{padding-block:24px 48px;border-top:1px solid var(--linea);font-size:var(-
 .foto img.ok{opacity:1}
 article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .foto figcaption{position:absolute;right:8px;bottom:8px;font-size:.68rem;font-weight:500;color:#fff;background:rgba(0,0,0,.45);padding:2px 7px;border-radius:4px;backdrop-filter:blur(4px)}
-.hero{aspect-ratio:16/10;margin-bottom:18px}
-.hero .sombra{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.82) 100%)}
-.hero .sobre{position:absolute;left:0;right:0;bottom:0;padding:clamp(16px,3vw,28px);display:grid;gap:14px}
-.hero .sobre h1{margin:0;color:#fff;font-family:var(--titular);font-weight:600;font-size:clamp(1.8rem,4.2vw,3rem);line-height:1.06;letter-spacing:-.02em;text-wrap:balance}
-.hero .sobre .meta{color:rgba(255,255,255,.85)}
+/* La foto crece con el titular: el texto nunca se sale por arriba */
+.hero{aspect-ratio:auto;min-height:clamp(340px,46vw,540px);display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:18px}
+.hero img{position:absolute;inset:0}
+.hero .sombra{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.25) 35%,rgba(0,0,0,.88) 72%,rgba(0,0,0,.94) 100%)}
+.hero .sobre{position:relative;padding:72px clamp(18px,3vw,28px) clamp(18px,3vw,28px);display:grid;gap:14px}
+.hero .sobre h1{margin:0;color:#fff;font-family:var(--titular);font-weight:600;font-size:clamp(1.55rem,4.2vw,3rem);line-height:1.1;letter-spacing:-.015em;text-wrap:pretty;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.hero .sobre .meta{color:rgba(255,255,255,.88)}
 .hero figcaption{top:10px;bottom:auto}
 .hero.sinfoto{background:#1b1c1f}
 .hero.sinfoto img{display:none}
