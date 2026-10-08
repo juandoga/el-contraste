@@ -4,7 +4,17 @@ const CAMPOS = "id,creada,titulo,total,voces,imagen,imagen_medio,pct_izq,pct_cen
 const ETIQUETA = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
 const lado = o => o < 0 ? "izq" : o > 0 ? "der" : "cen";
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const enlace = h => `historia.html?id=${h.id}`;
+// Direcciones limpias de cada noticia y cada tema (vistaplena.es/noticia/anne-carson-gana-el-nobel-1778/).
+// Las páginas se generan cada hora; si una aún no existe, la página 404 lleva a la versión dinámica.
+// La misma función está en seo/generar.py: si cambia una, debe cambiar la otra.
+const slug = t => {
+  let s = String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (s.length > 70) { s = s.slice(0, 70); if (s.includes("-")) s = s.slice(0, s.lastIndexOf("-")); }
+  return s.replace(/-+$/, "") || "noticia";
+};
+const urlNoticia = (id, titulo) => `/noticia/${slug(titulo)}-${id}/`;
+const urlTema = (id, nombre) => `/tema/${slug(nombre)}-${id}/`;
+const enlace = h => urlNoticia(h.id, h.t);
 
 // Convierte una fila de la base de datos en el formato corto que usan las páginas
 const mapear = x => ({ id: x.id, t: x.titulo, tot: x.total, voces: x.voces, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, ciego: x.punto_ciego, act: x.actualizada, f: x.imagen, fm: x.imagen_medio,

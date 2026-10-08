@@ -15,6 +15,7 @@
 <meta property="og:description" content="Todas las noticias de un mismo asunto, en orden, con quién cuenta cada una.">
 <meta property="og:url" content="https://vistaplena.es/tema.html">
 <meta property="og:image" content="https://vistaplena.es/og.png">
+<meta name="robots" content="noindex,follow">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -510,10 +511,10 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js?v=eec473de"></script>
+<script src="comun.js?v=574ca69a"></script>
 <script>
 // Página de un tema: un asunto de varios días que reúne varias historias (cada historia es un hecho distinto, con su cobertura)
-const id = Number(new URLSearchParams(location.search).get("id"));
+const id = Number(new URLSearchParams(location.search).get("id") || document.body.dataset.id);
 const art = document.getElementById("art");
 const hora = iso => new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 const dia = iso => {
@@ -582,12 +583,12 @@ function pintar(t, H){
     const [temas, filas] = await Promise.all([
       pedir(`temas?select=id,nombre,inicio,actualizado,historias,activo&id=eq.${id}`),
       pedir(`portada_v2?select=${CAMPOS},izq,cen,der&tema_id=eq.${id}&order=creada.desc`)]);
-    if (!temas.length || !filas.length) return noEncontrado();
+    if (!temas.length || !filas.length) return document.body.dataset.id ? null : noEncontrado();
     const H = filas.map(x => ({ ...mapear(x), izq: x.izq, cen: x.cen, der: x.der })).sort((a, b) => new Date(inicio(b)) - new Date(inicio(a)));
     pintar(temas[0], H);
     document.getElementById("estado").textContent = `Actualizado ${haceCuanto(temas[0].actualizado)}`;
   } catch (e) {
-    art.innerHTML = `<p class="vacia">No hemos podido cargar el tema. Comprueba tu conexión y vuelve a intentarlo.</p>`;
+    if (!document.body.dataset.id) art.innerHTML = `<p class="vacia">No hemos podido cargar el tema. Comprueba tu conexión y vuelve a intentarlo.</p>`;
   }
 })();
 </script>

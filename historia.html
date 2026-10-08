@@ -15,6 +15,7 @@
 <meta property="og:description" content="Quién cuenta esta noticia y cómo la titula cada lado.">
 <meta property="og:url" content="https://vistaplena.es/historia.html">
 <meta property="og:image" content="https://vistaplena.es/og.png">
+<meta name="robots" content="noindex,follow">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -486,11 +487,12 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=eec473de"></script>
+<script src="comun.js?v=574ca69a"></script>
 <script>
-const id = Number(new URLSearchParams(location.search).get("id"));
+const id = Number(new URLSearchParams(location.search).get("id") || document.body.dataset.id);
 const art = document.getElementById("art");
-const direccion = () => `${location.origin}${location.pathname}?id=${id}`;
+// Dirección para compartir: la limpia de la noticia (/noticia/titulo-123/)
+const direccion = () => location.origin + urlNoticia(id, (document.querySelector("#art h1") || {}).textContent || "");
 const COLOR = { izq: "var(--izq)", cen: "var(--cen)", der: "var(--der)" };
 const LADO = { izq: "izquierda", cen: "centro", der: "derecha" };
 const hora = iso => new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
@@ -642,8 +644,8 @@ async function hilo(h){
       pedir(`portada_v2?select=id,titulo,creada&anterior=eq.${h.id}&order=creada.desc&limit=1`).then(r => r[0])]);
     const p = document.getElementById("hilo"), dia = x => new Date(x.creada).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
     const partes = [];
-    if (antes) partes.push(`<span><b>Antes:</b> <a href="historia.html?id=${antes.id}">${esc(antes.titulo)}</a> (${dia(antes)})</span>`);
-    if (despues) partes.push(`<span><b>Después:</b> <a href="historia.html?id=${despues.id}">${esc(despues.titulo)}</a> (${dia(despues)})</span>`);
+    if (antes) partes.push(`<span><b>Antes:</b> <a href="${urlNoticia(antes.id, antes.titulo)}">${esc(antes.titulo)}</a> (${dia(antes)})</span>`);
+    if (despues) partes.push(`<span><b>Después:</b> <a href="${urlNoticia(despues.id, despues.titulo)}">${esc(despues.titulo)}</a> (${dia(despues)})</span>`);
     if (partes.length) { p.innerHTML = partes.join(""); p.hidden = false; }
   } catch (e) {}
 }
@@ -659,9 +661,9 @@ async function enTema(h){
     const dia = x => new Date(x.creada).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
     const p = document.getElementById("hilo");
     p.className = "en-tema";
-    p.innerHTML = `<span class="et">Tema${t.activo ? " · en desarrollo" : ""}</span><a class="nombre" href="tema.html?id=${t.id}">${esc(t.nombre)}</a>
-      ${lista.length ? `<ul>${lista.map(x => `<li><time>${dia(x)}</time><a href="historia.html?id=${x.id}">${esc(x.titulo)}</a></li>`).join("")}</ul>` : ""}
-      <a class="todo" href="tema.html?id=${t.id}">Ver la cronología completa (${t.historias} noticias) →</a>`;
+    p.innerHTML = `<span class="et">Tema${t.activo ? " · en desarrollo" : ""}</span><a class="nombre" href="${urlTema(t.id, t.nombre)}">${esc(t.nombre)}</a>
+      ${lista.length ? `<ul>${lista.map(x => `<li><time>${dia(x)}</time><a href="${urlNoticia(x.id, x.titulo)}">${esc(x.titulo)}</a></li>`).join("")}</ul>` : ""}
+      <a class="todo" href="${urlTema(t.id, t.nombre)}">Ver la cronología completa (${t.historias} noticias) →</a>`;
     p.hidden = false;
   } catch (e) { hilo(h); }
 }
@@ -680,7 +682,7 @@ async function relacionadas(h){
     const s = document.getElementById("relacionadas");
     s.innerHTML = `<h2 id="rel-t">Historias relacionadas</h2><div class="rel-grid">${lista.map(x => {
       const r = { pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der };
-      return `<a class="rel" href="historia.html?id=${x.id}">${x.imagen ? `<span class="rel-foto"><img src="${esc(x.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()"></span>` : ""}
+      return `<a class="rel" href="${urlNoticia(x.id, x.titulo)}">${x.imagen ? `<span class="rel-foto"><img src="${esc(x.imagen)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.remove()"></span>` : ""}
         <span class="rel-t">${esc(x.titulo)}</span>${barra(r)}<span class="rel-m">${x.total} medios${x.punto_ciego ? ` · <b>punto ciego</b>` : ""}</span></a>`;
     }).join("")}</div>`;
     s.hidden = false;
@@ -691,13 +693,13 @@ async function relacionadas(h){
   if (!id) return noEncontrada();
   try {
     const filas = await pedir(`portada_v2?id=eq.${id}&select=${CAMPOS}`);
-    if (!filas.length) return noEncontrada();
+    if (!filas.length) return document.body.dataset.id ? null : noEncontrada();
     const h = mapear(filas[0]);
     pintar(h);
     document.getElementById("estado").textContent = `Actualizada ${haceCuanto(filas[0].actualizada)}`;
     relacionadas(h); if (h.tema) enTema(h); else hilo(h);
   } catch (e) {
-    art.innerHTML = `<p class="vacia">No hemos podido cargar la historia. Comprueba tu conexión y vuelve a intentarlo.</p>`;
+    if (!document.body.dataset.id) art.innerHTML = `<p class="vacia">No hemos podido cargar la historia. Comprueba tu conexión y vuelve a intentarlo.</p>`;
   }
 })();
 </script>
