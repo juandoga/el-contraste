@@ -138,7 +138,7 @@ Deno.serve(async (req) => {
   const informe: Record<string, string | number> = {};
   const { data: medios } = await db.from("medios").select("*").eq("activo", true);
   const desde = Date.now() - VENTANA_H * 3600e3;
-  if (fase !== "agrupar") {
+  if (fase !== "agrupar" && fase !== "simular") {
 
   // 1. Leer feeds en paralelo
   await Promise.all((medios ?? []).map(async (m) => {
@@ -177,6 +177,11 @@ Deno.serve(async (req) => {
     if (!data || data.length < 1000) break;
   }
   recientes.sort((x, y) => +new Date(x.publicado) - +new Date(y.publicado));
+  // Para comparar se usan solo las palabras del titular: la entradilla mete palabras de contexto
+  // («los favoritos», «el año pasado») que acercan noticias distintas. Si el titular tiene menos de 3, se usa lo guardado.
+  const simular = fase === "simular", antigua = simular && new URL(req.url).searchParams.has("antigua"); // antigua: compara con el método anterior
+  if (!antigua) for (const a of recientes) { const t = palabras(a.titulo); if (t.length >= 3) a.palabras = t; }
+  if (simular) for (const a of recientes) a.historia_id = null;
   // Los directos ("en directo", "última hora") mezclan muchos temas: no se agrupan.
   const esDirecto = (t: string) => /(en directo|directo:|última hora|ultima hora|minuto a minuto|horóscopo|noticias de hoy|resumen de noticias|lotería|sorteo|el tiempo hoy)/i.test(t);
   const arts = recientes.filter((a) => !esDirecto(a.titulo) && a.palabras.length >= 3);
@@ -190,8 +195,10 @@ Deno.serve(async (req) => {
   // Palabra «poco frecuente»: aparece en menos de 1 de cada 40 titulares recientes
   const RARA = Math.log((N + 1) / (N / 40 + 1));
 
-  type Grupo = { id: number | null; palabras: Map<string, number>; ids: number[]; medios: Set<number> };
+  // Grupo = una historia. «ultimo»: hora del artículo más reciente. «padre»: la historia de la que se separó por traer un hecho nuevo.
+  type Grupo = { id: number | null; palabras: Map<string, number>; ids: number[]; medios: Set<number>; primero: number; ultimo: number; padre: Grupo | null };
   const grupos = new Map<string, Grupo>();
+  const grupoNuevo = (padre: Grupo | null = null): Grupo => ({ id: null, palabras: new Map(), ids: [], medios: new Set(), primero: Infinity, ultimo: 0, padre });
   // Índice palabra → grupos que la contienen: así cada artículo solo se compara con grupos que comparten alguna palabra.
   const indice = new Map<string, Set<Grupo>>();
   const anadir = (g: Grupo, a: any) => {
@@ -199,22 +206,27 @@ Deno.serve(async (req) => {
       g.palabras.set(w, (g.palabras.get(w) ?? 0) + 1);
       let s = indice.get(w); if (!s) indice.set(w, s = new Set()); s.add(g);
     }
-    g.ids.push(a.id); g.medios.add(a.medio_id);
+    g.ids.push(a.id); g.medios.add(a.medio_id); g.ultimo = Math.max(g.ultimo, +new Date(a.publicado)); g.primero = Math.min(g.primero, +new Date(a.publicado));
   };
   for (const a of arts) if (a.historia_id) {
     const k = "h" + a.historia_id;
     let g = grupos.get(k);
-    if (!g) { g = { id: a.historia_id, palabras: new Map(), ids: [], medios: new Set() }; grupos.set(k, g); }
+    if (!g) { g = { ...grupoNuevo(), id: a.historia_id }; grupos.set(k, g); }
     anadir(g, a);
   }
-  let nuevos = 0;
+  // Una historia solo admite titulares nuevos si se ha movido en las últimas 12 horas
+  const VIVA = 12 * 3600e3;
+  // Historia de la que salió cada artículo «con novedad»: si nadie más cuenta esa novedad, vuelve a ella
+  const deDonde = new Map<number, Grupo>();
+  let nuevos = 0, separados = 0;
   for (const a of arts) {
     if (a.historia_id) continue;
+    const t = +new Date(a.publicado);
     const total = a.palabras.reduce((s: number, w: string) => s + peso(w), 0) || 1;
-    let mejor: Grupo | null = null, mejorScore = 0;
     const candidatos = new Set<Grupo>();
     for (const w of a.palabras) for (const g of indice.get(w) ?? []) candidatos.add(g);
-    for (const g of candidatos) {
+    // Lo que el titular tiene en común con el grupo
+    const parecido = (g: Grupo) => {
       // Solo cuentan las palabras que aparecen en al menos un 25 % de los artículos del grupo:
       // así una historia grande no se traga noticias vecinas que comparten una palabra suelta.
       const minimo = Math.max(1, Math.ceil(g.ids.length * 0.25));
@@ -223,20 +235,83 @@ Deno.serve(async (req) => {
       const score = comp / total;
       // Además tiene que compartir al menos una palabra poco frecuente (un nombre, un dato, un tema concreto):
       // dos titulares que solo coinciden en «PSOE» o «Gobierno» no tienen por qué hablar de lo mismo.
-      const vale = raras >= 1 && ((n >= 3 && score >= 0.4) || (n >= 2 && score >= 0.6));
-      if (vale && score > mejorScore) { mejor = g; mejorScore = score; }
+      return raras >= 1 && ((n >= 3 && score >= 0.4) || (n >= 2 && score >= 0.6)) ? score : 0;
+    };
+    let mejor: Grupo | null = null, mejorScore = 0;
+    for (const g of candidatos) {
+      if (!antigua && t - g.ultimo > VIVA) continue; // historia apagada
+      const s = parecido(g);
+      if (s > mejorScore) { mejor = g; mejorScore = s; }
     }
-    if (!mejor) { mejor = { id: null, palabras: new Map(), ids: [], medios: new Set() }; grupos.set("n" + a.id, mejor); nuevos++; }
+    // Lo que el titular trae de nuevo: palabras poco frecuentes (nombres, datos) que la historia no tenía.
+    // Si trae dos o más, es otro hecho («Anne Carson gana el Nobel» frente a «los favoritos al Nobel»):
+    // no entra en la historia vieja, sino en una nueva que queda enlazada a ella.
+    // Solo se mira cuando la historia ya lleva 6 horas abierta: en las primeras horas, cada medio cuenta
+    // el mismo hecho con palabras y detalles distintos, y separarlos partiría la noticia en trozos.
+    if (!antigua && mejor && t - mejor.primero > 6 * 3600e3) {
+      const novedad = a.palabras.filter((w: string) => peso(w) >= RARA && !mejor!.palabras.has(w)).length;
+      if (novedad >= 2) {
+        const viejo = mejor;
+        let alt: Grupo | null = null, altScore = 0;
+        // ¿Hay ya una historia joven (menos de 6 horas) o una que salió de esta con la misma novedad?
+        for (const g of candidatos) if (g !== viejo && t - g.ultimo <= VIVA && (g.padre === viejo || t - g.primero <= 6 * 3600e3)) { const s = parecido(g); if (s > altScore) { alt = g; altScore = s; } }
+        if (alt) { alt.padre ??= viejo; mejor = alt; }
+        else { mejor = grupoNuevo(viejo); grupos.set("n" + a.id, mejor); nuevos++; }
+        deDonde.set(a.id, viejo); separados++;
+      }
+    }
+    if (!mejor) { mejor = grupoNuevo(); grupos.set("n" + a.id, mejor); nuevos++; }
     anadir(mejor, a);
   }
 
-  // 3. Guardar: crear historias nuevas con 2+ medios y asignar artículos
   const porId = new Map(arts.map((a) => [a.id, a]));
-  let asignados = 0;
+  // ?fase=simular: agrupa desde cero en memoria, sin guardar nada, y devuelve un informe para revisar el resultado
+  if (simular) {
+    const buscar = (new URL(req.url).searchParams.get("buscar") ?? "").split(",").filter(Boolean);
+    const hora = (n: number) => new Date(n).toLocaleString("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    // Misma fusión que el paso 3b, hecha en memoria
+    const vivos = [...grupos.values()].filter((g) => g.medios.size >= 2).sort((x, y) => y.ids.length - x.ids.length);
+    const nuc = new Map(vivos.map((g) => [g, new Set([...g.palabras.entries()].filter(([, c]) => c >= Math.max(1, Math.ceil(g.ids.length * 0.25))).map(([w]) => w))]));
+    const sum = (g: Grupo) => [...nuc.get(g)!].reduce((s, w) => s + peso(w), 0);
+    const fuera = new Set<Grupo>(); let fus = 0;
+    for (let i = 0; i < vivos.length; i++) {
+      const A = vivos[i]; if (fuera.has(A)) continue;
+      for (let j = i + 1; j < vivos.length; j++) {
+        const B = vivos[j]; if (fuera.has(B)) continue;
+        if (!antigua && (Math.abs(A.ultimo - B.ultimo) > VIVA || A.padre === B || B.padre === A)) continue;
+        let comun = 0, n = 0, raras = 0;
+        for (const w of nuc.get(A)!) if (nuc.get(B)!.has(w)) { comun += peso(w); n++; if (peso(w) >= RARA) raras++; }
+        if (n >= 3 && raras >= 2 && comun / (Math.min(sum(A), sum(B)) || 1) >= 0.45) {
+          A.ids.push(...B.ids); B.medios.forEach((m) => A.medios.add(m)); A.primero = Math.min(A.primero, B.primero); A.ultimo = Math.max(A.ultimo, B.ultimo);
+          fuera.add(B); fus++;
+        }
+      }
+    }
+    const validos = vivos.filter((g) => !fuera.has(g));
+    const ficha = (g: Grupo) => ({ titulos: g.ids.slice(0, 4).map((id) => porId.get(id)!.titulo).concat(g.ids.length > 4 ? [`… y ${g.ids.length - 4} más`] : []),
+      medios: g.medios.size, desde: hora(g.primero), hasta: hora(g.ultimo), antes: g.padre ? porId.get(g.padre.ids[0])!.titulo : null });
+    const informe2: Record<string, unknown> = { historias: validos.length, separados, fusiones: fus, abiertas_mas_de_12h: validos.filter((g) => g.ultimo - g.primero > VIVA).length };
+    for (const b of buscar) { const k = palabras(b)[0]; informe2[b] = validos.filter((g) => g.palabras.has(k)).sort((x, y) => x.primero - y.primero).map(ficha); }
+    return new Response(JSON.stringify(informe2, null, 1), { headers: { "Content-Type": "application/json" } });
+  }
+
+  // 3. Guardar: crear historias nuevas con 2+ medios y asignar artículos
+  let asignados = 0, devueltos = 0;
+  const devolver = new Map<number, number[]>();
   for (const g of grupos.values()) {
     const pendientes = g.ids.filter((id) => !porId.get(id)!.historia_id);
     if (!pendientes.length) continue;
-    if (g.id === null && g.medios.size < 2) continue; // espera a que otro medio la cuente
+    if (g.id === null && g.medios.size < 2) {
+      // Espera a que otro medio la cuente. Si era una «novedad» que nadie más ha contado en 2 horas,
+      // no era un hecho nuevo sino un detalle: vuelve a la historia de la que salió.
+      for (const id of pendientes) {
+        const v = deDonde.get(id);
+        if (v?.id && Date.now() - +new Date(porId.get(id)!.publicado) > 2 * 3600e3) {
+          const l = devolver.get(v.id) ?? []; l.push(id); devolver.set(v.id, l);
+        }
+      }
+      continue;
+    }
     // Titular: el que mejor resume lo que cuentan todos (el que más palabras clave del grupo contiene);
     // si hay empate, el del medio más cercano al centro y, después, el más antiguo.
     const minimoG = Math.max(1, Math.ceil(g.ids.length * 0.25));
@@ -247,13 +322,18 @@ Deno.serve(async (req) => {
     const ref = lista[0];
     const top = [...g.palabras.entries()].sort((x, y) => y[1] - x[1]).slice(0, 40).map((e) => e[0]);
     if (g.id === null) {
-      const { data } = await db.from("historias").insert({ titulo: ref.titulo, resumen: ref.resumen, palabras: top }).select("id").single();
+      const { data } = await db.from("historias").insert({ titulo: ref.titulo, resumen: ref.resumen, palabras: top, anterior: g.padre?.id ?? null }).select("id").single();
       g.id = data!.id;
     } else {
       await db.from("historias").update({ titulo: ref.titulo, resumen: ref.resumen, palabras: top, actualizada: new Date().toISOString() }).eq("id", g.id);
     }
     await db.from("articulos").update({ historia_id: g.id }).in("id", pendientes);
     asignados += pendientes.length;
+  }
+  for (const [hid, ids] of devolver) {
+    await db.from("articulos").update({ historia_id: hid }).in("id", ids);
+    await db.from("historias").update({ actualizada: new Date().toISOString() }).eq("id", hid);
+    devueltos += ids.length;
   }
 
   // 3b. Fusionar historias duplicadas (el mismo hecho contado con palabras distintas)
@@ -264,11 +344,18 @@ Deno.serve(async (req) => {
   const suma = (g: Grupo) => [...nucleos.get(g)!].reduce((s, w) => s + peso(w), 0);
   const absorbido = new Set<Grupo>();
   let fusiones = 0;
+  // Historias que se separaron a propósito (una continúa a la otra): nunca se vuelven a juntar
+  const { data: enlaces } = await db.from("historias").select("id, anterior").not("anterior", "is", null).gte("actualizada", desdeISO);
+  const separadas = new Set((enlaces ?? []).map((e: any) => e.id + "-" + e.anterior));
+  for (const g of conId) if (g.padre?.id) separadas.add(g.id + "-" + g.padre.id);
+  const hermanas = (x: Grupo, y: Grupo) => separadas.has(x.id + "-" + y.id) || separadas.has(y.id + "-" + x.id);
   conId.sort((x, y) => y.ids.length - x.ids.length);
   for (let i = 0; i < conId.length; i++) {
     const A = conId[i]; if (absorbido.has(A)) continue;
     for (let j = i + 1; j < conId.length; j++) {
       const B = conId[j]; if (absorbido.has(B)) continue;
+      // Solo se juntan historias vivas a la vez (menos de 12 horas entre sus últimos titulares) y que no se separaron a propósito
+      if (Math.abs(A.ultimo - B.ultimo) > VIVA || hermanas(A, B)) continue;
       // Solo se fusionan si comparten casi todo su núcleo (al menos 3 palabras clave y el 45 % de su peso)
       let comun = 0, n = 0, raras = 0;
       for (const w of nucleos.get(A)!) if (nucleos.get(B)!.has(w)) { comun += peso(w); n++; if (peso(w) >= RARA) raras++; }
@@ -288,6 +375,6 @@ Deno.serve(async (req) => {
   await db.from("articulos").delete().lt("publicado", viejo);
   await db.from("historias").delete().lt("actualizada", viejo);
 
-  return new Response(JSON.stringify({ medios: informe, articulos_recientes: arts.length, grupos_nuevos: nuevos, asignados, fusiones }, null, 1),
+  return new Response(JSON.stringify({ medios: informe, articulos_recientes: arts.length, grupos_nuevos: nuevos, asignados, separados, devueltos, fusiones }, null, 1),
     { headers: { "Content-Type": "application/json" } });
 });

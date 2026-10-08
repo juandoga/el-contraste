@@ -119,6 +119,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .mas{margin-top:10px;background:none;border:0;padding:0;font-size:var(--t-s);font-weight:700;color:var(--gris);text-decoration:underline;text-underline-offset:3px}
 .principal > div:first-child{position:sticky;top:96px;align-self:start}
 @media (max-width:880px){.principal > div:first-child{position:static}}
+.asi .ver-todos{display:none;margin-top:12px;font-weight:600;font-size:var(--t-s)}
+/* En móvil, bajo la noticia principal, un solo titular por lado (el más reciente) y como mucho dos líneas: el resto, dentro de la historia */
+@media (max-width:880px){
+  .asi .bloque li:nth-child(n+2),.asi .mas{display:none}
+  .asi .bloque li a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .asi .bloque{padding:10px 0}
+  .asi .ver-todos{display:inline-block}
+}
 .vacio{margin:0;color:var(--gris);font-size:var(--t-s);font-style:italic}
 
 /* Puntos ciegos */
@@ -339,6 +347,9 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .volver{color:var(--gris);text-decoration:none;font-weight:500}
 .volver:hover{color:var(--tinta)}
 .hist-cab{margin:28px 0 32px;max-width:920px}
+.hilo{margin:14px 0 0;display:grid;gap:6px;font-size:var(--t-s);color:var(--gris);line-height:1.45}
+.hilo b{color:var(--tinta);font-weight:600}
+.hilo a{color:var(--tinta)}
 .hist-etis{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
 .hist-etis .tema{text-decoration:none;padding:5px 12px}
 .hist-cab h1,.hist-vacia h1{margin:0 0 16px;font-family:var(--titular);font-weight:600;font-size:var(--t-xxl);line-height:1.06;letter-spacing:-.02em;color:var(--tinta);text-wrap:balance}
@@ -458,7 +469,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=f25b4c2c"></script>
+<script src="comun.js?v=3c520bbc"></script>
 <script>
 const id = Number(new URLSearchParams(location.search).get("id"));
 const art = document.getElementById("art");
@@ -525,7 +536,7 @@ function cronologia(h){
 // Titulares por lado, con la etiqueta y el grupo propietario de cada medio
 function fuentes(h){
   const g = { izq: [], cen: [], der: [] };
-  for (const a of porMedio(h)) g[lado(a.o)].push(a);
+  for (const a of recientes(h)) g[lado(a.o)].push(a);
   const col = k => `<div class="bloque"><div class="lado eti"><i style="background:${COLOR[k]}"></i>${k === "cen" ? "Centro" : LADO[k][0].toUpperCase() + LADO[k].slice(1)} · ${g[k].length}</div>
     ${g[k].length ? `<ul>${g[k].map(a => `<li><span class="medio">${esc(a.m)} <span class="ficha">${ETIQUETA[a.o]}${a.g && a.g !== a.m ? ` · Grupo ${esc(a.g)}` : ""}${a.p ? ` · ${hora(a.p)}` : ""}</span></span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`).join("")}</ul>`
       : `<p class="vacio">Ningún medio de este lado la ha publicado.</p>`}</div>`;
@@ -559,6 +570,7 @@ function pintar(h){
       <div class="hist-etis">${secciones.map(s => `<a class="tema" href="./?seccion=${s.id}">${s.nombre}</a>`).join("")}${h.ciego ? `<span class="chip">Punto ciego de la ${h.ciego}</span>` : ""}</div>
       <h1>${esc(h.t)}</h1>
       ${meta(h)}
+      <p class="hilo" id="hilo" hidden></p>
     </header>
     <div class="hist-cuerpo">
       <div class="hist-izq">
@@ -605,6 +617,20 @@ function pintar(h){
   });
 }
 
+// Hilo: la historia anterior de la que esta se separó al llegar un hecho nuevo, y la que la continúa
+async function hilo(h){
+  try {
+    const [antes, despues] = await Promise.all([
+      h.ant ? pedir(`portada_v2?select=id,titulo,creada&id=eq.${h.ant}`).then(r => r[0] || pedir(`archivo?select=historia_id,titulo,creada&historia_id=eq.${h.ant}`).then(x => x[0] && { id: x[0].historia_id, titulo: x[0].titulo, creada: x[0].creada })) : null,
+      pedir(`portada_v2?select=id,titulo,creada&anterior=eq.${h.id}&order=creada.desc&limit=1`).then(r => r[0])]);
+    const p = document.getElementById("hilo"), dia = x => new Date(x.creada).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+    const partes = [];
+    if (antes) partes.push(`<span><b>Antes:</b> <a href="historia.html?id=${antes.id}">${esc(antes.titulo)}</a> (${dia(antes)})</span>`);
+    if (despues) partes.push(`<span><b>Después:</b> <a href="historia.html?id=${despues.id}">${esc(despues.titulo)}</a> (${dia(despues)})</span>`);
+    if (partes.length) { p.innerHTML = partes.join(""); p.hidden = false; }
+  } catch (e) {}
+}
+
 // Historias relacionadas: las que comparten más palabras clave con esta
 const VACIAS_R = new Set("para sobre desde contra entre hasta tras como pero porque cuando donde según este esta estos estas tiene tienen será después antes ahora todos todas otro otra otros nuevo nueva españa gobierno".split(" "));
 const claves = t => new Set(t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(w => w.length >= 5 && !VACIAS_R.has(w)));
@@ -634,7 +660,7 @@ async function relacionadas(h){
     const h = mapear(filas[0]);
     pintar(h);
     document.getElementById("estado").textContent = `Actualizada ${haceCuanto(filas[0].actualizada)}`;
-    relacionadas(h);
+    relacionadas(h); hilo(h);
   } catch (e) {
     art.innerHTML = `<p class="vacia">No hemos podido cargar la historia. Comprueba tu conexión y vuelve a intentarlo.</p>`;
   }

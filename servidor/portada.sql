@@ -1,6 +1,8 @@
 -- Vista Plena — vista «portada_v2»: calcula, para cada historia, quién la cuenta y si es un punto ciego.
 -- Es la que alimenta la web y los datos abiertos. Se ejecuta en Supabase (Postgres).
 
+alter table historias add column if not exists anterior bigint;
+
 create or replace view portada_v2 with (security_invoker = true) as
 with por_medio as (
   -- Cada medio cuenta una vez por historia, con su lado (izquierda, centro o derecha)
@@ -43,21 +45,23 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
   coalesce(t.ligera, false) as ligera,
   e.entradilla, e.entradilla_medio,
   -- Orden de la portada: medios que han contado la historia en las últimas 12 horas
-  (select count(distinct a.medio_id) from articulos a where a.historia_id = h.id and a.publicado > now() - interval '12 hours') as medios_12h
+  (select count(distinct a.medio_id) from articulos a where a.historia_id = h.id and a.publicado > now() - interval '12 hours') as medios_12h,
+  -- Historia anterior de la que esta se separó porque trae un hecho nuevo (p. ej. «los favoritos al Nobel» → «Anne Carson gana el Nobel»)
+  h.anterior
 from historias h
 join cuentas c on c.historia_id = h.id
 left join tipo t on t.historia_id = h.id
 left join lateral (
-  -- Foto: la del medio más cercano al centro que la publique
+  -- Foto: la del medio más cercano al centro que la publique (la más reciente)
   select a.imagen, m.nombre as imagen_medio from articulos a join medios m on m.id = a.medio_id
   where a.historia_id = h.id and a.imagen is not null and a.imagen !~* '\.(mp4|m3u8|mp3|webm|mov)(\?|$)'
-  order by abs(m.orientacion), a.publicado limit 1
+  order by abs(m.orientacion), a.publicado desc limit 1
 ) f on true
 left join lateral (
-  -- Entradilla: el resumen que publica el medio más cercano al centro (con al menos 80 caracteres)
+  -- Entradilla: el resumen que publica el medio más cercano al centro (con al menos 80 caracteres; la más reciente)
   select a.resumen as entradilla, m.nombre as entradilla_medio from articulos a join medios m on m.id = a.medio_id
   where a.historia_id = h.id and char_length(a.resumen) >= 80
-  order by abs(m.orientacion), a.publicado limit 1
+  order by abs(m.orientacion), a.publicado desc limit 1
 ) e on true
 where c.total >= 3;
 

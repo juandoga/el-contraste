@@ -119,6 +119,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .mas{margin-top:10px;background:none;border:0;padding:0;font-size:var(--t-s);font-weight:700;color:var(--gris);text-decoration:underline;text-underline-offset:3px}
 .principal > div:first-child{position:sticky;top:96px;align-self:start}
 @media (max-width:880px){.principal > div:first-child{position:static}}
+.asi .ver-todos{display:none;margin-top:12px;font-weight:600;font-size:var(--t-s)}
+/* En móvil, bajo la noticia principal, un solo titular por lado (el más reciente) y como mucho dos líneas: el resto, dentro de la historia */
+@media (max-width:880px){
+  .asi .bloque li:nth-child(n+2),.asi .mas{display:none}
+  .asi .bloque li a{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .asi .bloque{padding:10px 0}
+  .asi .ver-todos{display:inline-block}
+}
 .vacio{margin:0;color:var(--gris);font-size:var(--t-s);font-style:italic}
 
 /* Puntos ciegos */
@@ -434,7 +442,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js?v=f25b4c2c"></script>
+<script src="comun.js?v=3c520bbc"></script>
 
 </body>
 </html>
