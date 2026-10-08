@@ -41,7 +41,9 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
      from articulos a join medios m on m.id = a.medio_id where a.historia_id = h.id) as articulos,
   f.imagen, f.imagen_medio,
   coalesce(t.ligera, false) as ligera,
-  e.entradilla, e.entradilla_medio
+  e.entradilla, e.entradilla_medio,
+  -- Orden de la portada: medios que han contado la historia en las últimas 12 horas
+  (select count(distinct a.medio_id) from articulos a where a.historia_id = h.id and a.publicado > now() - interval '12 hours') as medios_12h
 from historias h
 join cuentas c on c.historia_id = h.id
 left join tipo t on t.historia_id = h.id
