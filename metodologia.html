@@ -206,6 +206,19 @@ article:hover .foto img,.hero:hover img{transform:scale(1.04)}
 .destacar{animation:destello 1.6s ease}
 @keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
 
+/* Lo último */
+.ultimo .cab-seccion{margin-top:48px}
+.ultimo-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
+@media (max-width:760px){.ultimo-lista{grid-template-columns:1fr}}
+.ultimo-lista li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:14px 0;border-top:1px solid var(--linea)}
+.ultimo-lista time{font-family:var(--num);font-size:var(--t-s);color:var(--tinta);padding-top:2px}
+.ultimo-lista a{display:grid;gap:6px;text-decoration:none;color:var(--tinta);min-width:0}
+.ultimo-lista .t{font-family:var(--titular);font-weight:600;font-size:1.08rem;line-height:1.25}
+.ultimo-lista a:hover .t{text-decoration:underline;text-underline-offset:3px}
+.ultimo-lista .m{font-size:var(--t-xs);color:var(--gris)}
+.ultimo-lista .m b{color:var(--aviso)}
+.ultimo-lista .barra{height:5px;max-width:260px}
+
 /* Boletín */
 .boletin{scroll-margin-top:90px;margin-top:64px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;background:var(--tinta);color:var(--fondo);border-radius:16px;padding:clamp(24px,4vw,44px)}
 @media (max-width:820px){.boletin{grid-template-columns:1fr;gap:20px}}
@@ -504,7 +517,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js?v=f3e33a8f"></script>
+<script src="comun.js?v=f25b4c2c"></script>
 <script>
 const ETI = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
 const COL = { "-2": "var(--izq)", "-1": "var(--izq)", "0": "var(--cen)", "1": "var(--der)", "2": "var(--der)" };

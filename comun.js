@@ -1,6 +1,6 @@
 // Vista Plena — piezas comunes a todas las páginas: menú y funciones para pintar una historia.
 const SUPA = { url: "https://yzreenyaerjitbfxsiah.supabase.co", key: "sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF" };
-const CAMPOS = "id,titulo,total,voces,imagen,imagen_medio,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos,entradilla,entradilla_medio";
+const CAMPOS = "id,creada,titulo,total,voces,imagen,imagen_medio,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos,entradilla,entradilla_medio";
 const ETIQUETA = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
 const lado = o => o < 0 ? "izq" : o > 0 ? "der" : "cen";
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -8,7 +8,7 @@ const enlace = h => `historia.html?id=${h.id}`;
 
 // Convierte una fila de la base de datos en el formato corto que usan las páginas
 const mapear = x => ({ id: x.id, t: x.titulo, tot: x.total, voces: x.voces, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, ciego: x.punto_ciego, act: x.actualizada, f: x.imagen, fm: x.imagen_medio,
-  ent: x.entradilla, entm: x.entradilla_medio,
+  ent: x.entradilla, entm: x.entradilla_medio, cr: x.creada,
   a: (x.articulos || []).map(a => ({ m: a.medio, o: a.orientacion, t: a.titulo, u: a.url, g: a.grupo, p: a.publicado })) });
 
 async function pedir(ruta){
