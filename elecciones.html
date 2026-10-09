@@ -104,6 +104,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .cab-seccion{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:56px 0 20px;flex-wrap:wrap}
 .cab-seccion h2{margin:0;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;color:var(--tinta)}
 .cab-seccion p{margin:0;color:var(--gris);font-size:var(--t-s);max-width:60ch}
+.info{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;font-family:var(--ui);font-weight:400;letter-spacing:0;text-transform:none}
+.info-b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gris);background:transparent;color:var(--gris);font:italic 700 12px/1 Georgia,serif;cursor:pointer;padding:0;display:inline-grid;place-items:center}
+.info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
+.info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
+.info-p a{color:var(--tinta)}
+
 .meta{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:var(--t-s);color:var(--gris)}
 .chip{font-size:var(--t-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aviso);background:color-mix(in srgb,var(--aviso) 12%,transparent);padding:3px 8px;border-radius:4px}
 
@@ -376,6 +382,11 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .tema-sueltos .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
 .tema-sueltos a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600;line-height:1.3}
 .tema-sueltos a:hover{text-decoration:underline;text-underline-offset:3px}
+.info{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;font-family:var(--ui);font-weight:400;letter-spacing:0;text-transform:none}
+.info-b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gris);background:transparent;color:var(--gris);font:italic 700 12px/1 Georgia,serif;cursor:pointer;padding:0;display:inline-grid;place-items:center}
+.info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
+.info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
+.info-p a{color:var(--tinta)}
 .otro-enfoque{margin-top:14px;padding-top:12px;border-top:1px dashed var(--linea)}
 .otro-enfoque ul{opacity:.85}
 .otro-enfoque .aparte{margin:2px 0 8px}
@@ -540,7 +551,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=04065cc9"></script>
+<script src="comun.js?v=329b8de0"></script>
 <script>
 const fechaLarga = d => new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
 const fechaCorta = d => new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
@@ -569,7 +580,7 @@ function votaciones(id){
   if (!L.length) return `<p class="g-vacio">Todavía no hemos encontrado votaciones del Pleno sobre este tema en esta legislatura.</p>`;
   const tabla = lista => `<div class="vot-wrap"><table class="vot"><thead><tr><th>Qué se votó</th>${PARTIDOS_V.map(p => `<th>${p}</th>`).join("")}</tr></thead><tbody>${lista.map(filaVot).join("")}</tbody></table></div>`;
   return tabla(L.slice(0, 5)) + (L.length > 5 ? `<details class="vot-mas"><summary>Ver las otras ${L.length - 5} votaciones</summary>${tabla(L.slice(5))}</details>` : "") +
-    `<div class="vot-ley"><span class="vt si">Sí</span> a favor <span class="vt no">No</span> en contra <span class="vt ab">Abst.</span> abstención · Voto de la mayoría de los diputados de cada partido · Cada votación enlaza a su acta oficial</div>`;
+    `<div class="vot-ley"><span class="vt si">Sí</span> a favor <span class="vt no">No</span> en contra <span class="vt ab">Abst.</span> abstención · Cada votación enlaza a su acta oficial</div>`;
 }
 
 function pintar(){
@@ -601,8 +612,8 @@ function pintar(){
           : `<p class="pend">Su programa no incluye propuestas sobre este tema.</p>`}</div>`;
       }).join("")}</div>` : ""}
       ${P.some(p => !p.programa) ? `<p class="pendientes"><span class="eti">Programa pendiente</span>${P.filter(p => !p.programa).map(p => `<span class="chip-p">${esc(p.nombre)}</span>`).join("")}</p>` : ""}</div>
-      <div class="g-parte"><h3><span class="n">4</span>Qué ha votado cada partido</h3>
-        <p class="aparte">Leyes, decretos y proposiciones de ley votados en el Pleno del Congreso en esta legislatura, de lo más reciente a lo más antiguo. Las elegimos por las palabras de su título, así que puede colarse alguna de otro tema: si la ves, <a href="https://github.com/juandoga/vistaplena/issues/new" target="_blank" rel="noopener">avísanos</a>.</p>
+      <div class="g-parte"><h3><span class="n">4</span>Qué ha votado cada partido${info(`Leyes, decretos y proposiciones de ley votados en el Pleno del Congreso en esta legislatura, de lo más reciente a lo más antiguo. Mostramos lo que votó la mayoría de los diputados de cada partido. Las elegimos por las palabras de su título, así que puede colarse alguna de otro tema: si la ves, <a href="https://github.com/juandoga/vistaplena/issues/new" target="_blank" rel="noopener">avísanos</a>.`, "Qué votaciones salen")}</h3>
+
         ${votaciones(t.id)}</div>
       ${hoy.length ? `<div class="hoy"><span class="eti">Hoy en los medios</span>${hoy.map(h => `<a class="hoy-item" href="${enlace(h)}">${esc(h.t)}${barra(h)}<span class="m">${h.tot} medios</span></a>`).join("")}<a class="mas-sec" href="./?seccion=${s.id}">Más noticias de ${esc(t.nombre.toLowerCase())} →</a></div>` : ""}
     </section>`;

@@ -104,6 +104,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .cab-seccion{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:56px 0 20px;flex-wrap:wrap}
 .cab-seccion h2{margin:0;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;color:var(--tinta)}
 .cab-seccion p{margin:0;color:var(--gris);font-size:var(--t-s);max-width:60ch}
+.info{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;font-family:var(--ui);font-weight:400;letter-spacing:0;text-transform:none}
+.info-b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gris);background:transparent;color:var(--gris);font:italic 700 12px/1 Georgia,serif;cursor:pointer;padding:0;display:inline-grid;place-items:center}
+.info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
+.info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
+.info-p a{color:var(--tinta)}
+
 .meta{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:var(--t-s);color:var(--gris)}
 .chip{font-size:var(--t-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aviso);background:color-mix(in srgb,var(--aviso) 12%,transparent);padding:3px 8px;border-radius:4px}
 
@@ -376,6 +382,11 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .tema-sueltos .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
 .tema-sueltos a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600;line-height:1.3}
 .tema-sueltos a:hover{text-decoration:underline;text-underline-offset:3px}
+.info{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;font-family:var(--ui);font-weight:400;letter-spacing:0;text-transform:none}
+.info-b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gris);background:transparent;color:var(--gris);font:italic 700 12px/1 Georgia,serif;cursor:pointer;padding:0;display:inline-grid;place-items:center}
+.info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
+.info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
+.info-p a{color:var(--tinta)}
 .otro-enfoque{margin-top:14px;padding-top:12px;border-top:1px dashed var(--linea)}
 .otro-enfoque ul{opacity:.85}
 .otro-enfoque .aparte{margin:2px 0 8px}
@@ -524,7 +535,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=04065cc9"></script>
+<script src="comun.js?v=329b8de0"></script>
 <script>
 const id = Number(new URLSearchParams(location.search).get("id") || document.body.dataset.id);
 const art = document.getElementById("art");
@@ -598,7 +609,7 @@ function fuentes(h){
   const li = a => `<li><span class="medio">${esc(a.m)} <span class="ficha">${ETIQUETA[a.o]}${a.g && a.g !== a.m ? ` · Grupo ${esc(a.g)}` : ""}${a.p ? ` · ${hora(a.p)}` : ""}</span></span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`;
   const col = k => `<div class="bloque"><div class="lado eti"><i style="background:${COLOR[k]}"></i>${k === "cen" ? "Centro" : LADO[k][0].toUpperCase() + LADO[k].slice(1)} · ${g[k].length}</div>
     ${g[k].length ? `<ul>${g[k].map(li).join("")}</ul>` : `<p class="vacio">Ningún medio de este lado ha publicado este mismo hecho.</p>`}
-    ${otros(k).length ? `<div class="otro-enfoque"><p class="eti">Con otro enfoque</p><p class="aparte">Hablan de lo mismo, pero su titular cuenta otro aspecto. No entran en el porcentaje.</p><ul>${otros(k).map(li).join("")}</ul></div>` : ""}</div>`;
+    ${otros(k).length ? `<div class="otro-enfoque"><p class="eti">Con otro enfoque${info("Medios de este lado que hablan de lo mismo, pero su titular cuenta otro aspecto. No entran en el porcentaje, pero sí cuentan para no marcar la noticia como de cobertura desigual.", "Qué es «con otro enfoque»")}</p><ul>${otros(k).map(li).join("")}</ul></div>` : ""}</div>`;
   return col("izq") + col("cen") + col("der");
 }
 
@@ -649,8 +660,7 @@ function pintar(h){
         ${compartir(h)}
       </div>
       <section class="hist-asi" aria-labelledby="asi-t">
-        <h2 id="asi-t">Así la titula cada lado</h2>
-        <p class="aparte">Cada titular enlaza a la noticia original. Junto al medio, su etiqueta, su grupo propietario y la hora de publicación.</p>
+        <h2 id="asi-t">Así la titula cada lado${info("Cada titular enlaza a la noticia original. Junto al medio, su etiqueta, su grupo propietario y la hora de publicación. <a href='metodologia.html#etiquetas'>De dónde sale cada etiqueta</a>", "Cómo leer los titulares")}</h2>
         ${fuentes(h)}
         ${avisar()}
       </section>

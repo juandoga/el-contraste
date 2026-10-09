@@ -104,6 +104,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .cab-seccion{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:56px 0 20px;flex-wrap:wrap}
 .cab-seccion h2{margin:0;font-family:var(--ui);font-weight:900;font-size:var(--t-xl);letter-spacing:-.025em;color:var(--tinta)}
 .cab-seccion p{margin:0;color:var(--gris);font-size:var(--t-s);max-width:60ch}
+.info{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;font-family:var(--ui);font-weight:400;letter-spacing:0;text-transform:none}
+.info-b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gris);background:transparent;color:var(--gris);font:italic 700 12px/1 Georgia,serif;cursor:pointer;padding:0;display:inline-grid;place-items:center}
+.info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
+.info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
+.info-p a{color:var(--tinta)}
+
 .meta{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:var(--t-s);color:var(--gris)}
 .chip{font-size:var(--t-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aviso);background:color-mix(in srgb,var(--aviso) 12%,transparent);padding:3px 8px;border-radius:4px}
 
@@ -376,6 +382,11 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .tema-sueltos .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
 .tema-sueltos a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600;line-height:1.3}
 .tema-sueltos a:hover{text-decoration:underline;text-underline-offset:3px}
+.info{position:relative;display:inline-block;vertical-align:middle;margin-left:6px;font-family:var(--ui);font-weight:400;letter-spacing:0;text-transform:none}
+.info-b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gris);background:transparent;color:var(--gris);font:italic 700 12px/1 Georgia,serif;cursor:pointer;padding:0;display:inline-grid;place-items:center}
+.info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
+.info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
+.info-p a{color:var(--tinta)}
 .otro-enfoque{margin-top:14px;padding-top:12px;border-top:1px dashed var(--linea)}
 .otro-enfoque ul{opacity:.85}
 .otro-enfoque .aparte{margin:2px 0 8px}
@@ -548,7 +559,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   </div>
   <div class="wrap pie-fin"><span>© 2026 Vista Plena</span><span>Los titulares y las fotos pertenecen a cada medio y enlazan a la noticia original.</span></div>
 </footer>
-<script src="comun.js?v=04065cc9"></script>
+<script src="comun.js?v=329b8de0"></script>
 <script>
 // Página de un tema: un asunto de varios días que reúne varias historias (cada historia es un hecho distinto, con su cobertura)
 const id = Number(new URLSearchParams(location.search).get("id") || document.body.dataset.id);
@@ -598,8 +609,7 @@ function pintar(t, H, S = []){
           <p class="aparte">${ultima.tot} medios · empezó ${haceCuanto(inicio(ultima))}${ultima.ciego ? ` · <b>poca cobertura en la ${ultima.ciego}</b>` : ""}</p>
         </section>
         ${S.length ? `<section class="tema-sueltos" aria-labelledby="su-t">
-          <h2 id="su-t">Más titulares de las últimas horas</h2>
-          <p class="aparte">Titulares sobre este tema que no forman una noticia propia, porque cada medio cuenta un aspecto distinto. No entran en los porcentajes.</p>
+          <h2 id="su-t">Más titulares de las últimas horas${info("Titulares sobre este tema que no forman una noticia propia, porque cada medio cuenta un aspecto distinto. No entran en los porcentajes.", "Qué son estos titulares")}</h2>
           <ol>${S.map(a => `<li><time datetime="${a.publicado}">${hora(a.publicado)}</time><div><span class="md"><i style="background:${a.medios.orientacion < 0 ? "var(--izq)" : a.medios.orientacion > 0 ? "var(--der)" : "var(--cen)"}"></i>${esc(a.medios.nombre)} · ${ETIQUETA[a.medios.orientacion]}</span><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.titulo)}</a></div></li>`).join("")}</ol>
         </section>` : ""}
         <section class="tema-crono" aria-labelledby="cr-t">

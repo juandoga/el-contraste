@@ -89,3 +89,28 @@ document.addEventListener("click", e => {
   document.addEventListener("click", e => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) poner(false); });
   menu.addEventListener("click", e => { if (e.target.closest("a")) poner(false); });
 })();
+
+// Información bajo demanda: un botón «i» que abre una explicación al tocarlo (funciona igual en móvil y con teclado).
+// Para explicaciones de cómo se hace algo; lo imprescindible para entender un dato se queda siempre a la vista.
+let INFO_N = 0;
+function info(html, etiqueta = "Más información"){
+  const id = "info" + (++INFO_N);
+  return `<span class="info"><button type="button" class="info-b" aria-expanded="false" aria-controls="${id}" aria-label="${etiqueta}">i</button><span class="info-p" id="${id}" role="note" hidden>${html}</span></span>`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest(".info-b");
+  document.querySelectorAll(".info-b[aria-expanded='true']").forEach(x => {
+    if (x !== b && !x.parentElement.contains(e.target)) { x.setAttribute("aria-expanded", "false"); document.getElementById(x.getAttribute("aria-controls")).hidden = true; }
+  });
+  if (!b) return;
+  const p = document.getElementById(b.getAttribute("aria-controls")), abrir = p.hidden;
+  p.hidden = !abrir; b.setAttribute("aria-expanded", String(abrir));
+  // En pantallas estrechas el recuadro ocupa el ancho de la pantalla, justo debajo del botón
+  if (abrir && innerWidth < 640) { const r = b.getBoundingClientRect(); Object.assign(p.style, { position: "fixed", left: "16px", right: "16px", width: "auto", top: (r.bottom + 8) + "px" }); }
+  else p.removeAttribute("style");
+});
+addEventListener("scroll", () => document.querySelectorAll(".info-b[aria-expanded='true']").forEach(x => { if (innerWidth < 640) { x.setAttribute("aria-expanded", "false"); document.getElementById(x.getAttribute("aria-controls")).hidden = true; } }), { passive: true });
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  document.querySelectorAll(".info-b[aria-expanded='true']").forEach(x => { x.setAttribute("aria-expanded", "false"); document.getElementById(x.getAttribute("aria-controls")).hidden = true; x.focus(); });
+});
