@@ -123,9 +123,9 @@ lado = lambda o: "izq" if o < 0 else "der" if o > 0 else "cen"
 
 def lectura(h):
     if h["punto_ciego"] == "izquierda":
-        return "Punto ciego de la izquierda: casi ningún medio de izquierdas la cuenta."
+        return "Poca cobertura en la izquierda: casi ningún medio de izquierdas la ha publicado."
     if h["punto_ciego"] == "derecha":
-        return "Punto ciego de la derecha: casi ningún medio de derechas la cuenta."
+        return "Poca cobertura en la derecha: casi ningún medio de derechas la ha publicado."
     d = h["pct_izq"] - h["pct_der"]
     if d >= 20:
         return "La cuentan más los medios de izquierdas."
@@ -269,7 +269,7 @@ def imagen_og(h, ruta):
     d.text((64, yb + hb + 24), "Izquierda", font=pie, fill=IZQ)
     d.text((W / 2, yb + hb + 24), "Centro", font=pie, fill=GRIS, anchor="ma")
     d.text((W - 64, yb + hb + 24), "Derecha", font=pie, fill=DER, anchor="ra")
-    resumen = f"La cuentan {h['total']} medios" + (f" · punto ciego de la {h['punto_ciego']}" if h["punto_ciego"] else "")
+    resumen = f"La cuentan {h['total']} medios" + (f" · poca cobertura en la {h['punto_ciego']}" if h["punto_ciego"] else "")
     d.text((64, yb - 22), resumen, font=pie, fill=TINTA, anchor="ls")
     im.save(ruta, optimize=True)
 

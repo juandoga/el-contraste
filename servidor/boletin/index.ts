@@ -45,7 +45,7 @@ function porLado(h: any) {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${fila("izq", "Izquierda")}${fila("cen", "Centro")}${fila("der", "Derecha")}</table>`;
 }
 function pieza(h: any, n: number) {
-  const ciego = h.punto_ciego ? `<span style="font:bold 11px Arial,sans-serif;color:#b26b00;text-transform:uppercase;letter-spacing:.06em">Punto ciego de la ${h.punto_ciego}</span><br>` : "";
+  const ciego = h.punto_ciego ? `<span style="font:bold 11px Arial,sans-serif;color:#b26b00;text-transform:uppercase;letter-spacing:.06em">Poca cobertura en la ${h.punto_ciego}</span><br>` : "";
   const foto = h.imagen ? `<img src="${esc(h.imagen)}" width="560" alt="" style="width:100%;max-width:560px;height:auto;border-radius:8px;display:block;margin:0 0 12px">` : "";
   return `<tr><td style="padding:22px 0;border-top:1px solid #e6e6e3">
     ${n === 1 ? foto : ""}
@@ -66,8 +66,8 @@ function correoDiario(top: any[], ciegos: any[], fecha: string, baja: string) {
     <p style="font:15px/1.5 Arial,sans-serif;color:#3d4047;margin:16px 0 0">Las ${top.length} historias que más medios contaron ayer, con quién las contó y cómo las tituló cada lado.</p>
   </td></tr>
   <tr><td style="padding:0 28px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${top.map((h, i) => pieza(h, i + 1)).join("")}</table></td></tr>
-  ${ciegos.length ? `<tr><td style="padding:8px 28px 0"><div style="font:900 18px Arial,sans-serif;color:#111;border-top:3px solid #111;padding-top:16px">Lo que un lado no cuenta</div>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${ciegos.map((h) => `<tr><td style="padding:12px 0;border-bottom:1px solid #e6e6e3"><span style="font:bold 11px Arial,sans-serif;color:#b26b00;text-transform:uppercase">La ${h.punto_ciego} no la cuenta</span><div style="font:bold 16px/1.3 Georgia,serif;color:#111;margin:4px 0 8px">${esc(h.titulo)}</div>${barra(h)}</td></tr>`).join("")}</table></td></tr>` : ""}
+  ${ciegos.length ? `<tr><td style="padding:8px 28px 0"><div style="font:900 18px Arial,sans-serif;color:#111;border-top:3px solid #111;padding-top:16px">Cobertura desigual</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${ciegos.map((h) => `<tr><td style="padding:12px 0;border-bottom:1px solid #e6e6e3"><span style="font:bold 11px Arial,sans-serif;color:#b26b00;text-transform:uppercase">Poca cobertura en la ${h.punto_ciego}</span><div style="font:bold 16px/1.3 Georgia,serif;color:#111;margin:4px 0 8px">${esc(h.titulo)}</div>${barra(h)}</td></tr>`).join("")}</table></td></tr>` : ""}
   <tr><td style="padding:24px 28px 28px" align="center"><a href="${WEB}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;font:bold 14px Arial,sans-serif;padding:12px 22px;border-radius:999px">Ver la portada completa</a></td></tr>
   </table>
   <p style="font:12px/1.5 Arial,sans-serif;color:#888;max-width:560px;margin:16px auto 0">Recibes este correo porque te suscribiste en Vista Plena. <a href="${baja}" style="color:#888">Darme de baja</a> · <a href="${WEB}metodologia.html" style="color:#888">Cómo lo hacemos</a></p>

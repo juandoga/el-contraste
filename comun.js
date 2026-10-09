@@ -36,8 +36,8 @@ function haceCuanto(iso){
   return h < 24 ? `hace ${h} h` : `hace ${Math.round(h/24)} d`;
 }
 function lectura(h){
-  if (h.ciego === "izquierda") return `<strong>Punto ciego de la izquierda.</strong> Casi ningún medio de izquierdas la cuenta.`;
-  if (h.ciego === "derecha") return `<strong>Punto ciego de la derecha.</strong> Casi ningún medio de derechas la cuenta.`;
+  if (h.ciego === "izquierda") return `<strong>Poca cobertura en la izquierda.</strong> Casi ningún medio de izquierdas la ha publicado.`;
+  if (h.ciego === "derecha") return `<strong>Poca cobertura en la derecha.</strong> Casi ningún medio de derechas la ha publicado.`;
   const d = h.pi - h.pd;
   if (d >= 20) return `La cuentan <strong>más los medios de izquierdas</strong>.`;
   if (d <= -20) return `La cuentan <strong>más los medios de derechas</strong>.`;
@@ -48,7 +48,7 @@ function barra(h, grande){
   return `<div class="barra${grande ? " grande" : ""}" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("b-izq",h.pi,"Izquierda")}${seg("b-cen",h.pc,"Centro")}${seg("b-der",h.pd,"Derecha")}</div>`;
 }
 const pct = h => `<div class="pct"><span class="i">Izquierda <b>${h.pi} %</b></span><span>Centro <b>${h.pc} %</b></span><span class="d">Derecha <b>${h.pd} %</b></span></div>`;
-const meta = h => `<div class="meta"><span title="Dos medios del mismo grupo editorial y del mismo lado cuentan como una voz">${h.tot} medios${h.voces && h.voces < h.tot ? ` · ${h.voces} voces` : ""}</span><span>${haceCuanto(h.act)}</span>${h.port >= 2 ? `<span title="Medios que la llevan ahora entre los 15 primeros titulares de su web">En ${h.port} portadas</span>` : ""}${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
+const meta = h => `<div class="meta"><span title="Dos medios del mismo grupo editorial y del mismo lado cuentan como una voz">${h.tot} medios${h.voces && h.voces < h.tot ? ` · ${h.voces} voces` : ""}</span><span>${haceCuanto(h.act)}</span>${h.port >= 2 ? `<span title="Medios que la llevan ahora entre los 15 primeros titulares de su web">En ${h.port} portadas</span>` : ""}${h.ciego ? `<span class="chip">Poca cobertura en la ${h.ciego}</span>` : ""}</div>`;
 // Un titular por medio, el más reciente; dentro de cada lado, primero lo último que se ha publicado
 function recientes(h){
   const vistos = new Set();
