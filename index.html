@@ -200,6 +200,7 @@ a.tema:hover{border-color:var(--tinta)}
 .mas-tema b{color:var(--tinta);font-weight:600}
 .mas-tema:hover b{text-decoration:underline;text-underline-offset:3px}
 .temas .eti{align-self:center;white-space:nowrap;margin-right:4px}
+.tema.fijo{background:var(--tinta);color:var(--fondo);border-color:var(--tinta)}
 .tema{flex:none;border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:7px 14px;font-size:var(--t-s);font-weight:500;color:var(--tinta);white-space:nowrap}
 .tema:hover{border-color:var(--tinta)}
 .tema[aria-pressed="true"]{background:var(--tinta);color:var(--fondo);border-color:var(--tinta)}
@@ -569,8 +570,10 @@ function pintarTemas(){
   const nav = document.getElementById("temas");
   const T = [...TEMAS.values()].filter(t => t.nuevas_48h > 0 || t.medios_12h >= 3)
     .sort((a, b) => (b.nuevas_48h + (b.medios_12h || 0) / 3) - (a.nuevas_48h + (a.medios_12h || 0) / 3) || new Date(b.actualizado) - new Date(a.actualizado)).slice(0, 8);
-  nav.hidden = vista !== "portada" || !!seccion || !T.length;
-  nav.innerHTML = `<span class="eti">Temas</span>` + T.map(t => `<a class="tema${temaNuevo(t) ? " nuevo" : ""}" href="${urlTema(t.id, t.nombre)}"${temaNuevo(t) ? ' title="Novedades desde tu última visita"' : ""}>${esc(t.nombre)}<span class="n">${t.historias}</span></a>`).join("");
+  nav.hidden = vista !== "portada" || !!seccion;
+  // Chip fijo durante la campaña: lleva a la campaña de hoy en la guía
+  const fijo = Date.now() < new Date("2026-11-30").getTime() ? `<a class="tema fijo" href="elecciones.html#campana">Elecciones 29N</a>` : "";
+  nav.innerHTML = `<span class="eti">Temas</span>` + fijo + T.map(t => `<a class="tema${temaNuevo(t) ? " nuevo" : ""}" href="${urlTema(t.id, t.nombre)}"${temaNuevo(t) ? ' title="Novedades desde tu última visita"' : ""}>${esc(t.nombre)}<span class="n">${t.historias}</span></a>`).join("");
 }
 function render(){
   const H = DATA.historias || [];

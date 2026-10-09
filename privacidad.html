@@ -199,6 +199,7 @@ a.tema:hover{border-color:var(--tinta)}
 .mas-tema b{color:var(--tinta);font-weight:600}
 .mas-tema:hover b{text-decoration:underline;text-underline-offset:3px}
 .temas .eti{align-self:center;white-space:nowrap;margin-right:4px}
+.tema.fijo{background:var(--tinta);color:var(--fondo);border-color:var(--tinta)}
 .tema{flex:none;border:1px solid var(--linea);background:var(--fondo);border-radius:999px;padding:7px 14px;font-size:var(--t-s);font-weight:500;color:var(--tinta);white-space:nowrap}
 .tema:hover{border-color:var(--tinta)}
 .tema[aria-pressed="true"]{background:var(--tinta);color:var(--fondo);border-color:var(--tinta)}
@@ -387,6 +388,22 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .info-b:hover,.info-b[aria-expanded="true"]{border-color:var(--tinta);color:var(--tinta)}
 .info-p{position:absolute;z-index:20;top:calc(100% + 8px);left:-10px;width:min(320px,80vw);background:var(--fondo);color:var(--texto);border:1px solid var(--linea);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:12px 14px;font-size:.85rem;line-height:1.5;text-align:left}
 .info-p a{color:var(--tinta)}
+.g-clave{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:20px}
+.g-clave input{font:inherit;padding:10px 12px;border:1px solid var(--linea);border-radius:8px;background:var(--fondo);color:var(--tinta);min-width:220px}
+.gestion section{padding-top:32px}
+.gestion h2 .n{font-weight:400;font-size:var(--t-s);color:var(--gris);margin-left:8px}
+.aviso-g{border-top:1px solid var(--linea);padding:14px 0;display:grid;gap:6px}
+.aviso-g .m{font-size:var(--t-xs);color:var(--gris)}
+.aviso-g a{color:var(--tinta);font-weight:600}
+.aviso-g p{margin:0;font-size:var(--t-s)}
+.aviso-g label{font-size:var(--t-s);display:flex;gap:6px;align-items:center}
+.aviso-g.hecho{opacity:.55}
+.boton.secundario{background:transparent;color:var(--tinta)!important;border:1px solid var(--tinta);cursor:pointer}
+.tema-g{border-top:1px solid var(--linea);padding:14px 0;display:grid;gap:8px}
+.tema-g .fila{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tema-g input[type=text]{font:inherit;padding:8px 10px;border:1px solid var(--linea);border-radius:6px;background:var(--fondo);color:var(--tinta);flex:1 1 220px}
+.tema-g label{font-size:var(--t-s);display:flex;gap:6px;align-items:center}
+.tema-g .boton{padding:8px 16px}
 .otro-enfoque{margin-top:14px;padding-top:12px;border-top:1px dashed var(--linea)}
 .otro-enfoque ul{opacity:.85}
 .otro-enfoque .aparte{margin:2px 0 8px}
