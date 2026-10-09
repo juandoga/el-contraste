@@ -52,6 +52,7 @@ La clave que aparece en estas direcciones es pública y solo permite leer.
 | `servidor/recoger/` | Programa que lee los medios y agrupa los titulares (se ejecuta cada hora) |
 | `seo/generar.py` · `.github/workflows/publicar.yml` | Cada hora genera una página por noticia y por tema (`/noticia/…`, `/tema/…`), sus imágenes para redes y el mapa del sitio, y publica la web |
 | `servidor/temas/` | Programa que agrupa las historias de la semana en temas (se ejecuta cada hora) |
+| `servidor/mantenimiento/` | Copia de seguridad semanal (domingos, por correo) y avisos si algún medio o la recogida fallan (3 veces al día) |
 | `servidor/boletin/` | Programa del boletín diario por correo |
 | `servidor/portada.sql` | Cálculo de la cobertura y de los puntos ciegos |
 
