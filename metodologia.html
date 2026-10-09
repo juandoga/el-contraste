@@ -346,6 +346,9 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .tabla td a{color:var(--tinta);text-decoration:none;font-weight:500}
 .tabla td a:hover{text-decoration:underline}
 .tabla .num{font-variant-numeric:tabular-nums;color:var(--gris);white-space:nowrap}
+.tabla .med{font-variant-numeric:tabular-nums;white-space:nowrap;min-width:150px}
+.tabla .med small{display:block;white-space:normal;color:var(--gris);font-size:var(--t-xs);line-height:1.4;margin-top:3px;max-width:260px}
+.tabla{min-width:860px}
 .sin{color:var(--aviso);font-weight:600}
 .pill{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .pill i{width:10px;height:10px;border-radius:50%;display:inline-block}
@@ -395,7 +398,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 </header>
 
 <div class="wrap metodo">
-  <div class="subtop"><span>Versión 1 · provisional</span><span id="revision">Última revisión: 7 de octubre de 2026 (puntos ciegos)</span></div>
+  <div class="subtop"><span>Versión 1 · provisional</span><span id="revision">Última revisión: 9 de octubre de 2026 (etiquetas con mediciones públicas)</span></div>
 
   <header class="metodo-cab">
     <span class="eti">Transparencia</span>
@@ -446,12 +449,19 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
       <div><i style="background:var(--der);opacity:.6"></i><strong>Centroderecha</strong><span>Línea editorial liberal o conservadora moderada. Lectores de centroderecha.</span></div>
       <div><i style="background:var(--der)"></i><strong>Derecha</strong><span>Línea editorial claramente conservadora. Sus lectores se sitúan mayoritariamente a la derecha en las encuestas.</span></div>
     </div>
-    <h3>En qué nos basamos</h3>
+    <h3>De dónde sale cada etiqueta</h3>
+    <p>No ponemos las etiquetas a ojo. Usamos dos mediciones públicas que cualquiera puede comprobar:</p>
     <ul class="lista">
-      <li><strong>Dónde se sitúan sus lectores.</strong> Encuestas que preguntan a la gente qué medios lee y cómo se define ideológicamente, como el <a href="https://www.unav.edu/web/digital-news-report" target="_blank" rel="noopener">Digital News Report España</a> (Universidad de Navarra y Reuters Institute) y el estudio sobre <a href="https://www.esade.edu/ecpol/es/publicaciones/polarizacion-medios-espana/" target="_blank" rel="noopener">polarización de las audiencias</a> de EsadeEcPol.</li>
-      <li><strong>Su línea editorial.</strong> Qué defienden sus editoriales y sus columnas de opinión de la casa.</li>
+      <li><strong>Cómo ve la gente a cada medio.</strong> La encuesta del CIS de mayo de 2025 (<a href="https://www.cis.es/documents/20117/13443950/es3511mar.pdf/6920fbc3-eb66-ef33-49e1-8f91e84be09f?version=1.1&amp;t=1759845799611" target="_blank" rel="noopener">estudio 3511</a>) preguntó a unas 15.000 personas dónde sitúan a cada periódico, televisión y radio, de 1 (izquierda) a 10 (derecha). Pasamos esa media a etiqueta en tramos de un punto alrededor del centro de la escala: menos de 4 es izquierda; de 4 a 5, centroizquierda; de 5 a 6, centro; de 6 a 7, centroderecha; 7 o más, derecha.</li>
+      <li><strong>A quién se parece su audiencia.</strong> Un estudio de la Universitat Pompeu Fabra (<a href="https://doi.org/10.15581/003.35.1.29-43" target="_blank" rel="noopener">Guerrero-Solé, 2022</a>) compara quién comparte cada medio en Twitter con quién comparte a cada partido, y sitúa al medio en la misma escala. Tomamos como referencia a los partidos: a la izquierda del PSOE (4,1), izquierda; hasta 5, centroizquierda; de 5 a 6,6, centro; hasta el PP (7,8), centroderecha; más allá, derecha.</li>
     </ul>
-    <p class="aviso">Esta es la versión 1. Las etiquetas se han asignado combinando estos criterios, pero todavía no publicamos la cifra exacta de cada encuesta para cada medio. Es lo siguiente que añadiremos. Revisaremos la clasificación al menos una vez al año y cada vez que salga un nuevo Digital News Report.</p>
+    <p>Si un medio aparece en las dos, usamos la media de las dos etiquetas. Si empatan, decide una clasificación internacional independiente: <a href="https://www.eurotopics.net/en/149427/spain-digitalisation-diversification-politicisation" target="_blank" rel="noopener">eurotopics</a> (Agencia Federal de Educación Cívica de Alemania) o <a href="https://mediabiasfactcheck.com/" target="_blank" rel="noopener">Media Bias/Fact Check</a>. Si solo aparece en una, manda esa.</p>
+    <p>Los medios que no salen en ninguna medición están marcados como <strong>«sin medición»</strong>. Su etiqueta se basa en su propiedad, su línea editorial declarada y esas clasificaciones. Los que caen justo en la frontera entre dos etiquetas están marcados como <strong>«al límite»</strong>. Verás las cifras y la nota de cada medio en la <a href="#medios">tabla de medios</a>.</p>
+    <p class="aviso">Ninguna medición es perfecta. En la del CIS también opina quien no lee el medio, y eso acerca al centro a los medios pequeños. La de Twitter es de 2020 y solo mide a quien usa esa red. Por eso combinamos las dos. Revisamos las etiquetas cada vez que el CIS u otro estudio publica datos nuevos, y anotamos aquí cada cambio con su fecha.</p>
+    <h3>Cambios</h3>
+    <ul class="lista">
+      <li><strong>9 de octubre de 2026.</strong> Primera clasificación con mediciones públicas. RTVE pasa de centro a centroizquierda; ABC y La Razón, de derecha a centroderecha.</li>
+    </ul>
   </section>
 
   <section id="voces">
@@ -502,20 +512,20 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
   <section id="limites">
     <h2>Límites que conviene conocer</h2>
     <ul class="lista">
-      <li><strong>Faltan Telecinco y, por ahora, RTVE.</strong> Telecinco bloquea cualquier lectura automática y el mapa de noticias de RTVE no trae noticias recientes.</li>
+      <li><strong>Faltan Telecinco y, por ahora, RTVE.</strong> Telecinco bloquea cualquier lectura automática. RTVE está en la lista con su etiqueta, pero su mapa de noticias no trae noticias recientes, así que de momento no aporta titulares.</li>
       <li><strong>No todos los medios publican lo mismo.</strong> Tomamos como mucho 50 titulares por medio en cada lectura para que nadie pese más por publicar más, pero algunos medios solo ofrecen 10 o 20.</li>
-      <li><strong>Hay más medios de derecha que de izquierda en la lista.</strong> Ahora son 13 de derecha, 10 de centro y 11 de izquierda. Contar por voces lo compensa en parte; seguimos buscando medios de izquierda con datos accesibles.</li>
+      <li><strong>Hay más medios de derecha que de izquierda en la lista.</strong> Ahora son 14 de derecha, 11 de centro y 13 de izquierda, aunque uno de izquierda (RTVE) todavía no aporta titulares. Contar por voces lo compensa en parte; seguimos buscando medios de izquierda con datos accesibles.</li>
       <li><strong>Solo vemos titulares.</strong> No leemos el artículo completo ni sabemos si la noticia iba en portada o escondida en una sección.</li>
     </ul>
   </section>
 
   <section id="medios">
     <h2>Los medios, uno a uno</h2>
-    <p>Datos en directo de nuestra base de datos: etiqueta, grupo, cómo leemos cada medio, cuándo lo leímos por última vez y cuántos titulares suyos tenemos de las últimas 48 horas.</p>
+    <p>Datos en directo de nuestra base de datos: etiqueta y su medición, grupo, cómo leemos cada medio, cuándo lo leímos por última vez y cuántos titulares suyos tenemos de las últimas 48 horas.</p>
     <div class="tabla-wrap">
       <table class="tabla">
-        <thead><tr><th>Medio</th><th>Etiqueta</th><th>Grupo editorial</th><th>Cómo lo leemos</th><th>Titulares 48 h</th><th>Última lectura</th></tr></thead>
-        <tbody id="filas"><tr><td colspan="6" class="vacio">Cargando la lista de medios…</td></tr></tbody>
+        <thead><tr><th>Medio</th><th>Etiqueta</th><th>Medición</th><th>Grupo editorial</th><th>Cómo lo leemos</th><th>Titulares 48 h</th><th>Última lectura</th></tr></thead>
+        <tbody id="filas"><tr><td colspan="7" class="vacio">Cargando la lista de medios…</td></tr></tbody>
       </table>
     </div>
   </section>
@@ -558,6 +568,11 @@ const fecha = d => d ? new Date(d + "T12:00:00").toLocaleDateString("es-ES", { d
 document.getElementById("d-medios").href = `${SUPA.url}/rest/v1/estado_medios?select=*&apikey=${SUPA.key}`;
 document.getElementById("d-historias").href = `${SUPA.url}/rest/v1/portada_v2?select=*&order=voces.desc&apikey=${SUPA.key}`;
 document.getElementById("d-archivo").href = `${SUPA.url}/rest/v1/archivo?select=*&fusionada=eq.false&order=creada.desc&apikey=${SUPA.key}`;
+const coma = n => Number(n).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const medicion = m => {
+  const c = [m.medicion_cis != null ? `CIS ${coma(m.medicion_cis)}` : "", m.medicion_twitter != null ? `Twitter ${coma(m.medicion_twitter)}` : ""].filter(Boolean).join(" · ");
+  return (c || "") + (m.nota_etiqueta ? `<small>${esc(m.nota_etiqueta)}</small>` : "") || "—";
+};
 const hace = iso => { if (!iso) return "—"; const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 60 ? `hace ${Math.max(m,1)} min` : `hace ${Math.round(m/60)} h`; };
 (async () => {
   const tb = document.getElementById("filas");
@@ -569,12 +584,13 @@ const hace = iso => { if (!iso) return "—"; const m = Math.round((Date.now() -
     tb.innerHTML = M.map(m => `<tr>
       <td><a href="${esc(m.web)}" target="_blank" rel="noopener">${esc(m.nombre)}</a></td>
       <td><span class="pill"><i style="background:${COL[m.orientacion]};${Math.abs(m.orientacion) === 1 ? "opacity:.6" : ""}"></i>${ETI[m.orientacion]}</span></td>
+      <td class="med">${medicion(m)}</td>
       <td>${m.grupo && m.grupo !== m.nombre ? esc(m.grupo) : '<span class="gris">Grupo propio</span>'}</td>
       <td>${esc(m.metodo)}</td>
       <td class="num">${m.titulares_48h ? m.titulares_48h : '<span class="sin">Sin datos</span>'}</td>
       <td class="num">${m.con_error ? '<span class="sin">Error</span>' : hace(m.ultima_lectura)}</td></tr>`).join("");
   } catch (e) {
-    tb.innerHTML = `<tr><td colspan="6" class="vacio">No se ha podido cargar la lista ahora mismo. Vuelve a intentarlo en unos minutos.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="7" class="vacio">No se ha podido cargar la lista ahora mismo. Vuelve a intentarlo en unos minutos.</td></tr>`;
   }
 })();
 </script>
