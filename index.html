@@ -231,6 +231,9 @@ a.tema:hover{border-color:var(--tinta)}
 @keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
 
 /* Lo último */
+.porque{margin:10px 0 0;font-size:var(--t-s);color:var(--texto);line-height:1.45}
+.porque b{color:var(--tinta);font-weight:600}
+.porque a{color:var(--gris)}
 .desarrollo .cab-seccion{margin-top:48px}
 .desarrollo-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px 32px}
 .des{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:2px solid var(--tinta);min-width:0}
@@ -459,7 +462,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 </footer>
 
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=31ca595d"></script>
+<script src="comun.js?v=04065cc9"></script>
 <script>
 const SNAPSHOT = /*SNAPSHOT*/null;
 const NIVELES = [[-2,"Izquierda","var(--izq)"],[-1,"Centroizquierda","var(--izq)"],[0,"Centro","var(--cen)"],[1,"Centroderecha","var(--der)"],[2,"Derecha","var(--der)"]];
@@ -524,6 +527,8 @@ function desarrolloBloque(){
         <a class="ir" href="${urlTema(t.id, t.nombre)}">Todo el tema →</a></article>`;
     }).join("")}</div></section>`;
 }
+// Por qué esta historia abre la portada: el mismo criterio con el que se ordena (ver metodología)
+const porque = h => `<p class="porque"><b>Abre la portada porque es lo más contado ahora:</b> la han publicado ${h.m12 || h.tot} medios en las últimas 12 horas${h.port ? ` y está entre los primeros titulares de la web de ${h.port}` : ""}. <a href="metodologia.html#como">Cómo ordenamos</a></p>`;
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 // Temas: asuntos de varios días que reúnen varias historias (los calcula el servidor cada hora; ver tema.html)
 let TEMAS = new Map();
@@ -586,7 +591,7 @@ function render(){
       const vistas = new Set([lead, ...hoy]);
             c.insertAdjacentHTML("beforeend", `
         <section class="principal" id="h-0">
-          <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}`}${pct(lead)}<p class="resumen">${lectura(lead)}</p><a class="ir-historia" href="${enlace(lead)}">Ver la historia completa →</a>${masTema(lead)}</div>
+          <div>${lead.f ? `<figure class="foto hero"><img src="${esc(lead.f)}" alt="" referrerpolicy="no-referrer" onload="this.classList.add('ok')" onerror="this.closest('figure').classList.add('sinfoto')"><div class="sombra"></div><figcaption>Foto: ${esc(lead.fm)}</figcaption><div class="sobre">${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}</div></figure>` : `${meta(lead)}<h1><a href="${enlace(lead)}">${esc(lead.t)}</a></h1>${barra(lead, true)}`}${pct(lead)}${porque(lead)}<p class="resumen">${lectura(lead)}</p><a class="ir-historia" href="${enlace(lead)}">Ver la historia completa →</a>${masTema(lead)}</div>
           <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}<a class="ver-todos" href="${enlace(lead)}">Ver los ${lead.tot} titulares →</a></div>
         </section>`);
       c.insertAdjacentHTML("beforeend", resumenDia([lead, ...hoy], hoy));
