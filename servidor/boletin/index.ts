@@ -77,7 +77,7 @@ const correoConfirmar = (enlace: string) => `<!doctype html><html lang="es"><bod
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
   <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#fff;border-radius:12px"><tr><td style="padding:28px">
     <img src="${WEB}logo-correo.png" width="170" height="32" alt="Vista Plena" style="display:block;border:0;height:32px;width:170px">
-    <p style="font:16px/1.5 Arial,sans-serif;color:#3d4047">Confirma que quieres recibir cada mañana el resumen del día: las historias que más medios cuentan, quién las cuenta y lo que un lado no cuenta.</p>
+    <p style="font:16px/1.5 Arial,sans-serif;color:#3d4047">Confirma que quieres recibir cada mañana el resumen del día: las historias que más medios cuentan, quién las cuenta y qué noticias tienen cobertura desigual.</p>
     <p style="margin:24px 0"><a href="${enlace}" style="display:inline-block;background:#111;color:#fff;text-decoration:none;font:bold 15px Arial,sans-serif;padding:13px 24px;border-radius:999px">Confirmar suscripción</a></p>
     <p style="font:13px/1.5 Arial,sans-serif;color:#888">Si no has sido tú, ignora este correo y no volveremos a escribirte.</p>
   </td></tr></table></td></tr></table></body></html>`;
