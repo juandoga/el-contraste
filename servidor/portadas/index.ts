@@ -63,6 +63,10 @@ function leerPortada(html: string, base: string): Tit[] {
     if (!/\d{4,}|\.html?$|\/[a-z0-9]+(?:-[a-z0-9]+){4,}\/?$/i.test(u.pathname)) return;
     const titulo = strip(texto);
     if (titulo.length < 25 || titulo.length > 250) return;
+    // Fuera etiquetas y antetítulos («ELECCIONES GENERALES 2026», «Conciertos gratis Hispanidad»): un titular tiene al menos 6 palabras y no va todo en mayúsculas
+    const letras = titulo.replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñü]/g, "");
+    if (titulo.split(/\s+/).length < 6 || letras.replace(/[^A-ZÁÉÍÓÚÑ]/g, "").length > letras.length * 0.6) return;
+    if (/^(directo|en directo|v[ií]deo|encuesta|lee la edici[oó]n)\b/i.test(titulo)) return;
     const k = normal(url);
     if (vistos.has(k)) return;
     vistos.add(k); out.push({ titulo, url });
