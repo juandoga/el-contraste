@@ -379,7 +379,10 @@ Deno.serve(async (req) => {
   const tambien: { id: number; tambien: unknown[] }[] = [];
   for (const g of conId) {
     if (absorbido.has(g) || Date.now() - g.ultimo > 36 * 3600e3) continue;
-    const lados = new Set([...g.medios].map((m) => lado(orient.get(m) ?? 0)));
+    // Lados «casi ausentes»: menos del 10 % de los medios de la historia (la misma regla que el punto ciego)
+    const cuenta: Record<string, number> = { izq: 0, cen: 0, der: 0 };
+    for (const m of g.medios) cuenta[lado(orient.get(m) ?? 0)]++;
+    const lados = new Set(["izq", "der"].filter((l) => cuenta[l] >= 0.1 * g.medios.size));
     const nuc = nucleos.get(g)!, propios = new Set(g.ids), encontrados: any[] = [], yaMedio = new Set<number>();
     for (const L of ["izq", "der"]) {
       if (lados.has(L)) continue;
