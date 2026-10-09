@@ -233,6 +233,7 @@ Deno.serve(async (req) => {
 
   // 6. Guardar. Cada tema conserva su número si la mayoría de sus historias ya estaban en él.
   const usados = new Set<number>();
+  const idDe = new Map<Tema, number>();
   let creados = 0;
   const ordenados = [...temas].sort((a, b) => b.hs.length - a.hs.length);
   for (const t of ordenados) {
@@ -243,7 +244,7 @@ Deno.serve(async (req) => {
     let id: number;
     if (previo && n >= t.hs.length / 2) { id = previo; await db.from("temas").update(fila).eq("id", id); }
     else { const { data } = await db.from("temas").insert(fila).select("id").single(); id = data!.id; creados++; }
-    usados.add(id);
+    usados.add(id); idDe.set(t, id);
     const cambiar = t.hs.filter((h) => h.temaPrevio !== id).map((h) => h.id);
     if (cambiar.length) await db.from("historias").update({ tema_id: id }).in("id", cambiar);
   }
@@ -255,6 +256,52 @@ Deno.serve(async (req) => {
   const vivos = [...usados];
   if (vivos.length) await db.from("temas").update({ activo: false }).eq("activo", true).not("id", "in", `(${vivos.join(",")})`).gte("actualizado", desde);
 
-  return new Response(JSON.stringify({ historias: N, en_temas: temaDe.size, temas: temas.length, creados, quitadas: quitar.length }, null, 1),
+  // 7. Titulares sueltos: los que no forman una historia propia de 3 o más medios (cada medio cuenta un ángulo distinto)
+  // entran en el tema si nombran a su protagonista y comparten al menos 2 palabras clave más con sus historias.
+  // Así un tema sigue vivo aunque hoy cada medio cuente una cosa distinta («Biedma no pidió protección», «Manos Limpias denuncia al exjuez»).
+  const VENT = 36 * H, desdeS = new Date(Date.now() - VENT).toISOString();
+  const visibles = new Set(H_.map((h) => h.id));
+  const sueltosA: any[] = [];
+  for (let p = 0; p < 10; p++) {
+    const { data } = await db.from("articulos").select("id, historia_id, titulo, publicado, tema_id").gte("publicado", desdeS).order("id").range(p * 1000, p * 1000 + 999);
+    sueltosA.push(...(data ?? []).filter((a: any) => !a.historia_id || !visibles.has(a.historia_id)));
+    if (!data || data.length < 1000) break;
+  }
+  // Firma de cada tema vivo: su protagonista (nombres poco habituales en al menos el 40 % de sus historias)
+  // y sus palabras clave (las que salen en 2 o más historias, o en alguna de las 3 últimas)
+  const firmas = temas.filter((t) => idDe.has(t) && Date.now() - t.fin < 72 * H).map((t) => {
+    const prota = new Set([...t.nombres].filter(([w, c]) => !comodin(w) && c >= Math.max(1, t.hs.length * 0.4)).map(([w]) => w));
+    const cuenta = new Map<string, number>();
+    for (const h of t.hs) h.claves.forEach((w) => cuenta.set(w, (cuenta.get(w) ?? 0) + 1));
+    const recientesT = new Set(t.hs.slice(-3).flatMap((h) => [...h.claves]));
+    const claves = new Set([...cuenta].filter(([w, c]) => c >= 2 || recientesT.has(w)).map(([w]) => w));
+    return { id: idDe.get(t)!, ini: t.ini, prota, claves };
+  });
+  const asignar = new Map<number, number[]>();
+  for (const a of sueltosA) {
+    if (+new Date(a.publicado) < Math.min(...firmas.map((f) => f.ini), Infinity)) continue;
+    const ns = new Set(trozos(a.titulo).filter(esNombre).map((t) => t.norm));
+    const ks = palabras(a.titulo);
+    let mejor = 0, mejorP = 0;
+    for (const f of firmas) {
+      if (+new Date(a.publicado) < f.ini || ![...f.prota].some((w) => ns.has(w))) continue;
+      const comunes = ks.filter((w) => f.claves.has(w) && !f.prota.has(w)).length;
+      if (comunes >= 2 && comunes > mejorP) { mejor = f.id; mejorP = comunes; }
+    }
+    if (mejor) { const l = asignar.get(mejor) ?? []; l.push(a.id); asignar.set(mejor, l); }
+  }
+  // Se recalcula desde cero en la ventana: primero se quitan las marcas viejas, luego se ponen las nuevas
+  let sueltos = 0;
+  await db.from("articulos").update({ tema_id: null }).gte("publicado", desdeS).not("tema_id", "is", null);
+  for (const [id, ids] of asignar) {
+    for (let i = 0; i < ids.length; i += 200) await db.from("articulos").update({ tema_id: id }).in("id", ids.slice(i, i + 200));
+    sueltos += ids.length;
+    // El tema se da por actualizado con su titular suelto más reciente
+    const ultimo = Math.max(...ids.map((x) => +new Date(sueltosA.find((a) => a.id === x).publicado)));
+    const { data: tm } = await db.from("temas").select("actualizado").eq("id", id).single();
+    if (tm && ultimo > +new Date(tm.actualizado)) await db.from("temas").update({ actualizado: new Date(ultimo).toISOString() }).eq("id", id);
+  }
+
+  return new Response(JSON.stringify({ historias: N, en_temas: temaDe.size, temas: temas.length, creados, quitadas: quitar.length, sueltos }, null, 1),
     { headers: { "Content-Type": "application/json" } });
 });
