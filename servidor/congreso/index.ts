@@ -20,7 +20,8 @@ const pagina = (fecha?: string) => `${WEB}:443/es/opendata/votaciones?p_p_id=vot
   (fecha ? `&targetDate=${fecha.slice(6, 8)}/${fecha.slice(4, 6)}/${fecha.slice(0, 4)}` : "");
 
 // Grupo parlamentario → partido. El Mixto se resuelve diputado a diputado.
-const GRUPOS: Record<string, string> = { GS: "PSOE", GP: "PP", GVOX: "Vox", GSUMAR: "Sumar", GR: "ERC", GJxCAT: "Junts", GEH: "EH Bildu", "GEH-BILDU": "EH Bildu", GV: "PNV" };
+const GRUPOS: Record<string, string> = { GS: "PSOE", GP: "PP", GVOX: "Vox", GSUMAR: "Sumar", GR: "ERC", GJxCAT: "Junts", "GEH Bildu": "EH Bildu", "GV (EAJ-PNV)": "PNV" };
+const grupo = (g: string) => GRUPOS[g] ?? (/bildu/i.test(g) ? "EH Bildu" : /PNV/i.test(g) ? "PNV" : g);
 const normal = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
 
 async function formaciones(): Promise<Map<string, string>> {
@@ -38,11 +39,12 @@ async function formaciones(): Promise<Map<string, string>> {
 function partidoMixto(nombre: string, formacion: string): string {
   const f = formacion.toUpperCase(), n = normal(nombre);
   if (/BNG/.test(f)) return "BNG";
-  if (/\bCC\b|COALICI/.test(f)) return "CC";
+  if (/^CC|\bCC\b|COALICI/.test(f)) return "CC";
   if (/UPN/.test(f)) return "UPN";
   if (/PSOE|PSC/.test(f)) return "Ábalos";
   if (/SUMAR/.test(f)) return n.startsWith("mico") ? "Compromís" : "Podemos";
-  if (/PP|VOX/.test(f)) return "Otros";
+  if (/VOX/.test(f)) return "Ex de Vox";
+  if (/PP/.test(f)) return "Ex del PP";
   return "Mixto";
 }
 
@@ -67,7 +69,7 @@ Deno.serve(async () => {
           const inf = v.informacion ?? {}, tot = v.totales ?? {};
           const partidos: Record<string, { si: number; no: number; abst: number; nv: number; voto?: string }> = {};
           for (const d of v.votaciones ?? []) {
-            const p = d.grupo === "GMx" || /mixto/i.test(d.grupo) ? partidoMixto(d.diputado, forms.get(normal(d.diputado)) ?? "") : (GRUPOS[d.grupo] ?? d.grupo);
+            const p = d.grupo === "GMx" || /mixto/i.test(d.grupo) ? partidoMixto(d.diputado, forms.get(normal(d.diputado)) ?? "") : grupo(d.grupo);
             const x = partidos[p] ??= { si: 0, no: 0, abst: 0, nv: 0 };
             const voto = normal(String(d.voto));
             if (voto === "si") x.si++; else if (voto === "no") x.no++; else if (voto.startsWith("abst")) x.abst++; else x.nv++;
