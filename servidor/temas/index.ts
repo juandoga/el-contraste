@@ -264,7 +264,9 @@ Deno.serve(async (req) => {
   const sueltosA: any[] = [];
   for (let p = 0; p < 10; p++) {
     const { data } = await db.from("articulos").select("id, historia_id, titulo, publicado, tema_id").gte("publicado", desdeS).order("id").range(p * 1000, p * 1000 + 999);
-    sueltosA.push(...(data ?? []).filter((a: any) => !a.historia_id || !visibles.has(a.historia_id)));
+    // Los directos («en directo», «última hora») mezclan muchos asuntos: no entran
+    sueltosA.push(...(data ?? []).filter((a: any) => (!a.historia_id || !visibles.has(a.historia_id)) &&
+      !/(en directo|directo:|directo \||última hora|ultima hora|minuto a minuto|encuesta:)/i.test(a.titulo)));
     if (!data || data.length < 1000) break;
   }
   // Firma de cada tema vivo: su protagonista (nombres poco habituales en al menos el 40 % de sus historias)

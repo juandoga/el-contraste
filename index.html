@@ -231,6 +231,21 @@ a.tema:hover{border-color:var(--tinta)}
 @keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
 
 /* Lo último */
+.desarrollo .cab-seccion{margin-top:48px}
+.desarrollo-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px 32px}
+.des{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:2px solid var(--tinta);min-width:0}
+.des h3{margin:0;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;line-height:1.15}
+.des h3 a{color:var(--tinta);text-decoration:none}.des h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.des .m{font-size:var(--t-xs);color:var(--gris);margin:0}
+.des .m b{color:var(--aviso)}
+.des .barra{height:6px}
+.des ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.des li{font-size:var(--t-s);line-height:1.35}
+.des li .md{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:1px}
+.des li .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.des li a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600}
+.des li a:hover{text-decoration:underline;text-underline-offset:3px}
+.des .ir{font-size:var(--t-s);font-weight:500;color:var(--tinta)}
 .ultimo .cab-seccion{margin-top:48px}
 .ultimo-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
 @media (max-width:760px){.ultimo-lista{grid-template-columns:1fr}}
@@ -486,6 +501,29 @@ function ultimoBloque(lista){
       <a href="${enlace(h)}"><span class="t">${esc(h.t)}</span><span class="m">${h.tot} medios · empezó ${haceCuanto(inicio(h))}${h.ciego ? ` · <b>punto ciego</b>` : ""}</span>${barra(h)}</a></li>`).join("")}</ol>
   </section>`;
 }
+// «En desarrollo»: temas que siguen moviéndose aunque hoy cada medio cuente un ángulo distinto
+// (titulares sueltos que no llegan a formar una historia de 3 medios; los asigna el servidor de temas)
+const COL_LADO = { izq: "var(--izq)", cen: "var(--cen)", der: "var(--der)" };
+function desarrolloBloque(){
+  const T = (DATA.desarrollo || []).filter(t => (t.titulares || []).length >= 2);
+  if (!T.length) return "";
+  const mueve = t => {
+    const n = t.izq_12h + t.cen_12h + t.der_12h || 1;
+    if (t.medios_12h >= 4 && t.der_12h / n >= 0.8) return " · <b>casi solo medios de derecha</b>";
+    if (t.medios_12h >= 4 && t.izq_12h / n >= 0.8) return " · <b>casi solo medios de izquierda</b>";
+    return "";
+  };
+  return `<section class="desarrollo" aria-labelledby="des-t">
+    <div class="cab-seccion"><h2 id="des-t">En desarrollo</h2><p>Temas con titulares nuevos en las últimas 12 horas, aunque cada medio cuente un aspecto distinto.</p></div>
+    <div class="desarrollo-lista">${T.map(t => {
+      const n = t.izq_12h + t.cen_12h + t.der_12h || 1;
+      const reparto = { pi: Math.round(100 * t.izq_12h / n), pd: Math.round(100 * t.der_12h / n) }; reparto.pc = 100 - reparto.pi - reparto.pd;
+      return `<article class="des"><h3><a href="${urlTema(t.id, t.nombre)}">${esc(t.nombre)}</a></h3>
+        <p class="m">${t.sueltos_12h} titulares nuevos de ${t.medios_12h} medios${mueve(t)}</p>${barra(reparto)}
+        <ul>${t.titulares.slice(0, 3).map(a => `<li><span class="md"><i style="background:${COL_LADO[lado(a.o)]}"></i>${esc(a.m)} · ${horaCorta(a.p)}</span><a href="${esc(a.u)}" target="_blank" rel="noopener">${esc(a.t)}</a></li>`).join("")}</ul>
+        <a class="ir" href="${urlTema(t.id, t.nombre)}">Todo el tema →</a></article>`;
+    }).join("")}</div></section>`;
+}
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 // Temas: asuntos de varios días que reúnen varias historias (los calcula el servidor cada hora; ver tema.html)
 let TEMAS = new Map();
@@ -517,8 +555,8 @@ function pintarSecciones(H){
 }
 function pintarTemas(){
   const nav = document.getElementById("temas");
-  const T = [...TEMAS.values()].filter(t => t.nuevas_48h > 0)
-    .sort((a, b) => b.nuevas_48h - a.nuevas_48h || new Date(b.actualizado) - new Date(a.actualizado)).slice(0, 8);
+  const T = [...TEMAS.values()].filter(t => t.nuevas_48h > 0 || t.medios_12h >= 3)
+    .sort((a, b) => (b.nuevas_48h + (b.medios_12h || 0) / 3) - (a.nuevas_48h + (a.medios_12h || 0) / 3) || new Date(b.actualizado) - new Date(a.actualizado)).slice(0, 8);
   nav.hidden = vista !== "portada" || !!seccion || !T.length;
   nav.innerHTML = `<span class="eti">Temas</span>` + T.map(t => `<a class="tema${temaNuevo(t) ? " nuevo" : ""}" href="${urlTema(t.id, t.nombre)}"${temaNuevo(t) ? ' title="Novedades desde tu última visita"' : ""}>${esc(t.nombre)}<span class="n">${t.historias}</span></a>`).join("");
 }
@@ -552,6 +590,7 @@ function render(){
           <div class="asi"><h3>Así la titula cada lado</h3>${bloques(lead, 2)}<a class="ver-todos" href="${enlace(lead)}">Ver los ${lead.tot} titulares →</a></div>
         </section>`);
       c.insertAdjacentHTML("beforeend", resumenDia([lead, ...hoy], hoy));
+      c.insertAdjacentHTML("beforeend", desarrolloBloque());
       const yaVistas = new Set([...vistas].map(h => h.id));
       const ultimas = (DATA.ultimas || []).filter(h => !yaVistas.has(h.id)).sort((a, b) => new Date(inicio(b)) - new Date(inicio(a))).slice(0, 6);
       ultimas.forEach(h => yaVistas.add(h.id));
@@ -612,14 +651,22 @@ render();
       pedir(`portada_v2?select=${CAMPOS}&order=creada.desc&limit=14`),
       pedir("medios?select=nombre,orientacion,ultima_lectura&activo=eq.true&order=orientacion,nombre"),
       // Temas activos (asuntos de varios días); si fallan, la portada funciona igual
-      pedir("temas_v?select=id,nombre,actualizado,historias,nuevas_48h&activo=eq.true").catch(() => [])
+      pedir("temas_v?select=id,nombre,actualizado,historias,nuevas_48h,sueltos_12h,medios_12h,izq_12h,cen_12h,der_12h&activo=eq.true").catch(() => [])
     ]);
+    // Titulares sueltos de los temas que más se mueven (como mucho 3 temas)
+    const enDes = temas.filter(t => t.sueltos_12h >= 3 && t.medios_12h >= 3).sort((a, b) => b.medios_12h - a.medios_12h).slice(0, 3);
+    const sueltos = enDes.length ? await pedir(`articulos?select=titulo,url,publicado,tema_id,medios(nombre,orientacion)&tema_id=in.(${enDes.map(t => t.id).join(",")})&publicado=gte.${new Date(Date.now() - 12 * 3600e3).toISOString()}&order=publicado.desc&limit=80`).catch(() => []) : [];
+    for (const t of enDes) {
+      const vistos = new Set();
+      t.titulares = sueltos.filter(a => a.tema_id === t.id && a.medios && !vistos.has(a.medios.nombre) && vistos.add(a.medios.nombre))
+        .map(a => ({ m: a.medios.nombre, o: a.medios.orientacion, t: a.titulo, u: a.url, p: a.publicado }));
+    }
     TEMAS = new Map(temas.map(t => [t.id, t]));
     const ids = new Set(hist.map(x => x.id));
     const todas = [...hist, ...ciegos.filter(x => !ids.has(x.id))];
     // Hora real de la última lectura de los medios (no la hora a la que se abrió la página)
     const ultima = med.map(m => m.ultima_lectura).filter(Boolean).sort().pop() || null;
-    DATA = { generado: ultima, medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: todas.map(mapear), ultimas: ultimas.map(mapear) };
+    DATA = { generado: ultima, medios: med.map(m => ({ n: m.nombre, o: m.orientacion })), historias: todas.map(mapear), ultimas: ultimas.map(mapear), desarrollo: enDes };
     render();
   } catch (e) { /* sin conexión: se queda la última edición guardada */ }
 })();

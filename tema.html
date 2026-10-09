@@ -230,6 +230,21 @@ a.tema:hover{border-color:var(--tinta)}
 @keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
 
 /* Lo último */
+.desarrollo .cab-seccion{margin-top:48px}
+.desarrollo-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px 32px}
+.des{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:2px solid var(--tinta);min-width:0}
+.des h3{margin:0;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;line-height:1.15}
+.des h3 a{color:var(--tinta);text-decoration:none}.des h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.des .m{font-size:var(--t-xs);color:var(--gris);margin:0}
+.des .m b{color:var(--aviso)}
+.des .barra{height:6px}
+.des ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.des li{font-size:var(--t-s);line-height:1.35}
+.des li .md{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:1px}
+.des li .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.des li a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600}
+.des li a:hover{text-decoration:underline;text-underline-offset:3px}
+.des .ir{font-size:var(--t-s);font-weight:500;color:var(--tinta)}
 .ultimo .cab-seccion{margin-top:48px}
 .ultimo-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
 @media (max-width:760px){.ultimo-lista{grid-template-columns:1fr}}
@@ -350,6 +365,14 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .tabla td a{color:var(--tinta);text-decoration:none;font-weight:500}
 .tabla td a:hover{text-decoration:underline}
 .tabla .num{font-variant-numeric:tabular-nums;color:var(--gris);white-space:nowrap}
+.tema-sueltos{margin-top:36px}
+.tema-sueltos ol{list-style:none;margin:12px 0 0;padding:0}
+.tema-sueltos li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--linea)}
+.tema-sueltos time{font-family:var(--num);font-size:var(--t-s);color:var(--tinta)}
+.tema-sueltos .md{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:2px}
+.tema-sueltos .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.tema-sueltos a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600;line-height:1.3}
+.tema-sueltos a:hover{text-decoration:underline;text-underline-offset:3px}
 .otro-enfoque{margin-top:14px;padding-top:12px;border-top:1px dashed var(--linea)}
 .otro-enfoque ul{opacity:.85}
 .otro-enfoque .aparte{margin:2px 0 8px}
@@ -541,7 +564,7 @@ function noEncontrado(){
   art.innerHTML = `<div class="hist-vacia"><h1>No encontramos este tema</h1><p>Puede que ya no esté activo o que el enlace no sea correcto. Los temas se recalculan cada hora.</p><p><a href="./">Ir a la portada</a></p></div>`;
 }
 
-function pintar(t, H){
+function pintar(t, H, S = []){
   document.title = `${t.nombre} · Vista Plena`;
   // Cobertura acumulada: voces de cada lado sumando todas las historias del tema
   const s = H.reduce((o, x) => ({ i: o.i + (x.izq || 0), c: o.c + (x.cen || 0), d: o.d + (x.der || 0) }), { i: 0, c: 0, d: 0 });
@@ -571,6 +594,11 @@ function pintar(t, H){
           ${barra(ultima)}${pct(ultima)}
           <p class="aparte">${ultima.tot} medios · empezó ${haceCuanto(inicio(ultima))}${ultima.ciego ? ` · <b>punto ciego de la ${ultima.ciego}</b>` : ""}</p>
         </section>
+        ${S.length ? `<section class="tema-sueltos" aria-labelledby="su-t">
+          <h2 id="su-t">Más titulares de las últimas horas</h2>
+          <p class="aparte">Titulares sobre este tema que no forman una noticia propia, porque cada medio cuenta un aspecto distinto. No entran en los porcentajes.</p>
+          <ol>${S.map(a => `<li><time datetime="${a.publicado}">${hora(a.publicado)}</time><div><span class="md"><i style="background:${a.medios.orientacion < 0 ? "var(--izq)" : a.medios.orientacion > 0 ? "var(--der)" : "var(--cen)"}"></i>${esc(a.medios.nombre)} · ${ETIQUETA[a.medios.orientacion]}</span><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.titulo)}</a></div></li>`).join("")}</ol>
+        </section>` : ""}
         <section class="tema-crono" aria-labelledby="cr-t">
           <h2 id="cr-t">Cronología</h2>
           ${dias.map(g => `<div class="tc-dia"><h3>${g.d}</h3><ol>${g.hs.map(h => `<li>
@@ -591,12 +619,13 @@ function pintar(t, H){
 (async () => {
   if (!id) return noEncontrado();
   try {
-    const [temas, filas] = await Promise.all([
+    const [temas, filas, sueltos] = await Promise.all([
       pedir(`temas?select=id,nombre,inicio,actualizado,historias,activo&id=eq.${id}`),
-      pedir(`portada_v2?select=${CAMPOS},izq,cen,der&tema_id=eq.${id}&order=creada.desc`)]);
+      pedir(`portada_v2?select=${CAMPOS},izq,cen,der&tema_id=eq.${id}&order=creada.desc`),
+      pedir(`articulos?select=titulo,url,publicado,medios(nombre,orientacion)&tema_id=eq.${id}&order=publicado.desc&limit=40`).catch(() => [])]);
     if (!temas.length || !filas.length) return document.body.dataset.id ? null : noEncontrado();
     const H = filas.map(x => ({ ...mapear(x), izq: x.izq, cen: x.cen, der: x.der })).sort((a, b) => new Date(inicio(b)) - new Date(inicio(a)));
-    pintar(temas[0], H);
+    pintar(temas[0], H, sueltos.filter(a => a.medios));
     document.getElementById("estado").textContent = `Actualizado ${haceCuanto(temas[0].actualizado)}`;
   } catch (e) {
     if (!document.body.dataset.id) art.innerHTML = `<p class="vacia">No hemos podido cargar el tema. Comprueba tu conexión y vuelve a intentarlo.</p>`;

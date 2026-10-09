@@ -230,6 +230,21 @@ a.tema:hover{border-color:var(--tinta)}
 @keyframes destello{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--der) 40%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
 
 /* Lo último */
+.desarrollo .cab-seccion{margin-top:48px}
+.desarrollo-lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px 32px}
+.des{display:flex;flex-direction:column;gap:10px;padding-top:14px;border-top:2px solid var(--tinta);min-width:0}
+.des h3{margin:0;font-weight:900;font-size:var(--t-l);letter-spacing:-.02em;line-height:1.15}
+.des h3 a{color:var(--tinta);text-decoration:none}.des h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.des .m{font-size:var(--t-xs);color:var(--gris);margin:0}
+.des .m b{color:var(--aviso)}
+.des .barra{height:6px}
+.des ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.des li{font-size:var(--t-s);line-height:1.35}
+.des li .md{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:1px}
+.des li .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.des li a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600}
+.des li a:hover{text-decoration:underline;text-underline-offset:3px}
+.des .ir{font-size:var(--t-s);font-weight:500;color:var(--tinta)}
 .ultimo .cab-seccion{margin-top:48px}
 .ultimo-lista{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
 @media (max-width:760px){.ultimo-lista{grid-template-columns:1fr}}
@@ -350,6 +365,14 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .tabla td a{color:var(--tinta);text-decoration:none;font-weight:500}
 .tabla td a:hover{text-decoration:underline}
 .tabla .num{font-variant-numeric:tabular-nums;color:var(--gris);white-space:nowrap}
+.tema-sueltos{margin-top:36px}
+.tema-sueltos ol{list-style:none;margin:12px 0 0;padding:0}
+.tema-sueltos li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--linea)}
+.tema-sueltos time{font-family:var(--num);font-size:var(--t-s);color:var(--tinta)}
+.tema-sueltos .md{display:block;font-size:var(--t-xs);color:var(--gris);margin-bottom:2px}
+.tema-sueltos .md i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.tema-sueltos a{color:var(--tinta);text-decoration:none;font-family:var(--titular);font-weight:600;line-height:1.3}
+.tema-sueltos a:hover{text-decoration:underline;text-underline-offset:3px}
 .otro-enfoque{margin-top:14px;padding-top:12px;border-top:1px dashed var(--linea)}
 .otro-enfoque ul{opacity:.85}
 .otro-enfoque .aparte{margin:2px 0 8px}
