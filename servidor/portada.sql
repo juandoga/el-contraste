@@ -2,6 +2,8 @@
 -- Es la que alimenta la web y los datos abiertos. Se ejecuta en Supabase (Postgres).
 
 alter table historias add column if not exists anterior bigint;
+-- Portadas web (servidor/portadas): dirección normalizada para cruzarlas con los artículos
+create or replace function url_norm(u text) returns text language sql immutable parallel safe as $$ select regexp_replace(regexp_replace(u, '[?#].*$', ''), '/$', '') $$;
 -- Titulares del lado que «falta» que hablan de lo mismo con otro enfoque (los rellena recoger, paso 3c)
 alter table historias add column if not exists tambien jsonb not null default '[]';
 create or replace function poner_tambien(datos jsonb) returns void language sql security definer set search_path = public as $$
@@ -30,10 +32,16 @@ with por_medio as (
   -- Noticias de deportes, corazón, tiempo, sorteos, televisión u ocio: no cuentan como punto ciego.
   -- Se reconocen por la sección del medio en la dirección o por palabras del titular, en la mitad o más de sus titulares.
   select a.historia_id,
-    avg(case when a.url ~* '/(deportes?|futbol|baloncesto|tenis|motor|formula-?1|motogp|ciclismo|laotraliga|gente|famosos|corazon|casa-?real|casas-reales|realeza|cool|chic|lifestyle|estilo|moda|belleza|vanitatis|television|tv|series|el-?tiempo|tiempo|meteorologia|loterias?|horoscopo|viajes|gastronomia|recetas|videojuegos|toros)(/|$)'
-               or a.titulo ~* '(loter[ií]a|sorteo|bonoloto|euromillones|la primitiva|super ?once|cup[oó]n de la once|aemet|alerta (naranja|amarilla|roja)|avisos? (naranja|amarillo|rojo)|lluvias|tormentas|\ydana\y|temperaturas|ola de calor|el tiempo (hoy|de|para|en)|horóscopo)'
+    avg(case when a.url ~* '/(deportes?|futbol|baloncesto|tenis|motor|formula-?1|motogp|ciclismo|laotraliga|gente|famosos|corazon|casa-?real|casas-reales|realeza|cool|chic|lifestyle|estilo|moda|belleza|vanitatis|television|tv|series|el-?tiempo|tiempo|meteorologia|loterias?|horoscopo|viajes|gastronomia|recetas|videojuegos|toros|tecnologia|gadgets|moviles)(/|$)'
+               or a.titulo ~* '(loter[ií]a|sorteo|bonoloto|euromillones|la primitiva|super ?once|cup[oó]n de la once|aemet|alerta (naranja|amarilla|roja)|avisos? (naranja|amarillo|rojo)|lluvias|tormentas|\ydana\y|temperaturas|ola de calor|el tiempo (hoy|de|para|en)|horóscopo|reina sof[ií]a|infanta (elena|cristina))'
              then 1 else 0 end) >= 0.5 as ligera
   from articulos a where a.historia_id is not null group by a.historia_id
+), portada as (
+  -- En cuántas portadas web está ahora mismo la historia (entre los 15 primeros titulares de cada medio; ver servidor/portadas)
+  select a.historia_id, count(distinct p.medio_id) as en_portadas
+  from portadas p join articulos a on url_norm(a.url) = p.url_norm
+  where a.historia_id is not null
+  group by a.historia_id
 )
 select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, c.der,
   round(100.0 * c.izq / c.voces)::integer as pct_izq,
@@ -60,10 +68,14 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
   -- Tema al que pertenece (asunto de varios días que reúne varias historias; ver servidor/temas)
   h.tema_id,
   -- Titulares de un lado ausente que cuentan lo mismo con otro enfoque (no cuentan en los porcentajes)
-  h.tambien
+  h.tambien,
+  coalesce(pt.en_portadas, 0) as en_portadas,
+  -- Orden de la portada: medios que la cuentan en las últimas 12 horas, más el doble de portadas web que abre ahora
+  (select count(distinct a.medio_id) from articulos a where a.historia_id = h.id and a.publicado > now() - interval '12 hours') + 2 * coalesce(pt.en_portadas, 0) as peso
 from historias h
 join cuentas c on c.historia_id = h.id
 left join tipo t on t.historia_id = h.id
+left join portada pt on pt.historia_id = h.id
 left join lateral (
   -- Foto: la del medio más cercano al centro que la publique (la más reciente)
   select a.imagen, m.nombre as imagen_medio from articulos a join medios m on m.id = a.medio_id
