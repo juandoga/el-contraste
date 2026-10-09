@@ -528,7 +528,7 @@ function desarrolloBloque(){
     }).join("")}</div></section>`;
 }
 // Por qué esta historia abre la portada: el mismo criterio con el que se ordena (ver metodología)
-const porque = h => `<p class="porque"><b>Abre la portada porque es lo más contado ahora:</b> la han publicado ${h.m12 || h.tot} medios en las últimas 12 horas${h.port ? ` y está entre los primeros titulares de la web de ${h.port}` : ""}. <a href="metodologia.html#como">Cómo ordenamos</a></p>`;
+const porque = h => `<p class="porque"><b>Abre la portada porque es lo más contado ahora:</b> la han publicado ${h.m12 || h.tot} medios en las últimas 12 horas${h.port ? `, y ${h.port} ${h.port === 1 ? "la lleva" : "la llevan"} entre los primeros titulares de su web` : ""}. <a href="metodologia.html#como">Cómo ordenamos</a></p>`;
 const cab = (t, p) => `<div class="cab-seccion"><h2>${t}</h2>${p ? `<p>${p}</p>` : ""}</div>`;
 // Temas: asuntos de varios días que reúnen varias historias (los calcula el servidor cada hora; ver tema.html)
 let TEMAS = new Map();
