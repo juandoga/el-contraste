@@ -411,6 +411,34 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 .hoy .barra{height:6px;max-width:320px}
 .hoy .m{font-family:var(--ui);font-weight:400;font-size:var(--t-xs);color:var(--gris)}
 .mas-sec{font-size:var(--t-s);font-weight:700;color:var(--tinta)}
+.g-parte{margin-top:26px}
+.g-parte>h3{display:flex;align-items:baseline;gap:10px;margin:0 0 10px!important;font-size:var(--t-m)}
+.g-parte>h3 .n{font-family:var(--num);font-weight:500;color:var(--gris);font-size:var(--t-s)}
+.g-parte>.aparte{margin:-4px 0 12px!important}
+.g-datos{display:flex;flex-wrap:wrap;gap:1px;background:var(--linea);border:1px solid var(--linea);border-radius:8px;overflow:hidden}
+.g-dato{flex:1 1 210px;background:var(--fondo);padding:14px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.g-dato .c{font-family:var(--num);font-weight:500;font-size:1.45rem;color:var(--tinta);line-height:1.1;letter-spacing:-.01em}
+.g-dato .q{font-size:var(--t-s);color:var(--tinta);line-height:1.4}
+.g-dato .f{margin-top:auto;font-size:var(--t-xs);color:var(--gris)}
+.g-dato .f a{color:var(--gris)}
+.g-vacio{font-size:var(--t-s);color:var(--gris);border:1px dashed var(--linea);border-radius:8px;padding:12px 14px;margin:0!important}
+.vot-wrap{overflow-x:auto;border:1px solid var(--linea);border-radius:8px}
+.vot{border-collapse:collapse;width:100%;min-width:760px;font-size:var(--t-s)}
+.vot th,.vot td{padding:10px;border-bottom:1px solid var(--linea);text-align:center;vertical-align:top}
+.vot tr:last-child td{border-bottom:0}
+.vot thead th{font-size:var(--t-xs);font-weight:700;color:var(--gris);background:var(--panel);white-space:nowrap}
+.vot th:first-child,.vot td:first-child{text-align:left;min-width:280px;max-width:420px}
+.vot td:first-child a{color:var(--tinta);text-decoration:none;font-weight:500;line-height:1.35;display:block}
+.vot td:first-child a:hover{text-decoration:underline}
+.vot .m{display:block;font-family:var(--num);font-size:var(--t-xs);color:var(--gris);margin-top:3px}
+.vt{display:inline-block;min-width:38px;font-size:var(--t-xs);font-weight:700;padding:2px 6px;border-radius:4px;border:1.5px solid var(--tinta)}
+.vt.si{background:var(--tinta);color:var(--fondo)}
+.vt.no{color:var(--tinta)}
+.vt.ab{border-style:dashed;border-color:var(--gris);color:var(--gris)}
+.vt.nv{border-color:transparent;color:var(--gris);font-weight:400}
+.vot-ley{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:var(--t-xs);color:var(--gris);align-items:center}
+.vot-mas{margin-top:8px;font-size:var(--t-s)}
+.vot-mas summary{cursor:pointer;font-weight:500;color:var(--tinta)}
 </style>
 </head>
 <body>
@@ -458,8 +486,8 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 
   <header class="metodo-cab">
     <span class="eti">Elecciones generales · 29 de noviembre de 2026</span>
-    <h1>Qué propone cada partido</h1>
-    <p class="resumen">Las propuestas de cada partido sobre lo que más preocupa a los españoles, con la frase exacta de su programa y el enlace a la página. Sin opiniones.</p>
+    <h1>Qué propone y qué ha votado cada partido</h1>
+    <p class="resumen">Tema a tema: los datos oficiales del problema, las visiones que hay sobre él, lo que propone cada partido con la frase exacta de su programa y lo que ha votado en el Congreso. Sin opiniones.</p>
     <div class="cuenta"><b id="dias">—</b><span>días para votar</span></div>
   </header>
 
@@ -489,8 +517,10 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
       <li><strong>La misma plantilla para todos.</strong> Mismos temas y mismo espacio para cada partido, en el orden de lo que más preocupa según el CIS. No valoramos ninguna propuesta.</li>
       <li><strong>Con fecha y corrección visible.</strong> Cada propuesta indica cuándo se añadió. Si encontramos un error, lo corregimos y lo señalamos.</li>
     </ol>
-    <h3>Próximamente: lo que votaron</h3>
-    <p>Junto a cada propuesta mostraremos cómo votó ese partido en el Congreso sobre ese mismo tema durante la legislatura, con los datos abiertos de votaciones del Congreso. Así se podrá comparar lo que se promete con lo que se ha hecho.</p>
+    <h3>Lo que votaron</h3>
+    <p>Las votaciones salen de los <a href="https://www.congreso.es/opendata/votaciones" target="_blank" rel="noopener">datos abiertos del Congreso</a>, que publican el voto de cada diputado. Mostramos lo que votó la mayoría de los diputados de cada partido; los del Grupo Mixto (Podemos, BNG, Coalición Canaria, UPN…) van por separado. Se actualiza cada día.</p>
+    <h3>Los datos de cada tema</h3>
+    <p>Solo cifras de organismos oficiales (INE, Banco de España, ministerios, Eurostat, OCDE), con el periodo y un enlace a la página donde se publican. Están en <a href="guia.json">guia.json</a>.</p>
     <p class="aparte">Los datos de esta guía están en un archivo público, <a href="programas.json">programas.json</a>, con su historial de cambios en GitHub. Si ves un error, <a href="https://github.com/juandoga/vistaplena/issues/new?title=Gu%C3%ADa%2029N%3A%20">avísanos</a>.</p>
   </section>
 
@@ -510,31 +540,68 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 <script src="comun.js?v=31ca595d"></script>
 <script>
 const fechaLarga = d => new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
-let PROG = null, HIST = [];
+const fechaCorta = d => new Date(d + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
+let PROG = null, GUIA = null, HIST = [], VOT = null;
+// Partidos en la tabla de votaciones (los del Grupo Mixto, por separado)
+const PARTIDOS_V = ["PSOE", "PP", "Vox", "Sumar", "ERC", "Junts", "EH Bildu", "PNV", "Podemos", "BNG", "CC", "UPN"];
+const TIPO = { decreto: "Decreto ley", toma: "Proposición de ley", totalidad: "Enmienda a la totalidad", ley: "Ley (votación final)" };
+const resultado = v => {
+  const pasa = v.si > v.no;
+  if (v.tipo === "decreto") return pasa ? "Convalidado" : "Derogado";
+  if (v.tipo === "toma") return pasa ? "Admitida a trámite" : "Rechazada";
+  if (v.tipo === "totalidad") return pasa ? "Enmienda aprobada" : "Enmienda rechazada";
+  return pasa ? "Aprobada" : "Rechazada";
+};
+const chipVoto = x => !x ? `<span class="vt nv">—</span>` : x.voto === "Sí" ? `<span class="vt si" title="${x.si} a favor">Sí</span>` : x.voto === "No" ? `<span class="vt no" title="${x.no} en contra">No</span>` : x.voto === "Abstención" ? `<span class="vt ab">Abst.</span>` : `<span class="vt nv">No vota</span>`;
+// El texto del Congreso empieza a veces por «Votación de…»: se deja solo lo que se votó
+const limpia = t => t.replace(/^Votaci[oó]n (conjunta )?de (la|las) /i, "").replace(/\s+/g, " ").trim();
+function filaVot(v){
+  return `<tr><td><a href="${esc(v.url.replace(/\.json$/, ".pdf"))}" target="_blank" rel="noopener">${esc(limpia(v.expediente).slice(0, 220))}${limpia(v.expediente).length > 220 ? "…" : ""}</a>
+    <span class="m">${fechaCorta(v.fecha)} · ${TIPO[v.tipo] || "Votación"} · ${resultado(v)} · ${v.si} sí, ${v.no} no${v.abst ? `, ${v.abst} abst.` : ""}</span></td>
+    ${PARTIDOS_V.map(p => `<td>${chipVoto(v.partidos[p])}</td>`).join("")}</tr>`;
+}
+function votaciones(id){
+  if (!VOT) return `<p class="g-vacio">Cargando las votaciones del Congreso…</p>`;
+  const L = VOT.filter(v => v.temas.includes(id));
+  if (!L.length) return `<p class="g-vacio">Todavía no hemos encontrado votaciones del Pleno sobre este tema en esta legislatura.</p>`;
+  const tabla = lista => `<div class="vot-wrap"><table class="vot"><thead><tr><th>Qué se votó</th>${PARTIDOS_V.map(p => `<th>${p}</th>`).join("")}</tr></thead><tbody>${lista.map(filaVot).join("")}</tbody></table></div>`;
+  return tabla(L.slice(0, 5)) + (L.length > 5 ? `<details class="vot-mas"><summary>Ver las otras ${L.length - 5} votaciones</summary>${tabla(L.slice(5))}</details>` : "") +
+    `<div class="vot-ley"><span class="vt si">Sí</span> a favor <span class="vt no">No</span> en contra <span class="vt ab">Abst.</span> abstención · Voto de la mayoría de los diputados de cada partido · Cada votación enlaza a su acta oficial</div>`;
+}
 
 function pintar(){
+  const T = GUIA ? GUIA.temas : [];
   const S = window.SECCIONES || [];
-  document.getElementById("indiceTemas").innerHTML = S.map(s => `<a href="#${s.id}">${s.nombre}</a>`).join("") + `<a href="#partidos">Los partidos</a><a href="#como">Cómo la hacemos</a>`;
+  document.getElementById("indiceTemas").innerHTML = T.map(t => `<a href="#${t.id}">${esc(t.nombre)}</a>`).join("") + `<a href="#partidos">Los partidos</a><a href="#como">Cómo la hacemos</a>`;
   const P = PROG ? PROG.partidos : [];
   const conPrograma = P.filter(p => p.programa).length;
   if (PROG) {
-    document.getElementById("actualizado").textContent = "Actualizada el " + fechaLarga(PROG.actualizado);
+    document.getElementById("actualizado").textContent = "Actualizada el " + fechaLarga(GUIA && GUIA.actualizado > PROG.actualizado ? GUIA.actualizado : PROG.actualizado);
     document.getElementById("criterio").textContent = "Criterio: " + PROG.criterio;
     if (conPrograma) document.getElementById("estadoProgramas").textContent = `${conPrograma} de ${P.length} partidos han publicado ya su programa. Los demás aparecen como pendientes hasta que lo presenten.`;
   }
-  document.getElementById("temasElec").innerHTML = S.map((s, i) => {
-    const hoy = HIST.filter(h => window.seccionesDe(h).includes(s.id)).slice(0, 3);
-    return `<section id="${s.id}" class="tema-elec">
-      <div class="tema-cab"><span class="num">${i + 1}</span><div><h2>${s.nombre}</h2>
-        <p class="cis"><span class="cis-barra"><i style="width:${Math.min(100, s.cis * 2)}%"></i></span>Preocupa al <b>${String(s.cis).replace(".", ",")} %</b> de los españoles · ${s.cisNota} · CIS, septiembre de 2026</p></div></div>
+  document.getElementById("temasElec").innerHTML = T.map((t, i) => {
+    const s = S.find(x => x.id === t.id);
+    const hoy = s ? HIST.filter(h => window.seccionesDe(h).includes(s.id)).slice(0, 3) : [];
+    return `<section id="${t.id}" class="tema-elec">
+      <div class="tema-cab"><span class="num">${i + 1}</span><div><h2>${esc(t.nombre)}</h2>
+        ${s ? `<p class="cis"><span class="cis-barra"><i style="width:${Math.min(100, s.cis * 2)}%"></i></span>Preocupa al <b>${String(s.cis).replace(".", ",")} %</b> de los españoles · ${s.cisNota} · CIS, septiembre de 2026</p>` : ""}</div></div>
+      <div class="g-parte"><h3><span class="n">1</span>El problema, en datos</h3>
+        <div class="g-datos">${t.datos.map(d => `<div class="g-dato"><span class="c">${esc(d.cifra)}</span><span class="q">${esc(d.que)}</span><span class="f">${esc(d.fuente)} · ${esc(d.periodo)} · <a href="${esc(d.url)}" target="_blank" rel="noopener">fuente</a></span></div>`).join("")}</div></div>
+      <div class="g-parte"><h3><span class="n">2</span>Las visiones</h3>
+        ${(t.visiones || []).length ? "" : `<p class="g-vacio">Se completará cuando los partidos publiquen sus programas: agruparemos a los que proponen cosas parecidas, describiendo cada visión solo con sus citas.</p>`}</div>
+      <div class="g-parte"><h3><span class="n">3</span>Qué propone cada partido</h3>
       ${P.some(p => p.programa) ? `<div class="partidos-grid">${P.filter(p => p.programa).map(p => {
-        const lista = (p.propuestas || {})[s.id] || [];
+        const lista = (p.propuestas || {})[t.id] || [];
         return `<div class="p-card"><h3>${esc(p.nombre)}</h3>${lista.length
           ? `<ul>${lista.map(x => `<li>«${esc(x.texto)}» <a href="${esc(x.url || p.programa.url)}" target="_blank" rel="noopener">pág. ${esc(x.pagina)}</a></li>`).join("")}</ul>`
           : `<p class="pend">Su programa no incluye propuestas sobre este tema.</p>`}</div>`;
       }).join("")}</div>` : ""}
-      ${P.some(p => !p.programa) ? `<p class="pendientes"><span class="eti">Programa pendiente</span>${P.filter(p => !p.programa).map(p => `<span class="chip-p">${esc(p.nombre)}</span>`).join("")}</p>` : ""}
-      ${hoy.length ? `<div class="hoy"><span class="eti">Hoy en los medios</span>${hoy.map(h => `<a class="hoy-item" href="${enlace(h)}">${esc(h.t)}${barra(h)}<span class="m">${h.tot} medios</span></a>`).join("")}<a class="mas-sec" href="./?seccion=${s.id}">Ver todas las noticias de ${s.nombre.toLowerCase()} →</a></div>` : ""}
+      ${P.some(p => !p.programa) ? `<p class="pendientes"><span class="eti">Programa pendiente</span>${P.filter(p => !p.programa).map(p => `<span class="chip-p">${esc(p.nombre)}</span>`).join("")}</p>` : ""}</div>
+      <div class="g-parte"><h3><span class="n">4</span>Qué ha votado cada partido</h3>
+        <p class="aparte">Leyes, decretos y proposiciones de ley votados en el Pleno del Congreso en esta legislatura, de lo más reciente a lo más antiguo. Las elegimos por las palabras de su título, así que puede colarse alguna de otro tema: si la ves, <a href="https://github.com/juandoga/vistaplena/issues/new" target="_blank" rel="noopener">avísanos</a>.</p>
+        ${votaciones(t.id)}</div>
+      ${hoy.length ? `<div class="hoy"><span class="eti">Hoy en los medios</span>${hoy.map(h => `<a class="hoy-item" href="${enlace(h)}">${esc(h.t)}${barra(h)}<span class="m">${h.tot} medios</span></a>`).join("")}<a class="mas-sec" href="./?seccion=${s.id}">Más noticias de ${esc(t.nombre.toLowerCase())} →</a></div>` : ""}
     </section>`;
   }).join("");
   document.getElementById("filasPartidos").innerHTML = P.map(p => `<tr><td><strong>${esc(p.nombre)}</strong></td>
@@ -544,10 +611,15 @@ function pintar(){
 // Cuenta atrás
 (() => { const d = Math.ceil((new Date("2026-11-29T09:00:00+01:00") - Date.now()) / 864e5); document.getElementById("dias").textContent = d > 0 ? d : "Hoy"; })();
 pintar();
-fetch("programas.json").then(r => r.json()).then(j => { PROG = j; pintar(); }).catch(() => {});
+Promise.all([fetch("programas.json").then(r => r.json()), fetch("guia.json").then(r => r.json())])
+  .then(([p, g]) => { PROG = p; GUIA = g; pintar(); if (location.hash) document.querySelector(location.hash)?.scrollIntoView(); }).catch(() => {});
 (async () => {
+  const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
   try {
-    const h = { apikey: SUPA.key, Authorization: "Bearer " + SUPA.key };
+    const r = await fetch(`${SUPA.url}/rest/v1/votaciones?select=id,fecha,tipo,expediente,si,no,abst,partidos,url,temas&destacada=eq.true&temas=neq.{}&order=fecha.desc,numero.desc&limit=600`, { headers: h });
+    if (r.ok) { VOT = await r.json(); pintar(); }
+  } catch (e) {}
+  try {
     const r = await fetch(`${SUPA.url}/rest/v1/portada_v2?select=id,titulo,total,voces,pct_izq,pct_cen,pct_der,articulos&order=voces.desc&limit=80`, { headers: h });
     if (!r.ok) return;
     HIST = (await r.json()).map(x => ({ id: x.id, t: x.titulo, tot: x.total, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, a: (x.articulos || []).map(a => ({ t: a.titulo })) }));

@@ -1,0 +1,59 @@
+{
+ "actualizado": "2026-10-09",
+ "nota": "Datos oficiales de cada tema. Cada cifra enlaza a la página del organismo donde se publica. Las visiones y las propuestas se completan con citas literales de los programas cuando los partidos los publiquen.",
+ "temas": [
+  {"id": "vivienda", "nombre": "Vivienda", "datos": [
+   {"cifra": "+12,2 %", "que": "Subida del precio de la vivienda en un año.", "fuente": "INE, Índice de Precios de Vivienda", "periodo": "2.º trimestre de 2026", "url": "https://www.ine.es/dyngs/Prensa/IPV2T26.htm"},
+   {"cifra": "750.000", "que": "Viviendas que faltan: hogares creados frente a viviendas terminadas desde 2021.", "fuente": "Banco de España, Informe Anual 2025", "periodo": "2021–2025", "url": "https://www.bde.es/f/webbe/SES/Secciones/Publicaciones/PublicacionesAnuales/InformesAnuales/25/Fich/IIPP-2026-06-18-lopez-salido-es-or.pdf"},
+   {"cifra": "28,1 %", "que": "De los inquilinos a precio de mercado dedica más del 40 % de sus ingresos a la vivienda.", "fuente": "INE, España en cifras", "periodo": "2024", "url": "https://www.ine.es/prodyser/espa_cifras/05_CONDICIONES_DE_VIDA.pdf"},
+   {"cifra": "< 2 %", "que": "De las viviendas son de alquiler social. La media de la UE es el 8 %.", "fuente": "OCDE, Affordable Housing Database", "periodo": "2022", "url": "https://webfs.oecd.org/Els-com/Affordable_Housing_Database/PH4-2-Social-rental-housing-stock.pdf"}
+  ]},
+  {"id": "economia", "nombre": "Economía y precios", "datos": [
+   {"cifra": "4,9 %", "que": "Subida de los precios de consumo en un año (dato adelantado). En agosto era del 4,3 %.", "fuente": "INE, IPC", "periodo": "Septiembre de 2026", "url": "https://www.ine.es/dyngs/Prensa/es/adIPC0926.html"},
+   {"cifra": "+2,7 %", "que": "Crecimiento de la economía (PIB) respecto al mismo trimestre del año anterior.", "fuente": "INE, Contabilidad Nacional Trimestral", "periodo": "2.º trimestre de 2026", "url": "https://ine.es/dyngs/Prensa/avCNTR2T26.htm"},
+   {"cifra": "+4,0 %", "que": "Subida del coste salarial medio en un año (2.512,68 € brutos al mes).", "fuente": "INE, Encuesta Trimestral de Coste Laboral", "periodo": "2.º trimestre de 2026", "url": "https://www.ine.es/dyngs/Prensa/ETCL2T26.htm"}
+  ]},
+  {"id": "inmigracion", "nombre": "Inmigración", "datos": [
+   {"cifra": "7,44 millones", "que": "Residentes con nacionalidad extranjera, de 49,8 millones de habitantes.", "fuente": "INE, Estadística Continua de Población", "periodo": "1 de julio de 2026", "url": "https://ine.es/dyngs/Prensa/ECP2T26.pdf"},
+   {"cifra": "24.646", "que": "Llegadas irregulares en lo que va de año, un 10,3 % menos que en el mismo periodo de 2025.", "fuente": "Ministerio del Interior", "periodo": "1 de enero – 30 de septiembre de 2026", "url": "https://www.interior.gob.es/opencms/export/sites/default/.galleries/galeria-de-prensa/documentos-y-multimedia/balances-e-informes/2026/18_informe_quincenal_acumulado_01-01_al_30-09-2026.pdf"},
+   {"cifra": "1.174.978", "que": "Solicitudes presentadas en la regularización extraordinaria.", "fuente": "Seguridad Social", "periodo": "16 de abril – 30 de junio de 2026", "url": "https://revista.seg-social.es/-/el-plazo-de-presentaci%C3%B3n-de-solicitud-para-la-regularizaci%C3%B3n-extraordinaria-concluye-con-1.174.978-solicitudes-recibidas"}
+  ]},
+  {"id": "empleo", "nombre": "Empleo", "datos": [
+   {"cifra": "9,87 %", "que": "Tasa de paro: 2,5 millones de personas buscan trabajo sin encontrarlo.", "fuente": "INE, EPA", "periodo": "2.º trimestre de 2026", "url": "https://ine.es/dyngs/Prensa/EPA2T26.htm"},
+   {"cifra": "22,8 millones", "que": "Personas ocupadas.", "fuente": "INE, EPA", "periodo": "2.º trimestre de 2026", "url": "https://ine.es/dyngs/Prensa/EPA2T26.htm"},
+   {"cifra": "22,7 %", "que": "Paro de los menores de 25 años. La media de la UE es el 15,4 %.", "fuente": "Eurostat", "periodo": "Agosto de 2026", "url": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/3-01102026-ap"}
+  ]},
+  {"id": "sanidad", "nombre": "Sanidad", "datos": [
+   {"cifra": "121 días", "que": "Espera media para una operación (853.509 pacientes en lista).", "fuente": "Ministerio de Sanidad, SISLE", "periodo": "31 de diciembre de 2025", "url": "https://www.msps.es/estadEstudios/estadisticas/inforRecopilaciones/docs/Informe_situacion_listas_de_espera_dic_2025_V1.pdf"},
+   {"cifra": "102 días", "que": "Espera media para la primera consulta con el especialista.", "fuente": "Ministerio de Sanidad, SISLE", "periodo": "31 de diciembre de 2025", "url": "https://www.msps.es/estadEstudios/estadisticas/inforRecopilaciones/docs/Informe_situacion_listas_de_espera_dic_2025_V1.pdf"},
+   {"cifra": "6,4 % del PIB", "que": "Gasto sanitario público: 2.084 € por habitante.", "fuente": "Ministerio de Sanidad", "periodo": "2024", "url": "https://www.sanidad.gob.es/gabinete/notasPrensa.do?id=6908"}
+  ]},
+  {"id": "pensiones", "nombre": "Pensiones", "datos": [
+   {"cifra": "1.374,57 €", "que": "Pensión contributiva media al mes. La de jubilación es de 1.576,10 €.", "fuente": "Ministerio de Inclusión, Seguridad Social y Migraciones", "periodo": "Septiembre de 2026", "url": "https://www.juntaex.es/documents/77055/46718143/PC_ND_2026_09.pdf/5fc13e77-feda-0075-7c2c-6c5f5f80154c"},
+   {"cifra": "10,55 millones", "que": "Pensiones contributivas que se pagan cada mes (una persona puede cobrar más de una).", "fuente": "Ministerio de Inclusión, Seguridad Social y Migraciones", "periodo": "Septiembre de 2026", "url": "https://www.juntaex.es/documents/77055/46718143/PC_ND_2026_09.pdf/5fc13e77-feda-0075-7c2c-6c5f5f80154c"},
+   {"cifra": "0,33 % del PIB", "que": "Déficit de la Seguridad Social: lo que gastó por encima de lo que ingresó.", "fuente": "Ministerio de Hacienda", "periodo": "2025", "url": "https://www.hacienda.gob.es/es-ES/Prensa/Noticias/Paginas/2026/20260331-NP-CIERRE-DEFICIT.aspx"}
+  ]},
+  {"id": "impuestos", "nombre": "Impuestos", "datos": [
+   {"cifra": "37,8 % del PIB", "que": "Ingresos por impuestos y cotizaciones. La media de la UE es el 39,9 %.", "fuente": "Comisión Europea, Annual Report on Taxation 2026", "periodo": "2025", "url": "https://www.astrid-online.it/static/upload/annu/annual-report-on-taxation-2026.pdf"},
+   {"cifra": "325.356 M€", "que": "Recaudación de los impuestos que gestiona la Agencia Tributaria, un 10,4 % más que el año anterior.", "fuente": "AEAT, Informe Anual de Recaudación", "periodo": "2025", "url": "https://sede.agenciatributaria.gob.es/Sede/eu_es/estadisticas/recaudacion-tributaria/informe-anual/ejercicio-2025/resumen.html"},
+   {"cifra": "45 % – 54 %", "que": "Tipo máximo del IRPF (estatal más autonómico): del 45 % en Madrid al 54 % en la Comunitat Valenciana.", "fuente": "Ministerio de Hacienda", "periodo": "IRPF 2025", "url": "https://www.hacienda.gob.es/sgfal/financiacionterritorial/autonomica/capitulo-i-tributacion-autonomica-2025.pdf"}
+  ]},
+  {"id": "educacion", "nombre": "Educación", "datos": [
+   {"cifra": "12,8 %", "que": "Jóvenes de 18 a 24 años que dejaron de estudiar sin pasar de la ESO (abandono temprano).", "fuente": "Ministerio de Educación", "periodo": "2025", "url": "https://www.educacionfpydeportes.gob.es/dam/jcr:b410eba9-18b7-44d5-b6ad-f1c69069d75e/1-3-6-tabla-1-abandono-nivel-de-formaci-n-2025.pdf"},
+   {"cifra": "4,48 % del PIB", "que": "Gasto público en educación (dato provisional).", "fuente": "Ministerio de Educación", "periodo": "2024", "url": "https://www.educacionfpydeportes.gob.es/dam/jcr:639436ff-68b1-4b43-9fbe-7046039ec1ad/notagasto2024-prov.pdf"},
+   {"cifra": "473", "que": "Puntos en Matemáticas en PISA (media de la OCDE: 472). Lectura 474 (476); Ciencias 485 (485).", "fuente": "OCDE, PISA", "periodo": "2022", "url": "https://www.educacionfpydeportes.gob.es/prensa/actualidad/2023/12/20231205-informepisa.html"}
+  ]},
+  {"id": "territorial", "nombre": "Modelo territorial", "datos": [
+   {"cifra": "20,4 % del PIB", "que": "Deuda de las comunidades autónomas: 355.000 M€. Va del 8,4 % de Navarra al 40 % de la Comunitat Valenciana.", "fuente": "Banco de España", "periodo": "2.º trimestre de 2026", "url": "https://www.bde.es/f/webbe/GAP/Secciones/SalaPrensa/NotasInformativas/26/presbe2026-86.pdf"},
+   {"cifra": "26.575 M€", "que": "Préstamos del Estado a las comunidades a través de los fondos de financiación.", "fuente": "Ministerio de Hacienda", "periodo": "2025", "url": "https://www.hacienda.gob.es/es-ES/Prensa/Noticias/Paginas/2025/20251202-CDGAE.aspx"}
+  ]},
+  {"id": "energia", "nombre": "Energía y clima", "datos": [
+   {"cifra": "55,5 %", "que": "Parte de la electricidad generada con renovables.", "fuente": "Red Eléctrica, Informe del Sistema Eléctrico", "periodo": "2025", "url": "https://www.sistemaelectrico-ree.es/sites/default/files/informes/2026/ise-2025.pdf"},
+   {"cifra": "270,7 Mt CO₂-eq", "que": "Emisiones de gases de efecto invernadero: un 1,1 % más que en 2024 y un 4,8 % menos que en 1990.", "fuente": "MITECO, Inventario de emisiones (avance)", "periodo": "2025", "url": "https://www.miteco.gob.es/content/dam/miteco/es/calidad-y-evaluacion-ambiental/temas/sistema-espanol-de-inventario-sei-/Nota-Avance-GEI-2025.pdf"},
+   {"cifra": "83,45 €/MWh", "que": "Precio medio de la electricidad en el mercado mayorista (no es la factura del hogar), un 9,4 % más que en 2024.", "fuente": "Red Eléctrica, Informe del Sistema Eléctrico", "periodo": "2025", "url": "https://www.sistemaelectrico-ree.es/sites/default/files/informes/2026/ise-2025.pdf"}
+  ]},
+  {"id": "justicia", "nombre": "Corrupción y justicia", "datos": [
+   {"cifra": "55 / 100", "que": "Puntuación en el Índice de Percepción de la Corrupción (puesto 49 de 182; un punto menos que el año anterior).", "fuente": "Transparency International", "periodo": "Índice 2025", "url": "https://transparencia.org.es/actualidad/indice-de-percepcion-de-la-corrupcion-2025/"}
+  ]}
+ ]
+}
