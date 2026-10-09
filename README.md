@@ -54,6 +54,7 @@ La clave que aparece en estas direcciones es pública y solo permite leer.
 | `servidor/temas/` | Programa que agrupa las historias de la semana en temas (se ejecuta cada hora) |
 | `servidor/mantenimiento/` | Copia de seguridad semanal (domingos, por correo) y avisos si algún medio o la recogida fallan (3 veces al día) |
 | `servidor/portadas/` | Lee cada hora (minuto 8) los 15 primeros titulares de la portada web de cada medio: ordenan la portada y recogen noticias que no salen en los canales RSS |
+| `servidor/congreso/` | Descarga las votaciones del Pleno del Congreso (datos abiertos) con el voto de cada partido; la función SQL `etiquetar_votaciones()` las clasifica por temas para la guía 29N |
 | `servidor/boletin/` | Programa del boletín diario por correo |
 | `servidor/portada.sql` | Cálculo de la cobertura y de los puntos ciegos |
 
