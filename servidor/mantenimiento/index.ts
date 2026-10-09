@@ -94,10 +94,29 @@ async function vigilar() {
   return { avisos: avisos.length, sanos, total };
 }
 
+// Diagnóstico del correo: últimos envíos según Resend y registros DNS del dominio
+async function estado() {
+  const r = await fetch("https://api.resend.com/emails?limit=10", { headers: { Authorization: `Bearer ${RESEND}` } });
+  const j = await r.json();
+  const envios = (j.data ?? []).map((e: any) => ({ id: e.id, para: e.to, asunto: e.subject, estado: e.last_event, creado: e.created_at }));
+  const dns: Record<string, unknown> = {};
+  for (const [n, t] of [["vistaplena.es", "MX"], ["vistaplena.es", "TXT"], ["send.vistaplena.es", "MX"]]) {
+    const d = await (await fetch(`https://dns.google/resolve?name=${n}&type=${t}`)).json();
+    dns[`${n} ${t}`] = (d.Answer ?? []).map((a: any) => a.data);
+  }
+  return { resend: r.ok ? envios : j, dns };
+}
+
+async function prueba() {
+  await correo("Vista Plena · prueba de correo", "<p>Si lees esto, contacto@vistaplena.es llega bien a tu correo.</p>");
+  return { ok: true };
+}
+
 Deno.serve(async (req) => {
   const tarea = new URL(req.url).searchParams.get("tarea");
   try {
-    const r = tarea === "copia" ? await copia() : tarea === "vigilar" ? await vigilar() : { error: "tarea desconocida: usa ?tarea=copia o ?tarea=vigilar" };
+    const r = tarea === "copia" ? await copia() : tarea === "vigilar" ? await vigilar() : tarea === "estado" ? await estado() : tarea === "prueba" ? await prueba()
+      : { error: "tarea desconocida: usa ?tarea=copia, vigilar, estado o prueba" };
     return new Response(JSON.stringify(r), { headers: { "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { "Content-Type": "application/json" } });
