@@ -122,13 +122,16 @@ function palabras(t: string): string[] {
 
 // Secciones que no se recogen: ediciones locales de los medios nacionales (comparar su cobertura no tiene sentido
 // y además multiplican los titulares de quien más ediciones tiene), opinión, y secciones de compras, virales o pasatiempos.
-const FUERA = new RegExp("^https?://[^/]+/(?:es/|espana/)?(?:emisoras|local|autonomias|c?madrid|comunidad-de-madrid|andalucia|sevilla|malaga|cordoba|" +
+// Las secciones regionales colgadas de «España» (abc.es/espana/extremadura/…) sí se recogen: ahí van noticias
+// de alcance nacional que ocurren en una región (p. ej. el caso de la jueza Biedma, en Badajoz).
+const REGIONES = "emisoras|local|autonomias|c?madrid|comunidad-de-madrid|andalucia|sevilla|malaga|cordoba|" +
   "cataluna|catalunya|barcelona|comunidad-valenciana|comunitat-valenciana|valencia|castillayleon|castilla-y-leon|castilla-leon|castillalamancha|" +
   "castilla-la-mancha|toledo|aragon|galicia|euskadi|pais-vasco|bizkaia|gipuzkoa|murcia|region-de-murcia|baleares|illes-balears|canarias|asturias|" +
-  "cantabria|navarra|extremadura|la-rioja|ceuta|melilla|" +
-  // opinión: son columnas y editoriales, no noticias
+  "cantabria|navarra|extremadura|la-rioja|ceuta|melilla";
+const SECCIONES = // opinión: son columnas y editoriales, no noticias
   "opinion|opiniones|editorial|editoriales|tribuna|tribunas|columnistas|blogs|cartas-al-director|" +
-  "empresas-al-dia|patrocinado|contenido-patrocinado|branded|publirreportaje|comprar|compras|ofertas|videojuegos|tecnologia-consumo|curiosidades|virales|horoscopo|loterias?)(?:/|$)", "i");
+  "empresas-al-dia|patrocinado|contenido-patrocinado|branded|publirreportaje|comprar|compras|ofertas|videojuegos|tecnologia-consumo|curiosidades|virales|horoscopo|loterias?";
+const FUERA = new RegExp(`^https?://[^/]+/(?:(?:es/)?(?:${REGIONES})|(?:es/|espana/)?(?:${SECCIONES}))(?:/|$)`, "i");
 
 // ---------- Programa principal ----------
 // El trabajo se hace en dos fases para no superar el límite de cálculo de cada ejecución:
@@ -171,7 +174,7 @@ Deno.serve(async (req) => {
   // La API devuelve como mucho 1000 filas por petición: se pide por páginas.
   const recientes: any[] = [];
   for (let p = 0; p < 10; p++) {
-    const { data } = await db.from("articulos").select("id, medio_id, historia_id, titulo, resumen, palabras, publicado")
+    const { data } = await db.from("articulos").select("id, medio_id, historia_id, titulo, url, resumen, palabras, publicado")
       .gte("publicado", desdeISO).order("id").range(p * 1000, p * 1000 + 999);
     recientes.push(...(data ?? []));
     if (!data || data.length < 1000) break;
@@ -366,6 +369,36 @@ Deno.serve(async (req) => {
       }
     }
   }
+  // 3c. Comprobación de puntos ciegos: antes de decir que un lado no cuenta una historia, se buscan titulares de ese lado
+  // que hablen de lo mismo aunque hayan quedado en otra historia o sueltos (otro enfoque, otras palabras).
+  // Se exige compartir al menos 3 palabras clave de la historia, 2 de ellas poco frecuentes, y estar a menos de 12 horas.
+  const lado = (o: number) => (o < 0 ? "izq" : o > 0 ? "der" : "cen");
+  const medioDe = new Map((medios ?? []).map((m) => [m.id, m]));
+  const delLado: Record<string, any[]> = { izq: [], der: [] };
+  for (const a of recientes) { const l = lado(orient.get(a.medio_id) ?? 0); if (l !== "cen" && a.palabras?.length >= 2) delLado[l].push(a); }
+  const tambien: { id: number; tambien: unknown[] }[] = [];
+  for (const g of conId) {
+    if (absorbido.has(g) || Date.now() - g.ultimo > 36 * 3600e3) continue;
+    const lados = new Set([...g.medios].map((m) => lado(orient.get(m) ?? 0)));
+    const nuc = nucleos.get(g)!, propios = new Set(g.ids), encontrados: any[] = [], yaMedio = new Set<number>();
+    for (const L of ["izq", "der"]) {
+      if (lados.has(L)) continue;
+      for (const a of delLado[L]) {
+        const t = +new Date(a.publicado);
+        if (propios.has(a.id) || yaMedio.has(a.medio_id) || t < g.primero - VIVA || t > g.ultimo + VIVA) continue;
+        let n = 0, raras = 0;
+        for (const w of a.palabras) if (nuc.has(w)) { n++; if (peso(w) >= RARA) raras++; }
+        if (n >= 3 && raras >= 2) {
+          const m = medioDe.get(a.medio_id);
+          encontrados.push({ medio: m?.nombre, orientacion: m?.orientacion, titulo: a.titulo, url: a.url, publicado: a.publicado });
+          yaMedio.add(a.medio_id);
+        }
+      }
+    }
+    tambien.push({ id: g.id!, tambien: encontrados });
+  }
+  if (tambien.length) await db.rpc("poner_tambien", { datos: tambien });
+
   // Los directos que se colaron antes salen de las historias
   const directos = recientes.filter((a) => (esDirecto(a.titulo) || a.palabras.length < 3) && a.historia_id).map((a) => a.id);
   if (directos.length) await db.from("articulos").update({ historia_id: null }).in("id", directos);

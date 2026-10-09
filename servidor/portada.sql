@@ -2,6 +2,12 @@
 -- Es la que alimenta la web y los datos abiertos. Se ejecuta en Supabase (Postgres).
 
 alter table historias add column if not exists anterior bigint;
+-- Titulares del lado que «falta» que hablan de lo mismo con otro enfoque (los rellena recoger, paso 3c)
+alter table historias add column if not exists tambien jsonb not null default '[]';
+create or replace function poner_tambien(datos jsonb) returns void language sql security definer set search_path = public as $$
+  update historias h set tambien = d.tambien from jsonb_to_recordset(datos) as d(id bigint, tambien jsonb) where h.id = d.id;
+$$;
+revoke execute on function poner_tambien(jsonb) from public, anon, authenticated;
 
 create or replace view portada_v2 with (security_invoker = true) as
 with por_medio as (
@@ -33,11 +39,14 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
   round(100.0 * c.izq / c.voces)::integer as pct_izq,
   round(100.0 * c.der / c.voces)::integer as pct_der,
   100 - round(100.0 * c.izq / c.voces)::integer - round(100.0 * c.der / c.voces)::integer as pct_cen,
-  -- Punto ciego: al menos 4 voces, la mitad o más de un lado y menos del 10 % del otro
+  -- Punto ciego: al menos 4 voces, la mitad o más de un lado y menos del 10 % del otro,
+  -- y ningún medio de ese otro lado lo ha contado con otro enfoque (h.tambien)
   case
     when coalesce(t.ligera, false) then null
-    when c.voces >= 4 and c.izq::numeric / c.voces < 0.10 and c.der::numeric / c.voces >= 0.5 then 'izquierda'
-    when c.voces >= 4 and c.der::numeric / c.voces < 0.10 and c.izq::numeric / c.voces >= 0.5 then 'derecha'
+    when c.voces >= 4 and c.izq::numeric / c.voces < 0.10 and c.der::numeric / c.voces >= 0.5
+      and not exists (select 1 from jsonb_array_elements(h.tambien) x where (x->>'orientacion')::int < 0) then 'izquierda'
+    when c.voces >= 4 and c.der::numeric / c.voces < 0.10 and c.izq::numeric / c.voces >= 0.5
+      and not exists (select 1 from jsonb_array_elements(h.tambien) x where (x->>'orientacion')::int > 0) then 'derecha'
   end as punto_ciego,
   (select jsonb_agg(jsonb_build_object('medio', m.nombre, 'orientacion', m.orientacion, 'grupo', coalesce(m.grupo, m.nombre), 'titulo', a.titulo, 'url', a.url, 'publicado', a.publicado) order by m.orientacion, a.publicado)
      from articulos a join medios m on m.id = a.medio_id where a.historia_id = h.id) as articulos,
@@ -49,7 +58,9 @@ select h.id, h.titulo, h.creada, h.actualizada, c.total, c.voces, c.izq, c.cen, 
   -- Historia anterior de la que esta se separó porque trae un hecho nuevo (p. ej. «los favoritos al Nobel» → «Anne Carson gana el Nobel»)
   h.anterior,
   -- Tema al que pertenece (asunto de varios días que reúne varias historias; ver servidor/temas)
-  h.tema_id
+  h.tema_id,
+  -- Titulares de un lado ausente que cuentan lo mismo con otro enfoque (no cuentan en los porcentajes)
+  h.tambien
 from historias h
 join cuentas c on c.historia_id = h.id
 left join tipo t on t.historia_id = h.id
