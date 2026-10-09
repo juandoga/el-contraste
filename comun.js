@@ -1,6 +1,6 @@
 // Vista Plena — piezas comunes a todas las páginas: menú y funciones para pintar una historia.
 const SUPA = { url: "https://yzreenyaerjitbfxsiah.supabase.co", key: "sb_publishable_1As_Elit5MJVUOZFOLeDjA_YMVv6jjF" };
-const CAMPOS = "id,creada,titulo,total,voces,imagen,imagen_medio,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos,entradilla,entradilla_medio,anterior,tema_id,tambien";
+const CAMPOS = "id,creada,titulo,total,voces,imagen,imagen_medio,pct_izq,pct_cen,pct_der,punto_ciego,actualizada,articulos,entradilla,entradilla_medio,anterior,tema_id,tambien,en_portadas";
 const ETIQUETA = { "-2": "Izquierda", "-1": "Centroizquierda", "0": "Centro", "1": "Centroderecha", "2": "Derecha" };
 const lado = o => o < 0 ? "izq" : o > 0 ? "der" : "cen";
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -18,7 +18,7 @@ const enlace = h => urlNoticia(h.id, h.t);
 
 // Convierte una fila de la base de datos en el formato corto que usan las páginas
 const mapear = x => ({ id: x.id, t: x.titulo, tot: x.total, voces: x.voces, pi: x.pct_izq, pc: x.pct_cen, pd: x.pct_der, ciego: x.punto_ciego, act: x.actualizada, f: x.imagen, fm: x.imagen_medio,
-  ent: x.entradilla, entm: x.entradilla_medio, cr: x.creada, ant: x.anterior, tema: x.tema_id,
+  ent: x.entradilla, entm: x.entradilla_medio, cr: x.creada, ant: x.anterior, tema: x.tema_id, port: x.en_portadas || 0,
   tb: (x.tambien || []).map(a => ({ m: a.medio, o: a.orientacion, t: a.titulo, u: a.url, p: a.publicado })),
   a: (x.articulos || []).map(a => ({ m: a.medio, o: a.orientacion, t: a.titulo, u: a.url, g: a.grupo, p: a.publicado })) });
 
@@ -48,7 +48,7 @@ function barra(h, grande){
   return `<div class="barra${grande ? " grande" : ""}" role="img" aria-label="Izquierda ${h.pi} %, centro ${h.pc} %, derecha ${h.pd} %">${seg("b-izq",h.pi,"Izquierda")}${seg("b-cen",h.pc,"Centro")}${seg("b-der",h.pd,"Derecha")}</div>`;
 }
 const pct = h => `<div class="pct"><span class="i">Izquierda <b>${h.pi} %</b></span><span>Centro <b>${h.pc} %</b></span><span class="d">Derecha <b>${h.pd} %</b></span></div>`;
-const meta = h => `<div class="meta"><span title="Dos medios del mismo grupo editorial y del mismo lado cuentan como una voz">${h.tot} medios${h.voces && h.voces < h.tot ? ` · ${h.voces} voces` : ""}</span><span>${haceCuanto(h.act)}</span>${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
+const meta = h => `<div class="meta"><span title="Dos medios del mismo grupo editorial y del mismo lado cuentan como una voz">${h.tot} medios${h.voces && h.voces < h.tot ? ` · ${h.voces} voces` : ""}</span><span>${haceCuanto(h.act)}</span>${h.port >= 2 ? `<span title="Medios que la llevan ahora entre los 15 primeros titulares de su web">En ${h.port} portadas</span>` : ""}${h.ciego ? `<span class="chip">Punto ciego · ${h.ciego}</span>` : ""}</div>`;
 // Un titular por medio, el más reciente; dentro de cada lado, primero lo último que se ha publicado
 function recientes(h){
   const vistos = new Set();

@@ -459,7 +459,7 @@ footer.pie{margin-top:80px;padding:0;border-top:1px solid var(--linea);backgroun
 </footer>
 
 <script src="temas.js?v=5df45ce8"></script>
-<script src="comun.js?v=3465be97"></script>
+<script src="comun.js?v=f616f697"></script>
 <script>
 const SNAPSHOT = /*SNAPSHOT*/null;
 const NIVELES = [[-2,"Izquierda","var(--izq)"],[-1,"Centroizquierda","var(--izq)"],[0,"Centro","var(--cen)"],[1,"Centroderecha","var(--der)"],[2,"Derecha","var(--der)"]];
@@ -603,7 +603,7 @@ function render(){
         grid.innerHTML = ciegos.map(h => `<article class="ciego">${foto(h)}<span class="chip" style="align-self:flex-start">La ${h.ciego} no la cuenta</span><h3><a href="${enlace(h)}">${esc(h.t)}</a></h3>${barra(h)}<p>${h.tot} medios · ${haceCuanto(h.act)}</p></article>`).join("");
         c.appendChild(grid);
       }
-      c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas por cuántos medios las han contado en las últimas 12 horas."));
+      c.insertAdjacentHTML("beforeend", cab("Más noticias", "Ordenadas por cuántos medios las han contado en las últimas 12 horas y en cuántas portadas están ahora."));
       const rej = document.createElement("div"); rej.className = "rejilla";
       resto.filter(h => !yaVistas.has(h.id)).forEach(h => rej.appendChild(pieza(h)));
       c.appendChild(rej);
@@ -645,7 +645,7 @@ render();
     // Los puntos ciegos se piden aparte: por definición los cuentan pocos medios y no entrarían entre las 40 más contadas
     const [hist, ciegos, ultimas, med, temas] = await Promise.all([
       // Orden de la portada: medios que han contado la historia en las últimas 12 horas (lo que está pasando ahora)
-      pedir(`portada_v2?select=${CAMPOS}&order=medios_12h.desc,voces.desc,actualizada.desc&limit=40`),
+      pedir(`portada_v2?select=${CAMPOS}&order=peso.desc,voces.desc,actualizada.desc&limit=40`),
       pedir(`portada_v2?select=${CAMPOS}&punto_ciego=not.is.null&order=voces.desc,actualizada.desc&limit=30`),
       // «Lo último»: las historias más recientes, aunque aún las cuenten pocos medios
       pedir(`portada_v2?select=${CAMPOS}&order=creada.desc&limit=14`),
