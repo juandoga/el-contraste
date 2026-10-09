@@ -286,7 +286,7 @@ def main():
             historias, temas = datos["historias"], datos["temas"]
         else:
           historias = todo(f"portada_v2?select={CAMPOS}&creada=gt.{desde}&order=id")
-          temas = todo(f"temas?select=id,nombre,inicio,actualizado,historias,activo&actualizado=gt.{desde}&historias=gte.2&order=id")
+          temas = todo(f"temas_v?select=id,nombre,inicio,actualizado,historias,activo&actualizado=gt.{desde}&historias=gte.2&order=id")
     except Exception as e:
         print("Supabase no responde; se publica la web sin páginas generadas:", e)
         return

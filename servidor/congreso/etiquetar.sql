@@ -19,7 +19,7 @@ begin
       else 'otra' end,
     temas = coalesce(v.temas_manual, array(select t from (values
       ('vivienda',   '(vivienda|alquiler|arrendamiento|desahucio|okupa|ocupacion ilegal|inquilin|suelo urbano|ley del suelo|hipotec)'),
-      ('economia',   '(inflacion|precios|cesta de la compra|presupuestos generales|estabilidad presupuestaria|techo de gasto|deficit|aranceles|crecimiento economico|poder adquisitivo)'),
+      ('economia',   '(inflacion|precios|cesta de la compra|presupuestos generales|ley general presupuestaria|estabilidad presupuestaria|techo de gasto|deficit|aranceles|crecimiento economico|poder adquisitivo|salario minimo|consecuencias economicas|en materia economica|reconstruccion economica|plan integral de respuesta a la crisis|anticrisis)'),
       ('inmigracion','(inmigra|migra|extranjer|asilo|regularizacion|menores no acompanados|frontera|refugiad)'),
       ('empleo',     '(empleo|laboral|trabajador|salario minimo|jornada|despido|desemplead|paro\M|estatuto de los trabajadores)'),
       ('sanidad',    '(sanidad|sanitari|salud|hospital|medic[oa]s|farmac|listas de espera|atencion primaria|dependencia)'),
