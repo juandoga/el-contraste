@@ -388,7 +388,7 @@ Deno.serve(async (req) => {
       if (lados.has(L)) continue;
       for (const a of delLado[L]) {
         const t = +new Date(a.publicado);
-        if (propios.has(a.id) || yaMedio.has(a.medio_id) || t < g.primero - VIVA || t > g.ultimo + VIVA) continue;
+        if (propios.has(a.id) || g.medios.has(a.medio_id) || yaMedio.has(a.medio_id) || t < g.primero - VIVA || t > g.ultimo + VIVA) continue;
         let n = 0, raras = 0;
         for (const w of a.palabras) if (nuc.has(w)) { n++; if (peso(w) >= RARA) raras++; }
         if (n >= 3 && raras >= 2) {
