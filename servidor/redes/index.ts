@@ -80,7 +80,7 @@ async function elegir(tipo: string) {
     // Así la cuenta no parece señalar siempre al mismo lado (hay muchas más noticias con poca cobertura en la izquierda).
     const { data: ult } = await db.from("redes_publicaciones").select("lado").eq("red", "x").not("lado", "is", null).order("creado", { ascending: false }).limit(1);
     const preferido = ult?.[0]?.lado === "izquierda" ? "derecha" : "izquierda";
-    const desiguales = libres.filter((h) => h.punto_ciego).sort((a, b) => b.total - a.total);
+    const desiguales = libres.filter((h) => h.punto_ciego && h.total >= 8).sort((a, b) => b.total - a.total);
     const desigual = desiguales.find((h) => h.punto_ciego === preferido) ?? (ult?.[0]?.lado ? null : desiguales[0]);
     if (desigual) return { h: desigual, desigual: true };
   }
