@@ -227,7 +227,7 @@ def imagen_og(h, ruta):
     r = s * 0.16
     d.ellipse([x0 + s / 2 - r, y0 + s / 2 - r, x0 + s / 2 + r, y0 + s / 2 + r], fill=TINTA)
     d.text((x0 + s + 16, y0 + s / 2), "Vista Plena", font=ImageFont.truetype(F["negra"], 34), fill=TINTA, anchor="lm")
-    d.text((W - 64, y0 + s / 2), "Quién cuenta esta noticia", font=ImageFont.truetype(F["media"], 24), fill=GRIS, anchor="rm")
+    d.text((W - 64, y0 + s / 2), "vistaplena.es", font=ImageFont.truetype(F["media"], 28), fill=TINTA, anchor="rm")
     # Titular en serif, en hasta 4 líneas, bajando el tamaño si hace falta
     for tam in (66, 60, 54, 48, 44):
         fuente = ImageFont.truetype(F["titular"], tam)
